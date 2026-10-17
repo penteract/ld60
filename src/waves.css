@@ -16,7 +16,7 @@ html {
   -moz-user-select: none;
   -ms-user-select: none;
   font-family:sans-serif;
-  font-weight:lighter;
+  /*font-weight:lighter;*/
   font-size:85%;
   color:#CCF;
   overflow:hidden;
@@ -69,6 +69,8 @@ input {
 form#drops {
   right:0;
   text-align:right;
+  font-size:120%;
+  
 }
 
 input#drop_range {
