@@ -24,10 +24,10 @@ const canvas = document.getElementById("main_canvas") as HTMLCanvasElement
 //var ctx=canvas.getContext("2d");
 
 //mouse monitoring events
-document.addEventListener("mousedown", function(event) {
+document.addEventListener("mousedown", function(_) {
 	mouseState.clicking = true;
 	}, false);
-document.addEventListener("mouseup", function(event) {
+document.addEventListener("mouseup", function(_) {
 	mouseState.clicking = false;
 	}, false);
 document.addEventListener("mousemove", function(event) {
@@ -43,7 +43,7 @@ for (var i=0; i<forms.length; i++) {
 }
 
 //map touch events to mouse events for touch compatibility:
-function touchHandler(event)
+function touchHandler(event: TouchEvent)
 {
     var touches = event.changedTouches,
 	first = touches[0],
