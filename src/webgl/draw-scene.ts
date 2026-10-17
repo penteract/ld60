@@ -18,6 +18,27 @@ function drawScene(canvasState:CanvasState, water:number[][], ground:number[][],
     gl.uniform2f(programInfo.uniformLocations.resolution, canvas.width, canvas.height);
     gl.uniform2f(programInfo.uniformLocations.gridDimensions, nX, nY);
 
+
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
+
+    let buildingArray = []
+
+    for (const row of water) {
+        for (const tile of row) {
+            buildingArray.push(0, 0, Math.floor(tile / 100 * 255), 0);
+        }
+    }
+
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, nX, nY, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(buildingArray), );
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
     const offset = 0;
     const vertexCount = 4;
     gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
