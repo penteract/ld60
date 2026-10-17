@@ -5,7 +5,7 @@
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 import {H,W,step,init} from "./simplesim";
-import {setup} from "./webgl/main";
+import {setup} from "./webgl/gl-setup.ts";
 import {drawScene} from "./webgl/draw-scene";
 
 
