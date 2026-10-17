@@ -2,3 +2,9 @@
 aube = "2"
 node = "26"
 prettier = "3"
+
+[tasks.format]
+run = "prettier --write ."
+
+[tasks.precommit]
+run = "git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r prettier --check --ignore-unknown"

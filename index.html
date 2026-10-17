@@ -1,39 +1,53 @@
 <!doctype html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
 
-		<title>Interactive waves</title>
-		<meta name="description" content="JavaScript and HTML5 simulation of shallow water waves and rain drops. Users may modify the simulation parameters and generate waves with the mouse.">
-		<meta name="author" content="Doug Lipinski">
-		<link rel="stylesheet" href="./src/waves.css" type="text/css">
+    <title>Interactive waves</title>
+    <meta
+      name="description"
+      content="JavaScript and HTML5 simulation of shallow water waves and rain drops. Users may modify the simulation parameters and generate waves with the mouse."
+    />
+    <meta name="author" content="Doug Lipinski" />
+    <link rel="stylesheet" href="./src/waves.css" type="text/css" />
 
-		<!--[if lt IE 9]>
-				<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-				<![endif]-->
-	</head>
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
 
-	<body style="margin:0;padding:0;">
+  <body style="margin: 0; padding: 0">
+    <div id="info">Click and drag to make waves.</div>
 
-		<div id="info">Click and drag to make waves.</div>
+    <form id="resolution" action="javascript:newRes()">
+      Resolution:<br />
+      <input
+        type="submit"
+        value="Update"
+        style="
+          position: relative;
+          left: -800px;
+          width: 0;
+          margin: 0;
+          padding: 0;
+        "
+      />
+      n<sub>x</sub> <input id="nx" type="number" /> &nbsp; n<sub>y</sub>
+      <input id="ny" type="number" />
+    </form>
 
-		<form id="resolution" action="javascript:newRes()">
-			Resolution:<br>
-			<input type="submit" value="Update" style="position:relative;left:-800px;width:0;margin:0;padding:0;">
-			n<sub>x</sub> <input id="nx" type="number"> &nbsp; n<sub>y</sub> <input id="ny" type="number">
-		</form>
+    <!--<div id="copy">&copy; 2014 Doug Lipinski</div>-->
 
-		<!--<div id="copy">&copy; 2014 Doug Lipinski</div>-->
+    <form id="drops">
+      Left click:<br />
+      add dirt<br />
+      <br />
+      Right click and drag: <br />build pump
+      <!--<input id="drop_range" type="range" min="0" max="100" value="20" onchange="javascript:sim.drop.freq=this.value;">-->
+    </form>
 
-		<form id="drops">
-			Left click:<br> add dirt<br> <br>
-			Right click and drag: <br>build pump
-			<!--<input id="drop_range" type="range" min="0" max="100" value="20" onchange="javascript:sim.drop.freq=this.value;">-->
-		</form>
-
-		<canvas id="main_canvas"></canvas>
-		<script type="module" src="/src/main.ts"></script>
-
-	</body>
+    <canvas id="main_canvas"></canvas>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

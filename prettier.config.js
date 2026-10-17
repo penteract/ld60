@@ -1,3 +1,3 @@
 export default {
-  plugins: ['prettier-plugin-glsl'],
+  plugins: ["prettier-plugin-glsl"],
 };
