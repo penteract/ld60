@@ -103,7 +103,7 @@ var params = {
 };
 
 
-const pileshape = []
+const pileshape:[[number,number],number][] = []
 for(let x=-3;x<4;x++)for(let y=-3;y<4;y++){
   pileshape.push([[x,y],Math.exp(-(x*x+y*y))])
 }
@@ -111,13 +111,16 @@ for(let x=-3;x<4;x++)for(let y=-3;y<4;y++){
 
 let canvas_state = setup(canvas)
 
-var sim:SimState = init();
+var sim = init();
 
 LoopSim();
 
 function LoopSim() {
 	if (newResolution)
 	{
+		canvas.width = window.innerWidth
+		canvas.height = window.innerHeight
+		canvas_state.gl.viewport(0,0,canvas.width,canvas.height)
 		var changed=false;
 
 		var tmpNX=NXinput.value;
@@ -183,8 +186,6 @@ function LoopSim() {
       }
     }
   }
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
   drawScene(canvas_state,sim.water,sim.ground)
 	requestAnimationFrame(LoopSim);
 }
