@@ -7,20 +7,20 @@ export function setup(canvas : HTMLCanvasElement) : CanvasState | null {
   //const canvas = document.querySelector('#waterworld-canvas');
 
   if (!checkCanvas(canvas)) {
-    alert('canvas is not present');
+    console.log('canvas is not present');
     return null;
   }
 
   const gl = canvas.getContext('webgl2');
 
   if (gl === null) {
-    alert("Unable to initialize WebGL. Your browser or machine may not support it.");
+    console.log("Unable to initialize WebGL. Your browser or machine may not support it.");
     return null;
   }
 
   const shaderProgram = initShaderProgram(gl, waterPlaneShader, waterColorShader);
   if (shaderProgram == null) {
-    alert('no program available');
+    console.log('no program available');
     return null;
   }
 
@@ -54,7 +54,7 @@ function initShaderProgram(gl: WebGL2RenderingContext, vsSource: string, fsSourc
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
 
   if (vertexShader == null || fragmentShader == null) {
-    alert('failed to load shaders');
+    console.log('failed to load shaders');
     return null;
   }
 
@@ -64,7 +64,7 @@ function initShaderProgram(gl: WebGL2RenderingContext, vsSource: string, fsSourc
   gl.linkProgram(shaderProgram);
 
   if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-    alert(
+    console.log(
         `Unable to initialize the shader program: ${gl.getProgramInfoLog(
             shaderProgram,
         )}`,
@@ -79,7 +79,7 @@ function loadShader(gl: WebGL2RenderingContext, type: GLenum, source: string): W
   const shader = gl.createShader(type);
 
   if(shader == null) {
-    alert('error creating shader');
+    console.log('error creating shader');
     return null;
   }
 
@@ -87,7 +87,7 @@ function loadShader(gl: WebGL2RenderingContext, type: GLenum, source: string): W
   gl.compileShader(shader);
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    alert(
+    console.log(
         `An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`,
     );
     gl.deleteShader(shader);
