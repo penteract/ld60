@@ -148,7 +148,7 @@ function LoopSim() {
       }
     }
   }
-  drawScene(canvas_state,sim.water,sim.ground)
+  drawScene(canvas_state,sim.water,sim.ground, W, H)
 	requestAnimationFrame(LoopSim);
 }
 

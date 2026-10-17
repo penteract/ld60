@@ -1,6 +1,6 @@
 import type {Buffers, ProgramInfo,CanvasState} from "./types.ts";
 
-function drawScene(canvasState:CanvasState, water:number[][], ground:number[][]) {
+function drawScene(canvasState:CanvasState, water:number[][], ground:number[][], nX: number, nY: number) {
     const {gl, programInfo, buffers} = canvasState
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);
@@ -16,6 +16,7 @@ function drawScene(canvasState:CanvasState, water:number[][], ground:number[][])
     gl.useProgram(programInfo.program);
 
     gl.uniform2f(programInfo.uniformLocations.resolution, canvas.width, canvas.height);
+    gl.uniform2f(programInfo.uniformLocations.gridDimensions, nX, nY);
 
     const offset = 0;
     const vertexCount = 4;

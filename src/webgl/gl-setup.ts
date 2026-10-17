@@ -30,6 +30,12 @@ export function setup(canvas : HTMLCanvasElement) : CanvasState | null {
     return null;
   }
 
+  const gridDimensions = gl.getUniformLocation(shaderProgram, "uGridDimensions");
+  if (gridDimensions == null) {
+    console.log('uGridDimensions is not found');
+    return null;
+  }
+
   const programInfo: ProgramInfo = {
     program: shaderProgram,
     attribLocations: {
@@ -37,6 +43,7 @@ export function setup(canvas : HTMLCanvasElement) : CanvasState | null {
     },
     uniformLocations: {
       resolution: resolution,
+      gridDimensions: gridDimensions
     }
   }
 
