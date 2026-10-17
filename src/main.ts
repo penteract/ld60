@@ -5,7 +5,8 @@
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 import {H,W,step} from "./simplesim";
-
+import {setup} from "./webgl/main";
+import {drawScene} from "./webgl/draw-scene";
 
 var mouseState = {
 	size: .25, //size used for wave interaction
@@ -18,7 +19,7 @@ var mouseState = {
 export let canvas=document.getElementById("main_canvas");
 
 //get canvas and drawing context
-var ctx=canvas.getContext("2d");
+//var ctx=canvas.getContext("2d");
 
 //mouse monitoring events
 document.addEventListener("mousedown", function(event) {
@@ -105,6 +106,9 @@ for(let x=-3;x<4;x++)for(let y=-3;y<4;y++){
   pileshape.push([[x,y],Math.exp(-(x*x+y*y))])
 }
 
+
+let canvas_state = setup(canvas)
+
 var sim;
 
 LoopSim();
@@ -181,10 +185,9 @@ function LoopSim() {
       }
     }
   }
-  draw(sim.water,sim.ground)
+  drawScene(canvas_state,sim.water,sim.ground)
 	requestAnimationFrame(LoopSim);
 }
-
 
 
 function draw(water,ground){
