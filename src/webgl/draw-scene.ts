@@ -28,7 +28,7 @@ function drawScene(canvasState:CanvasState, water:number[][], ground:number[][],
     for(let i = 0; i < water.length; i++) {
         const waterRow = water[i];
         const groundRow = ground[i];
-        for(let j = 0; j < water.length; j++) {
+        for(let j = 0; j < waterRow.length; j++) {
             buildingArray.push(0, Math.floor(Math.min(groundRow[j] / MAX_HEIGHT, 1.0) * 255), Math.floor(Math.min(waterRow[j] / MAX_HEIGHT, 1.0) * 255), 0);
         }
     }
