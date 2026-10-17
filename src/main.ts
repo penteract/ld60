@@ -7,7 +7,13 @@
 import {H,W,step,init} from "./simplesim";
 import {setup} from "./webgl/main";
 import {drawScene} from "./webgl/draw-scene";
-import type { SimState } from "./sim";
+
+
+declare global {
+	interface Window {
+		perf: number;
+	}
+}
 
 var mouseState = {
 	size: .25, //size used for wave interaction
@@ -75,19 +81,16 @@ document.addEventListener("touchend", touchHandler, true);
 document.addEventListener("touchcancel", touchHandler, true);
 
 //Monitoring event for form submission (to change resolution):
-var resolution=document.getElementById("resolution");
-var newResolution=true;
+const resolution = document.getElementById("resolution") as HTMLFormElement;
+let newResolution = true;
 resolution.setAttribute('action','javascript:newRes();');
-resolution.addEventListener("submit", function(event){
+resolution.addEventListener("submit", function(_){
 	newResolution=true;
 	}, false);
-function newRes() {
-	newResolution=true;
-}
 
 //Default resolution:
-var NXinput=document.getElementById("nx");
-var NYinput=document.getElementById("ny");
+const NXinput = document.getElementById("nx") as HTMLInputElement;
+const NYinput = document.getElementById("ny") as HTMLInputElement;
 NXinput.value="70";
 NYinput.value="70";
 
@@ -116,30 +119,35 @@ var sim = init();
 LoopSim();
 
 function LoopSim() {
+	if (canvas_state === null) {
+		alert('failure to load canvas for game');
+		return;
+	}
+
 	if (newResolution)
 	{
 		canvas.width = window.innerWidth
 		canvas.height = window.innerHeight
 		canvas_state.gl.viewport(0,0,canvas.width,canvas.height)
-		var changed=false;
+		let changed = false;
 
-		var tmpNX=NXinput.value;
+		const tmpNX = NXinput.value;
 		if (parseInt(tmpNX)>0 && parseInt(tmpNX)!=params.nx)
 		{
 			params.nx = parseInt(tmpNX);
-			NXinput.value=params.nx;
+			NXinput.valueAsNumber=params.nx;
 			changed=true;
 		} else {
-			NXinput.value=params.nx;
+			NXinput.valueAsNumber=params.nx;
 		}
 		var tmpNY=NYinput.value;
 		if (parseInt(tmpNY)>0 && parseInt(tmpNY)!=params.ny)
 		{
 			params.ny = parseInt(tmpNY);
-			NYinput.value=params.ny;
+			NYinput.valueAsNumber=params.ny;
 			changed=true;
 		} else {
-			NYinput.value=params.ny;
+			NYinput.valueAsNumber=params.ny;
 		}
 
 		if (changed) {
@@ -155,9 +163,9 @@ function LoopSim() {
 			}
 
 			//Initialize:
-			for (var j=0; j<sim.ny; j++)
+			for (let j=0; j<sim.ny; j++)
 			{
-				for (var i=0; i<sim.nx; i++)
+				for (let i=0; i<sim.nx; i++)
 				{
 					//sim.eta.val[i+sim.nx*j] = params.eta;
 					sim.eta.val[i+sim.nx*j] = 0;
