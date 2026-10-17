@@ -3,31 +3,31 @@ import waterColorShader from './water-color.frag?raw'
 import type {ProgramInfo,CanvasState} from "./types.ts";
 import {initBuffers} from "./init-buffers.ts";
 
-export function setup(canvas : HTMLCanvasElement) : CanvasState {
+export function setup(canvas : HTMLCanvasElement) : CanvasState | null {
   //const canvas = document.querySelector('#waterworld-canvas');
 
   if (!checkCanvas(canvas)) {
     alert('canvas is not present');
-    return;
+    return null;
   }
 
   const gl = canvas.getContext('webgl2');
 
   if (gl === null) {
     alert("Unable to initialize WebGL. Your browser or machine may not support it.");
-    return;
+    return null;
   }
 
   const shaderProgram = initShaderProgram(gl, waterPlaneShader, waterColorShader);
   if (shaderProgram == null) {
     alert('no program available');
-    return;
+    return null;
   }
 
   const resolution = gl.getUniformLocation(shaderProgram, "uResolution");
   if (resolution == null) {
     console.log('resolution is not found');
-    return;
+    return null;
   }
 
   const programInfo: ProgramInfo = {
