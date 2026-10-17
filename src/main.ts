@@ -4,7 +4,18 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { SimState, mouseState, canvas } from "./sim";
+import { SimState } from "./sim";
+
+
+var mouseState = {
+	size: .25, //size used for wave interaction
+	clicking: false,
+	ignore: false,
+	x: 0,
+	y: 0
+};
+
+export let canvas=document.getElementById("main_canvas");
 
 //get canvas and drawing context
 var ctx=canvas.getContext("2d");
@@ -145,6 +156,6 @@ function LoopSim() {
 	}
 	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
 	sim.eta.Draw(canvas,ctx,0,0.25);
-	sim.Step();
+	sim.Step(mouseState,canvas);
 	requestAnimationFrame(LoopSim);
 }

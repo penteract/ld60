@@ -42,19 +42,10 @@ for the JavaScript code in this page.
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-//object to monitor mouse state
-export var mouseState = {
-	size: .25, //size used for wave interaction
-	clicking: false,
-	ignore: false,
-	x: 0,
-	y: 0
-};
 
-export let canvas=document.getElementById("main_canvas");
 
 //drops:
-function Drop(freq) {
+function Drop(freq:number) {
 	this.freq=freq;
 
 	this.DropNow=DropNow;
@@ -375,7 +366,7 @@ export function SimState(nx,ny,H,dt,dropFreq)
 	}
 
 	this.Step = Step;
-	function Step()
+	function Step(mouseState,canvas)
 	{
 		//Midpoint (RK2) time step
 		var deta=new Field(this.eta.nx,this.eta.ny);
