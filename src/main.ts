@@ -1,60 +1,152 @@
-import './style.css'
-import heroImg from './assets/hero.png'
-import typescriptLogo from './assets/typescript.svg'
-import viteLogo from './assets/vite.svg'
-import { setupCounter } from './counter.ts'
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*\
+|                                                              |
+|                         start program                        |
+|                                                              |
+\*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${typescriptLogo}" class="framework" alt="TypeScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.ts</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+import { SimState, mouseState, canvas } from "./sim";
 
-<div class="ticks"></div>
+console.log("hi");
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://www.typescriptlang.org" target="_blank">
-          <img class="button-icon" src="${typescriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+//get canvas and drawing context
+var ctx=canvas.getContext("2d");
 
-<div class="ticks"></div>
-<section id="spacer"></section>
-`
+//mouse monitoring events
+document.addEventListener("mousedown", function(event) {
+	mouseState.clicking = true;
+	}, false);
+document.addEventListener("mouseup", function(event) {
+	mouseState.clicking = false;
+	}, false);
+document.addEventListener("mousemove", function(event) {
+	mouseState.x = event.pageX;
+	mouseState.y = event.pageY;
+	}, false);
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+//don't make waves if mouse is over a form
+var forms = document.getElementsByTagName("form");
+for (var i=0; i<forms.length; i++) {
+	forms[i].onmouseover=function () {mouseState.ignore=true};
+	forms[i].onmouseout=function () {mouseState.ignore=false};
+}
+
+//map touch events to mouse events for touch compatibility:
+function touchHandler(event)
+{
+    var touches = event.changedTouches,
+	first = touches[0],
+	type = "";
+	switch(event.type)
+	{
+	  case "touchstart": type="mousedown"; break;
+	  case "touchmove":  type="mousemove"; break;
+	  case "touchend":   type="mouseup"; break;
+	  default: return;
+	}
+
+    //initMouseEvent(type, canBubble, cancelable, view, clickCount,
+    //               screenX, screenY, clientX, clientY, ctrlKey,
+    //               altKey, shiftKey, metaKey, button, relatedTarget);
+
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+                                  first.screenX, first.screenY,
+                                  first.clientX, first.clientY, false,
+                                  false, false, false, 0/*left*/, null);
+
+    first.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+}
+document.addEventListener("touchstart", touchHandler, true);
+document.addEventListener("touchmove", touchHandler, true);
+document.addEventListener("touchend", touchHandler, true);
+document.addEventListener("touchcancel", touchHandler, true);
+
+//Monitoring event for form submission (to change resolution):
+var resolution=document.getElementById("resolution");
+var newResolution=true;
+resolution.setAttribute('action','javascript:newRes();');
+resolution.addEventListener("submit", function(event){
+	newResolution=true;
+	}, false);
+function newRes() {
+	newResolution=true;
+}
+
+//Default resolution:
+var NXinput=document.getElementById("nx");
+var NYinput=document.getElementById("ny");
+NXinput.value="70";
+NYinput.value="70";
+
+
+
+
+// Create the simulation
+var params = {
+	nx: 0,
+	ny: 0,
+	H: 10, //water depth
+	dt: .025 //timestep
+};
+
+var sim;
+
+LoopSim();
+
+function LoopSim() {
+	if (newResolution)
+	{
+		var changed=false;
+
+		var tmpNX=NXinput.value;
+		if (parseInt(tmpNX)>0 && parseInt(tmpNX)!=params.nx)
+		{
+			params.nx = parseInt(tmpNX);
+			NXinput.value=params.nx;
+			changed=true;
+		} else {
+			NXinput.value=params.nx;
+		}
+		var tmpNY=NYinput.value;
+		if (parseInt(tmpNY)>0 && parseInt(tmpNY)!=params.ny)
+		{
+			params.ny = parseInt(tmpNY);
+			NYinput.value=params.ny;
+			changed=true;
+		} else {
+			NYinput.value=params.ny;
+		}
+
+		if (changed) {
+			//adjust the mouse interaction size based on resolution
+			//mouseState.size = Math.pow(.6-Math.min(params.nx,params.ny)*.001,2);
+			mouseState.size = Math.pow(.6-params.nx*params.ny/100000,2);
+
+			//adjust the timestep (to have slower waves at lower resolutions)
+			if (params.nx<70 || params.ny<70) {
+				params.dt=0.001+0.024*Math.min(params.nx,params.ny)/70;
+			} else {
+				params.dt=0.025;
+			}
+			sim = new SimState(params.nx,params.ny,params.H,params.dt,document.getElementById("drop_range").value);
+
+			//Initialize:
+			for (var j=0; j<sim.ny; j++)
+			{
+				for (var i=0; i<sim.nx; i++)
+				{
+					//sim.eta.val[i+sim.nx*j] = params.eta;
+					sim.eta.val[i+sim.nx*j] = 0;
+					sim.u.val[i+sim.nx*j] = 0;
+					sim.v.val[i+sim.nx*j] = 0;
+				}
+			}
+		}
+		newResolution=false;
+	}
+	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
+	sim.eta.Draw(canvas,ctx,0,0.25);
+	sim.Step();
+	requestAnimationFrame(LoopSim);
+}
