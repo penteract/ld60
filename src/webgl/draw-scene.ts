@@ -25,9 +25,13 @@ function drawScene(canvasState:CanvasState, water:number[][], ground:number[][],
 
     let buildingArray = []
 
-    for (const row of water) {
-        for (const tile of row) {
-            buildingArray.push(0, 0, Math.floor(tile / 100 * 255), 0);
+    const MAX_HEIGHT = 500;
+
+    for(let i = 0; i < water.length; i++) {
+        const waterRow = water[i];
+        const groundRow = ground[i];
+        for(let j = 0; j < water.length; j++) {
+            buildingArray.push(0, Math.floor(Math.min(groundRow[j] / MAX_HEIGHT, 1.0) * 255), Math.floor(Math.min(waterRow[j] / MAX_HEIGHT, 1.0) * 255), 0);
         }
     }
 
