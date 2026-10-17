@@ -78,7 +78,7 @@ function LoopSim() {
 	window.perf = performance.now()-t
   //console.log(sim.water[3][3])
   stepInput(sim)
-  drawScene(canvas_state,sim.water,sim.ground)
+  drawScene(canvas_state,sim.water,sim.ground, W, H)
 	requestAnimationFrame(LoopSim);
 }
 

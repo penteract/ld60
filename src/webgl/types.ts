@@ -1,10 +1,13 @@
 type ProgramInfo = {
     program: WebGLProgram;
-    attribLocations: { vertexPosition: number,  };
-    uniformLocations: { resolution: WebGLUniformLocation, }
+    attribLocations: { vertexPosition: number, };
+    uniformLocations: {
+        resolution: WebGLUniformLocation;
+        waterData: WebGLUniformLocation;
+    }
 }
 
-type Buffers = { position: WebGLBuffer};
+type Buffers = { position: WebGLBuffer };
 
 type CanvasState = {
     gl: WebGL2RenderingContext,
@@ -12,4 +15,4 @@ type CanvasState = {
     programInfo: ProgramInfo
 }
 
-export type { ProgramInfo, Buffers, CanvasState };
+export type {ProgramInfo, Buffers, CanvasState};

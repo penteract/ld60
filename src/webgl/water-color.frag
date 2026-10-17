@@ -3,9 +3,14 @@
 precision mediump float;
 
 uniform vec2 uResolution;
+uniform sampler2D uWaterData;
 
 void main() {
-    vec2 uv = gl_FragCoord.xy / uResolution * vec2(1, -1) + vec2(0, 1);
+    vec2 unrotated = (gl_FragCoord.xy / uResolution);
 
-    gl_FragColor = vec4(0.0, 0.0, (uv.x + uv.y) / 2.0, 1.0);
+    vec2 uv = mat2(0, 1, -1, 0) * (unrotated - vec2(0.5, 0.5)) + vec2(0.5, 0.5);
+
+    vec4 coordinateWaterData = texture2D(uWaterData, uv);
+
+    gl_FragColor = vec4(coordinateWaterData.rgb, 1.0);
 }
