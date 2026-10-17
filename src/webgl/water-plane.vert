@@ -2,5 +2,5 @@
 
 attribute vec4 aVertexPosition;
 void main() {
-    gl_Position = aVertexPosition;
+  gl_Position = aVertexPosition;
 }
