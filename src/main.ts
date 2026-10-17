@@ -10,9 +10,9 @@ import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
 
 declare global {
-  interface Window {
-    perf: number;
-  }
+	interface Window {
+		perf: number;
+	}
 }
 
 const canvas = document.getElementById("main_canvas") as HTMLCanvasElement;
@@ -25,11 +25,11 @@ const resolution = document.getElementById("resolution") as HTMLFormElement;
 let newResolution = true;
 resolution.setAttribute("action", "javascript:newRes();");
 resolution.addEventListener(
-  "submit",
-  function (_) {
-    newResolution = true;
-  },
-  false,
+	"submit",
+	function (_) {
+		newResolution = true;
+	},
+	false,
 );
 
 //Default resolution:
@@ -55,31 +55,31 @@ createHandlers((start, end) => sim.pumps.push([start, end]));
 LoopSim();
 
 function LoopSim() {
-  if (canvas_state === null) {
-    alert("failure to load canvas for game");
-    return;
-  }
-  //This may trigger reflow. Stuff shouldn't be written outside this loop very often
-  // But doing it on certain events might be better
-  if (
-    canvas.width !== window.innerWidth ||
-    canvas.height !== window.innerHeight
-  ) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas_state.gl.viewport(0, 0, canvas.width, canvas.height);
-  }
-  //sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
-  //sim.eta.Draw(canvas,ctx,0,0.25);
-  //sim.Step(mouseState,canvas);
-  let t = performance.now();
-  for (let i = 0; i < 1; i++) step(sim);
-  //console.log(performance.now()-t)
-  window.perf = performance.now() - t;
-  //console.log(sim.water[3][3])
-  stepInput(sim);
-  drawScene(canvas_state, sim.water, sim.ground, W, H);
-  requestAnimationFrame(LoopSim);
+	if (canvas_state === null) {
+		alert("failure to load canvas for game");
+		return;
+	}
+	//This may trigger reflow. Stuff shouldn't be written outside this loop very often
+	// But doing it on certain events might be better
+	if (
+		canvas.width !== window.innerWidth ||
+		canvas.height !== window.innerHeight
+	) {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		canvas_state.gl.viewport(0, 0, canvas.width, canvas.height);
+	}
+	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
+	//sim.eta.Draw(canvas,ctx,0,0.25);
+	//sim.Step(mouseState,canvas);
+	let t = performance.now();
+	for (let i = 0; i < 1; i++) step(sim);
+	//console.log(performance.now()-t)
+	window.perf = performance.now() - t;
+	//console.log(sim.water[3][3])
+	stepInput(sim);
+	drawScene(canvas_state, sim.water, sim.ground, W, H);
+	requestAnimationFrame(LoopSim);
 }
 
 /*

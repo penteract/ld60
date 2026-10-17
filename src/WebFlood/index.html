@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>WebFlood</title>
-    <meta charset="utf-8" />
+	<head>
+		<title>WebFlood</title>
+		<meta charset="utf-8" />
 
-    <!--
+		<!--
 		 _       __     __    ________                __
 		| |     / /__  / /_  / ____/ /___  ____  ____/ /
 		| | /| / / _ \/ __ \/ /_  / / __ \/ __ \/ __  /
@@ -12,159 +12,159 @@
 		|__/|__/\___/_.___/_/   /_/\____/\____/\__,_/
 		-->
 
-    <link rel="stylesheet" href="css/main.css" />
-    <link
-      rel="stylesheet"
-      href="css/Computer%20Modern/Bright/cmun-bright.css"
-    />
-    <link rel="stylesheet" href="css/Computer%20Modern/Serif/cmun-serif.css" />
+		<link rel="stylesheet" href="css/main.css" />
+		<link
+			rel="stylesheet"
+			href="css/Computer%20Modern/Bright/cmun-bright.css"
+		/>
+		<link rel="stylesheet" href="css/Computer%20Modern/Serif/cmun-serif.css" />
 
-    <script src="deps/underscore-min.js"></script>
-    <script src="deps/GLOW.js"></script>
-    <script src="deps/perlin.js"></script>
-    <script src="deps/tiff.js"></script>
-    <link rel="stylesheet" href="deps/jsxgraph.css" />
-    <script src="deps/jsxgraphcore-0.99.2.js"></script>
+		<script src="deps/underscore-min.js"></script>
+		<script src="deps/GLOW.js"></script>
+		<script src="deps/perlin.js"></script>
+		<script src="deps/tiff.js"></script>
+		<link rel="stylesheet" href="deps/jsxgraph.css" />
+		<script src="deps/jsxgraphcore-0.99.2.js"></script>
 
-    <script src="lib/helpers.js"></script>
-    <script src="lib/terrainGenerator.js"></script>
-    <script src="lib/write16bitTiff.js"></script>
+		<script src="lib/helpers.js"></script>
+		<script src="lib/terrainGenerator.js"></script>
+		<script src="lib/write16bitTiff.js"></script>
 
-    <script src="lib/tiledGrid.js"></script>
-    <script src="lib/flipFlopFBO.js"></script>
-    <script src="lib/camera.js"></script>
+		<script src="lib/tiledGrid.js"></script>
+		<script src="lib/flipFlopFBO.js"></script>
+		<script src="lib/camera.js"></script>
 
-    <script src="ui.js"></script>
-    <script src="simulation.js"></script>
-    <script src="visualisation.js"></script>
-    <script src="scenarios.js"></script>
-    <script src="start.js"></script>
-  </head>
+		<script src="ui.js"></script>
+		<script src="simulation.js"></script>
+		<script src="visualisation.js"></script>
+		<script src="scenarios.js"></script>
+		<script src="start.js"></script>
+	</head>
 
-  <body>
-    <div id="viewport"></div>
+	<body>
+		<div id="viewport"></div>
 
-    <div id="intro" class="load">
-      <h1>WebFlood</h1>
-      <h2>Interactive Shallow&ndash;Water Simulations in City Environments</h2>
-      <p>Anselm Eickhoff, Bachelor Thesis</p>
+		<div id="intro" class="load">
+			<h1>WebFlood</h1>
+			<h2>Interactive Shallow&ndash;Water Simulations in City Environments</h2>
+			<p>Anselm Eickhoff, Bachelor Thesis</p>
 
-      <h3>Scenarios</h3>
-      <span id="scenarios"></span>
+			<h3>Scenarios</h3>
+			<span id="scenarios"></span>
 
-      <h3>Abstract</h3>
-      <p id="abstract">
-        WebGL offers not only a graphics pipeline for modern web browsers, but
-        can also be used as a simple GPGPU computation environment, making much
-        more sophisticated web applications possible. As a proof-of-concept,
-        <em>WebFlood,</em> a realtime, fully browser based flood simulation and
-        visualisation was implemented. It employs a semi-lagrangian approach to
-        solving the shallow-water equations. All computation is done by GLSL
-        shaders on the GPU. The simulation state is displayed in a 3D
-        visualisation, as part of a web page that allows user interaction with
-        the simulation. WebFlood performs well in the classical 2D dam-break
-        scenario of Fraccarollo and Toro (1995) and closely reproduces urban
-        flooding behaviour of Iowa City (USA), given digital elevation data.
-        Based on its cross-platform compatibility and simple distribution, two
-        main applications are suggested: interactive public flood information
-        and simulation-aided education for the example of hydrology.
-      </p>
+			<h3>Abstract</h3>
+			<p id="abstract">
+				WebGL offers not only a graphics pipeline for modern web browsers, but
+				can also be used as a simple GPGPU computation environment, making much
+				more sophisticated web applications possible. As a proof-of-concept,
+				<em>WebFlood,</em> a realtime, fully browser based flood simulation and
+				visualisation was implemented. It employs a semi-lagrangian approach to
+				solving the shallow-water equations. All computation is done by GLSL
+				shaders on the GPU. The simulation state is displayed in a 3D
+				visualisation, as part of a web page that allows user interaction with
+				the simulation. WebFlood performs well in the classical 2D dam-break
+				scenario of Fraccarollo and Toro (1995) and closely reproduces urban
+				flooding behaviour of Iowa City (USA), given digital elevation data.
+				Based on its cross-platform compatibility and simple distribution, two
+				main applications are suggested: interactive public flood information
+				and simulation-aided education for the example of hydrology.
+			</p>
 
-      <h4>Thesis</h4>
-      <p><a href="interactive_shallow_water.pdf">Full Thesis</a> (PDF)</p>
-      <p>
-        <a href="interactive_shallow_water_presentation.pdf"
-          >Thesis Presentation</a
-        >
-        (PDF)
-      </p>
-    </div>
+			<h4>Thesis</h4>
+			<p><a href="interactive_shallow_water.pdf">Full Thesis</a> (PDF)</p>
+			<p>
+				<a href="interactive_shallow_water_presentation.pdf"
+					>Thesis Presentation</a
+				>
+				(PDF)
+			</p>
+		</div>
 
-    <div id="frameDuration"></div>
-    <div id="cursorPosition"></div>
+		<div id="frameDuration"></div>
+		<div id="cursorPosition"></div>
 
-    <div id="tools" class="run">
-      <button id="addGauge">Add Gauge</button>
-      <button id="paintObstacles">Paint Obstacles</button>
-      <button id="createInundationMap">Create Inundation Map</button>
-      <!--<button id="saveWater">Save Water Height</button>-->
-      <!--<button id="saveTerrain">Save Terrain</button>-->
-    </div>
+		<div id="tools" class="run">
+			<button id="addGauge">Add Gauge</button>
+			<button id="paintObstacles">Paint Obstacles</button>
+			<button id="createInundationMap">Create Inundation Map</button>
+			<!--<button id="saveWater">Save Water Height</button>-->
+			<!--<button id="saveTerrain">Save Terrain</button>-->
+		</div>
 
-    <div id="playback" class="run">
-      <button id="playPause">&#9654;</button>
-      <input type="number" value="0" id="stepsPerFrame" />
-      <label for="stepsPerFrame">Simulation Speed</label>
-    </div>
+		<div id="playback" class="run">
+			<button id="playPause">&#9654;</button>
+			<input type="number" value="0" id="stepsPerFrame" />
+			<label for="stepsPerFrame">Simulation Speed</label>
+		</div>
 
-    <div id="sidebar" class="run">
-      <h2 id="scenarioName"></h2>
-      <a id="closeScenario" href="index.html">&laquo; Back</a>
+		<div id="sidebar" class="run">
+			<h2 id="scenarioName"></h2>
+			<a id="closeScenario" href="index.html">&laquo; Back</a>
 
-      <h3>Gauges</h3>
+			<h3>Gauges</h3>
 
-      <div id="gauges"></div>
+			<div id="gauges"></div>
 
-      <h3>Simulation Parameters</h3>
+			<h3>Simulation Parameters</h3>
 
-      <input id="sourceWaterHeight" type="number" value="0.1" step="0.05" />
-      <label for="sourceWaterHeight">Source Water Height</label><br />
+			<input id="sourceWaterHeight" type="number" value="0.1" step="0.05" />
+			<label for="sourceWaterHeight">Source Water Height</label><br />
 
-      <input
-        id="sourceWaterVelocity"
-        type="number"
-        value="0.00001"
-        step="0.01"
-      />
-      <label for="sourceWaterVelocity">Source Water Velocity</label><br />
+			<input
+				id="sourceWaterVelocity"
+				type="number"
+				value="0.00001"
+				step="0.01"
+			/>
+			<label for="sourceWaterVelocity">Source Water Velocity</label><br />
 
-      <input id="gravity" type="number" value="9.81" step="0.001" />
-      <label for="gravity">Gravity</label><br /><br />
+			<input id="gravity" type="number" value="9.81" step="0.001" />
+			<label for="gravity">Gravity</label><br /><br />
 
-      <input id="manningCoefficient" type="number" value="0.070" step="0.001" />
-      <label for="manningCoefficient">Manning friction coefficient</label
-      ><br /><br />
+			<input id="manningCoefficient" type="number" value="0.070" step="0.001" />
+			<label for="manningCoefficient">Manning friction coefficient</label
+			><br /><br />
 
-      <input id="drainageAmount" type="number" value="0" step="0.000003" />
-      <label for="drainageAmount">Drainage</label><br /><br />
+			<input id="drainageAmount" type="number" value="0" step="0.000003" />
+			<label for="drainageAmount">Drainage</label><br /><br />
 
-      <h3>Visualisation Settings</h3>
+			<h3>Visualisation Settings</h3>
 
-      <h4>Overlays</h4>
+			<h4>Overlays</h4>
 
-      <input type="checkbox" id="showFloodDuration" />
-      <label for="showFloodDuration">Display Flood Duration</label><br />
+			<input type="checkbox" id="showFloodDuration" />
+			<label for="showFloodDuration">Display Flood Duration</label><br />
 
-      <input type="checkbox" id="showMaxVelocity" />
-      <label for="showMaxVelocity">Display Max Velocity</label><br />
+			<input type="checkbox" id="showMaxVelocity" />
+			<label for="showMaxVelocity">Display Max Velocity</label><br />
 
-      <input type="checkbox" id="showMaxDepth" />
-      <label for="showMaxDepth">Display Max Depth</label><br /><br />
+			<input type="checkbox" id="showMaxDepth" />
+			<label for="showMaxDepth">Display Max Depth</label><br /><br />
 
-      <h4>Terrain</h4>
+			<h4>Terrain</h4>
 
-      <input type="checkbox" id="showSatellite" />
-      <label for="showSatellite">Display Satellite Image</label><br />
+			<input type="checkbox" id="showSatellite" />
+			<label for="showSatellite">Display Satellite Image</label><br />
 
-      <input type="checkbox" checked id="showLight" />
-      <label for="showLight">Apply Lighting</label><br />
+			<input type="checkbox" checked id="showLight" />
+			<label for="showLight">Apply Lighting</label><br />
 
-      <input type="checkbox" id="showTerrainContours" />
-      <label for="showTerrainContours">Display Terrain Contours</label>
+			<input type="checkbox" id="showTerrainContours" />
+			<label for="showTerrainContours">Display Terrain Contours</label>
 
-      <h4>Water</h4>
+			<h4>Water</h4>
 
-      <input type="checkbox" checked id="showWater" />
-      <label for="showWater">Display Water</label><br />
+			<input type="checkbox" checked id="showWater" />
+			<label for="showWater">Display Water</label><br />
 
-      <input type="checkbox" checked id="showWaterLight" />
-      <label for="showWaterLight">Apply Lighting</label><br />
+			<input type="checkbox" checked id="showWaterLight" />
+			<label for="showWaterLight">Apply Lighting</label><br />
 
-      <input type="checkbox" id="showFlow" />
-      <label for="showFlow">Visualize Flow</label><br />
+			<input type="checkbox" id="showFlow" />
+			<label for="showFlow">Visualize Flow</label><br />
 
-      <input type="checkbox" id="showGrid" />
-      <label for="showGrid">Display Grid</label>
-    </div>
-  </body>
+			<input type="checkbox" id="showGrid" />
+			<label for="showGrid">Display Grid</label>
+		</div>
+	</body>
 </html>

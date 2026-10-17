@@ -23,51 +23,51 @@ varying vec2 uvBottom;
 #define L(D) (H(D) + T(D))
 
 vec4 simData(vec2 pos) {
-  vec4 data = texture2D(texture, pos);
-  float minExtent = unit;
-  float maxExtent = 1.0 - unit;
+	vec4 data = texture2D(texture, pos);
+	float minExtent = unit;
+	float maxExtent = 1.0 - unit;
 
-  if (pos.x < minExtent) {
-    vec4 borderData = texture2D(
-      texture,
-      vec2(minExtent, clamp(pos.y, minExtent, maxExtent))
-    );
-    data.x = sourceWaterHeight > borderData.w ? sourceWaterVelocity : 0.0;
-    data.z = sourceWaterHeight - borderData.w;
-    data.w = borderData.w;
-  } else if (pos.x > maxExtent) {
-    vec4 borderData = texture2D(
-      texture,
-      vec2(maxExtent, clamp(pos.y, minExtent, maxExtent))
-    );
-    data.x = max(borderData.x, 0.0);
-    data.z = borderData.z;
-    data.w = borderData.w;
-  }
+	if (pos.x < minExtent) {
+		vec4 borderData = texture2D(
+			texture,
+			vec2(minExtent, clamp(pos.y, minExtent, maxExtent))
+		);
+		data.x = sourceWaterHeight > borderData.w ? sourceWaterVelocity : 0.0;
+		data.z = sourceWaterHeight - borderData.w;
+		data.w = borderData.w;
+	} else if (pos.x > maxExtent) {
+		vec4 borderData = texture2D(
+			texture,
+			vec2(maxExtent, clamp(pos.y, minExtent, maxExtent))
+		);
+		data.x = max(borderData.x, 0.0);
+		data.z = borderData.z;
+		data.w = borderData.w;
+	}
 
-  if (pos.y < minExtent) {
-    vec4 borderData = texture2D(
-      texture,
-      vec2(clamp(pos.x, minExtent, maxExtent), minExtent)
-    );
-    data.y = 0.0;
-    data.z = borderData.z;
-    data.w = borderData.w;
-  } else if (pos.y > maxExtent) {
-    vec4 borderData = texture2D(
-      texture,
-      vec2(clamp(pos.x, minExtent, maxExtent), maxExtent)
-    );
-    data.y = 0.0;
-    data.z = borderData.z;
-    data.w = borderData.w;
-  }
+	if (pos.y < minExtent) {
+		vec4 borderData = texture2D(
+			texture,
+			vec2(clamp(pos.x, minExtent, maxExtent), minExtent)
+		);
+		data.y = 0.0;
+		data.z = borderData.z;
+		data.w = borderData.w;
+	} else if (pos.y > maxExtent) {
+		vec4 borderData = texture2D(
+			texture,
+			vec2(clamp(pos.x, minExtent, maxExtent), maxExtent)
+		);
+		data.y = 0.0;
+		data.z = borderData.z;
+		data.w = borderData.w;
+	}
 
-  return data;
+	return data;
 }
 
 vec4 simulationStep(vec2 , vec2 , vec2 , vec2 , vec2 );
 
 void main(void ) {
-  gl_FragColor = simulationStep(uv, uvLeft, uvRight, uvTop, uvBottom);
+	gl_FragColor = simulationStep(uv, uvLeft, uvRight, uvTop, uvBottom);
 }
