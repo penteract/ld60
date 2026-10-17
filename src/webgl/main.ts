@@ -1,10 +1,9 @@
 import waterPlaneShader from './water-plane.vert?raw'
 import waterColorShader from './water-color.frag?raw'
-import type {ProgramInfo} from "./types.ts";
+import type {ProgramInfo,CanvasState} from "./types.ts";
 import {initBuffers} from "./init-buffers.ts";
-import {drawScene} from "./draw-scene.ts";
 
-export function setup(canvas) : CanvasState {
+export function setup(canvas : HTMLCanvasElement) : CanvasState {
   //const canvas = document.querySelector('#waterworld-canvas');
 
   if (!checkCanvas(canvas)) {
