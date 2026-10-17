@@ -116,57 +116,12 @@ var sim = init();
 LoopSim();
 
 function LoopSim() {
-	if (newResolution)
-	{
+	//This may trigger reflow. Stuff shouldn't be written outside this loop very often
+	// But doing it on certain events might be better
+	if(canvas.width!==window.innerWidth||canvas.height!==window.innerHeight){
 		canvas.width = window.innerWidth
 		canvas.height = window.innerHeight
 		canvas_state.gl.viewport(0,0,canvas.width,canvas.height)
-		var changed=false;
-
-		var tmpNX=NXinput.value;
-		if (parseInt(tmpNX)>0 && parseInt(tmpNX)!=params.nx)
-		{
-			params.nx = parseInt(tmpNX);
-			NXinput.value=params.nx;
-			changed=true;
-		} else {
-			NXinput.value=params.nx;
-		}
-		var tmpNY=NYinput.value;
-		if (parseInt(tmpNY)>0 && parseInt(tmpNY)!=params.ny)
-		{
-			params.ny = parseInt(tmpNY);
-			NYinput.value=params.ny;
-			changed=true;
-		} else {
-			NYinput.value=params.ny;
-		}
-
-		if (changed) {
-			//adjust the mouse interaction size based on resolution
-			//mouseState.size = Math.pow(.6-Math.min(params.nx,params.ny)*.001,2);
-			mouseState.size = Math.pow(.6-params.nx*params.ny/100000,2);
-
-			//adjust the timestep (to have slower waves at lower resolutions)
-			if (params.nx<70 || params.ny<70) {
-				params.dt=0.001+0.024*Math.min(params.nx,params.ny)/70;
-			} else {
-				params.dt=0.025;
-			}
-
-			//Initialize:
-			for (var j=0; j<sim.ny; j++)
-			{
-				for (var i=0; i<sim.nx; i++)
-				{
-					//sim.eta.val[i+sim.nx*j] = params.eta;
-					sim.eta.val[i+sim.nx*j] = 0;
-					sim.u.val[i+sim.nx*j] = 0;
-					sim.v.val[i+sim.nx*j] = 0;
-				}
-			}
-		}
-		newResolution=false;
 	}
 	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
 	//sim.eta.Draw(canvas,ctx,0,0.25);
