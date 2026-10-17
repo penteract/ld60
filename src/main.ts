@@ -99,6 +99,12 @@ var params = {
 	dt: .025 //timestep
 };
 
+
+const pileshape = []
+for(let x=-3;x<4;x++)for(let y=-3;y<4;y++){
+  pileshape.push([[x,y],Math.exp(-(x*x+y*y))])
+}
+
 var sim;
 
 LoopSim();
@@ -162,12 +168,24 @@ function LoopSim() {
 	//sim.eta.Draw(canvas,ctx,0,0.25);
 	//sim.Step(mouseState,canvas);
 	let t = performance.now()
-	for(let i=0;i<10;i++)step(sim.water,sim.ground)
+	for(let i=0;i<1;i++)step(sim.water,sim.ground)
   console.log(performance.now()-t)
   //console.log(sim.water[3][3])
+  if (mouseState.clicking && ! mouseState.ignore){
+    var x=Math.floor(mouseState.x/canvas.width*W);
+    var y=Math.floor(mouseState.y/canvas.height*H);
+    for(let [[dx,dy],height] of pileshape){
+      if (x+dx>0 && y+dy>0 && x+dx<W-1 && y+dy<H-1){
+        sim.ground[x+dx][y+dy]+=height
+        sim.water[x+dx][y+dy]+=height
+      }
+    }
+  }
   draw(sim.water,sim.ground)
 	requestAnimationFrame(LoopSim);
 }
+
+
 
 function draw(water,ground){
   canvas.width = window.innerWidth;
