@@ -1,0 +1,30 @@
+
+We need a compelling gameplay loop
+
+basic idea:
+bring land above water
+
+puzzle vs sandbox:
+puzzle - build to withstand particular conditions (don't interact while water simulation is running?)
+
+consider scenarios:
+High Tide
+Broken dam upstream
+
+score: amount of dirt moved, amount of dry land; maximum height of works
+
+
+sandbox - deal with erosion to slowly-ish grow an island
+
+
+Cameron:
+Shaders (more specular reflection the more water there is
+How to make it clear when water can't get past a certain point? (much higher simulation resolution?) Complicated shader which draws walls properly (edge directed interpolation)
+
+
+Sauyon:
+Getting the Webflood simulation to work with our code
+Creating boundry conditions/maps for the levels
+
+Toby:
+Input handling: dig trenches while

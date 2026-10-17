@@ -11,16 +11,24 @@ var mouseState = {
 };
 
 const pileShape: [[number, number], number][] = [];
-
-for (let x = -3; x < 4; x++)
-	for (let y = -3; y < 4; y++) {
-		pileShape.push([[x, y], Math.exp(-(x * x + y * y))]);
+const pileSize = 4
+for (let x = -pileSize ; x < pileSize +1; x++)
+	for (let y = -pileSize ; y < pileSize +1; y++) {
+		pileShape.push([[x, y], Math.exp(-(x * x + y * y)*9/(pileSize*pileSize))]);
 	}
+	console.log(pileShape)
 
 export function createHandlers(
 	addPump: (start: [number, number], end: [number, number]) => void,
 ) {
 	//mouse monitoring events
+	document.addEventListener("keydown",function(e){
+		console.log(e.key)
+		switch(e.key){
+			case "Left":
+				
+		}
+	})
 	document.addEventListener(
 		"mousedown",
 		function (e) {

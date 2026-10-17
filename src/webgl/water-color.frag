@@ -1,9 +1,10 @@
-#version 100
+#version 300 es
 
 precision mediump float;
 
 uniform vec2 uResolution;
 uniform sampler2D uWaterData;
+out vec4 fragColor;
 
 void main() {
 	vec2 unrotated = gl_FragCoord.xy / uResolution;
@@ -16,7 +17,7 @@ void main() {
 			(unrotated - vec2(0.5, 0.5)) +
 		vec2(0.5, 0.5);
 
-	vec4 coordinateWaterData = texture2D(uWaterData, uv);
+	vec4 coordinateWaterData = texture(uWaterData, uv);
 
 	float groundHeight = coordinateWaterData.g;
 	float waterHeight = coordinateWaterData.b;
@@ -31,5 +32,5 @@ void main() {
 	);
 	float redColor = clamp(0.7 * exp(-200.0 * waterOverGround), 0.0, 1.0);
 
-	gl_FragColor = vec4(redColor, groundColor, waterColor, 1.0);
+	fragColor = vec4(redColor, groundColor, waterColor, 1.0);
 }
