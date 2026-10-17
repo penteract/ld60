@@ -30,12 +30,6 @@ export function setup(canvas : HTMLCanvasElement) : CanvasState | null {
     return null;
   }
 
-  const gridDimensions = gl.getUniformLocation(shaderProgram, "uGridDimensions");
-  if (gridDimensions == null) {
-    console.log('uGridDimensions is not found');
-    return null;
-  }
-
   const waterData = gl.getUniformLocation(shaderProgram, "uWaterData");
   if (waterData == null) {
     console.log('uWaterData is not found');
@@ -49,7 +43,6 @@ export function setup(canvas : HTMLCanvasElement) : CanvasState | null {
     },
     uniformLocations: {
       resolution: resolution,
-      gridDimensions: gridDimensions,
       waterData: waterData,
     }
   }

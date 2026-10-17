@@ -2,7 +2,6 @@ type ProgramInfo = {
     program: WebGLProgram;
     attribLocations: { vertexPosition: number, };
     uniformLocations: {
-        gridDimensions: WebGLUniformLocation;
         resolution: WebGLUniformLocation;
         waterData: WebGLUniformLocation;
     }
