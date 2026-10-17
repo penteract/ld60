@@ -12,5 +12,14 @@ void main() {
 
     vec4 coordinateWaterData = texture2D(uWaterData, uv);
 
-    gl_FragColor = vec4(coordinateWaterData.rgb, 1.0);
+    float groundHeight = coordinateWaterData.g;
+    float waterHeight = coordinateWaterData.b;
+
+    float waterOverGround = max((waterHeight - groundHeight) - 0.01, 0.0);
+
+    float groundColor = clamp(exp(-waterOverGround * 6.0), 0.0, 1.0);
+    float waterColor = clamp((1.0 - exp(-100.0 * waterOverGround)) * exp(-waterOverGround), 0.0, 1.0);
+    float redColor = clamp(0.7 * exp(-200.0 * waterOverGround), 0.0, 1.0 );
+
+    gl_FragColor = vec4(redColor, groundColor, waterColor, 1.0);
 }

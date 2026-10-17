@@ -23,7 +23,7 @@ function drawScene(canvasState:CanvasState, water:number[][], ground:number[][],
 
     let buildingArray = []
 
-    const MAX_HEIGHT = 500;
+    const MAX_HEIGHT = 200;
 
     for(let i = 0; i < water.length; i++) {
         const waterRow = water[i];
@@ -38,8 +38,8 @@ function drawScene(canvasState:CanvasState, water:number[][], ground:number[][],
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
     const offset = 0;
     const vertexCount = 4;
