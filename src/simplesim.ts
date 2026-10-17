@@ -1,4 +1,3 @@
-
 //height of silt above bedrock
 //var ground:number[][] = [];
 
@@ -7,16 +6,18 @@
 
 //assumption: water>=ground
 
-type SimState = {
+export type SimState = {
   water:number[][],
   ground:number[][],
-  pumps:[number,number][]
+  pumps:[[number,number],[number,number]][]
 }
   
 
 export var W=50
 export var H=50
 export var dt =1/40
+
+
 
 export function init() : SimState{
   return {
