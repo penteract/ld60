@@ -1,6 +1,6 @@
 import type {Buffers, ProgramInfo,CanvasState} from "./types.ts";
 
-function drawScene(canvasState:CanvasState) {
+function drawScene(canvasState:CanvasState, water:number[][], ground:number[][]) {
     const {gl, programInfo, buffers} = canvasState
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clearDepth(1.0);

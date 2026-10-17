@@ -185,6 +185,8 @@ function LoopSim() {
       }
     }
   }
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   drawScene(canvas_state,sim.water,sim.ground)
 	requestAnimationFrame(LoopSim);
 }
