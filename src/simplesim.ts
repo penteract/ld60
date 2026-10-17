@@ -7,12 +7,28 @@
 
 //assumption: water>=ground
 
+type SimState = {
+  water:number[][],
+  ground:number[][],
+  pumps:[number,number][]
+}
+  
 
 export var W=50
 export var H=50
 export var dt =1/40
 
-export function step(water,ground){
+export function init() : SimState{
+  return {
+        //new SimState(params.nx,params.ny,params.H,params.dt,document.getElementById("drop_range").value);
+        water:new Array(W).fill(0).map(()=>new Array(H).fill(0)),
+        ground:new Array(W).fill(0).map(()=>new Array(H).fill(0)),
+        pumps:[]
+      }
+}
+
+export function step(sim:SimState){
+  let {water,ground} = sim
   //var newwater = new Array(W).fill(0).map(()=>new Array(H).fill(0))
   for(let xy=0;xy<W+H-1;xy++){
     for(let x=Math.max(0,xy-(H-1));x<Math.min(W,xy+1);x++){

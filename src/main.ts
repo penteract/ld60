@@ -4,9 +4,10 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import {H,W,step} from "./simplesim";
+import {H,W,step,init} from "./simplesim";
 import {setup} from "./webgl/main";
 import {drawScene} from "./webgl/draw-scene";
+import type { SimState } from "./sim";
 
 var mouseState = {
 	size: .25, //size used for wave interaction
@@ -16,7 +17,8 @@ var mouseState = {
 	y: 0
 };
 
-export let canvas=document.getElementById("main_canvas");
+const canvas = document.getElementById("main_canvas") as HTMLCanvasElement
+
 
 //get canvas and drawing context
 //var ctx=canvas.getContext("2d");
@@ -109,7 +111,7 @@ for(let x=-3;x<4;x++)for(let y=-3;y<4;y++){
 
 let canvas_state = setup(canvas)
 
-var sim;
+var sim:SimState = init();
 
 LoopSim();
 
@@ -148,11 +150,6 @@ function LoopSim() {
 			} else {
 				params.dt=0.025;
 			}
-			sim = {
-        //new SimState(params.nx,params.ny,params.H,params.dt,document.getElementById("drop_range").value);
-        water:new Array(W).fill(0).map(()=>new Array(H).fill(0)),
-        ground:new Array(W).fill(0).map(()=>new Array(H).fill(0))
-      }
 
 			//Initialize:
 			for (var j=0; j<sim.ny; j++)
@@ -172,8 +169,9 @@ function LoopSim() {
 	//sim.eta.Draw(canvas,ctx,0,0.25);
 	//sim.Step(mouseState,canvas);
 	let t = performance.now()
-	for(let i=0;i<1;i++)step(sim.water,sim.ground)
-  console.log(performance.now()-t)
+	for(let i=0;i<1;i++)step(sim)
+  //console.log(performance.now()-t)
+	window.perf = performance.now()-t
   //console.log(sim.water[3][3])
   if (mouseState.clicking && ! mouseState.ignore){
     var x=Math.floor(mouseState.x/canvas.width*W);
@@ -191,7 +189,7 @@ function LoopSim() {
 	requestAnimationFrame(LoopSim);
 }
 
-
+/*
 function draw(water,ground){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -202,4 +200,4 @@ function draw(water,ground){
       ctx.fillStyle="hsl(240deg,90%,"+0.5*water[x][y]+"%)"
       ctx.fillRect(x*cw,y*ch,cw,ch)
     }
-}
+}*/
