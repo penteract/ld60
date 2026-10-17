@@ -7,7 +7,13 @@
 import {H,W,step,init} from "./simplesim";
 import {setup} from "./webgl/main";
 import {drawScene} from "./webgl/draw-scene";
-import type { SimState } from "./sim";
+
+
+declare global {
+	interface Window {
+		perf: number;
+	}
+}
 
 var mouseState = {
 	size: .25, //size used for wave interaction
@@ -24,10 +30,10 @@ const canvas = document.getElementById("main_canvas") as HTMLCanvasElement
 //var ctx=canvas.getContext("2d");
 
 //mouse monitoring events
-document.addEventListener("mousedown", function(event) {
+document.addEventListener("mousedown", function(_) {
 	mouseState.clicking = true;
 	}, false);
-document.addEventListener("mouseup", function(event) {
+document.addEventListener("mouseup", function(_) {
 	mouseState.clicking = false;
 	}, false);
 document.addEventListener("mousemove", function(event) {
@@ -43,7 +49,7 @@ for (var i=0; i<forms.length; i++) {
 }
 
 //map touch events to mouse events for touch compatibility:
-function touchHandler(event)
+function touchHandler(event: TouchEvent)
 {
     var touches = event.changedTouches,
 	first = touches[0],
@@ -75,19 +81,16 @@ document.addEventListener("touchend", touchHandler, true);
 document.addEventListener("touchcancel", touchHandler, true);
 
 //Monitoring event for form submission (to change resolution):
-var resolution=document.getElementById("resolution");
-var newResolution=true;
+const resolution = document.getElementById("resolution") as HTMLFormElement;
+let newResolution = true;
 resolution.setAttribute('action','javascript:newRes();');
-resolution.addEventListener("submit", function(event){
+resolution.addEventListener("submit", function(_){
 	newResolution=true;
 	}, false);
-function newRes() {
-	newResolution=true;
-}
 
 //Default resolution:
-var NXinput=document.getElementById("nx");
-var NYinput=document.getElementById("ny");
+const NXinput = document.getElementById("nx") as HTMLInputElement;
+const NYinput = document.getElementById("ny") as HTMLInputElement;
 NXinput.value="70";
 NYinput.value="70";
 
@@ -116,6 +119,10 @@ var sim = init();
 LoopSim();
 
 function LoopSim() {
+	if (canvas_state === null) {
+		alert('failure to load canvas for game');
+		return;
+	}
 	//This may trigger reflow. Stuff shouldn't be written outside this loop very often
 	// But doing it on certain events might be better
 	if(canvas.width!==window.innerWidth||canvas.height!==window.innerHeight){
