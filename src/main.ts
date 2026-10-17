@@ -6,8 +6,6 @@
 
 import { SimState, mouseState, canvas } from "./sim";
 
-console.log("hi");
-
 //get canvas and drawing context
 var ctx=canvas.getContext("2d");
 
