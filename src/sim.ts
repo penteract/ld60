@@ -1,45 +1,7 @@
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this page.
-
-
-Copyright (c) 2014, Doug Lipinski, dmlipinski@gmail.com
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The views and conclusions contained in the software and documentation are those
-of the authors and should not be interpreted as representing official policies,
-either expressed or implied, of the FreeBSD Project.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this page.
-*/
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*\
-|                                                              |
-|                       object definitions                     |
-|                                                              |
+|																															 |
+|												object definitions										 |
+|																															 |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //object to monitor mouse state
@@ -53,42 +15,8 @@ export var mouseState = {
 
 export let canvas=document.getElementById("main_canvas");
 
-//drops:
-function Drop(freq) {
-	this.freq=freq;
-
-	this.DropNow=DropNow;
-	function DropNow(state) {
-		//determine whether or not to place a drop based on the desired frequency
-		//and a max freq of about 10 drops per second (if 60fps is achieved)
-		if (this.freq>600*Math.random())
-		{
-			//drop location:
-			var i=Math.floor(Math.random()*state.nx);
-			var j=Math.floor(Math.random()*state.ny);
-
-			var expTerm1;
-			var expTerm2;
-			for (var jj=0; jj<state.ny; jj++)
-			{
-				for (var ii=0; ii<state.nx; ii++)
-				{
-					//Droplets make the surface approach this shape (2d Gaussian):
-					expTerm1 = Math.exp( (-Math.pow(ii-i,2)-Math.pow(jj-j,2))*.25 );
-
-					//Droplet influence decays at this rate (2d Gaussian):
-					expTerm2 = Math.exp( (-Math.pow(((ii-i)),2)-Math.pow(((jj-j)),2))*.025 );
-
-					state.eta.val[ii+state.nx*jj] += 25*(expTerm1-state.eta.val[ii+state.nx*jj])*state.dt*expTerm2;
-
-				}
-			}
-		}
-	}
-}
-
 //field object to hold state variables:
-function Field(nx,ny) {
+function Field(this: Field, nx,ny) {
 	this.nx = nx;
 	this.ny = ny;
 	this.val = new Float32Array(this.nx*this.ny);
@@ -100,7 +28,7 @@ function Field(nx,ny) {
 	{
 		//Compute the x derivative, 4th order accurate, one sided near boundaries
 		//This function does not compute the derivative on the boundary points
-		//  since those are assumed to be handled via the boundary condition.
+		//	since those are assumed to be handled via the boundary condition.
 
 		var DXvals = new Field(this.nx,this.ny);
 
@@ -319,51 +247,58 @@ Field.prototype = {
 
 
 //Object to hold the simulation state and methods for the shallow water equations
-export function SimState(nx,ny,H,dt,dropFreq)
-{
-	if (nx instanceof SimState) {
-		//The first parameter passed in is an instance of the SimState class, duplicate it:
-		// In this case, the variable "nx" is actually a SimState variable rather than the
-		// number of points in the x direction. I know, it's confusing.
+export class SimState {
+	nx: number;
+	ny: number;
+	H: number;
+	dt: number;
 
-		//parameters
-		this.nx=nx.nx;
-		this.ny=nx.ny;
-		this.H=nx.H;
-		this.dt=nx.dt;
+	eta: Field;
+	u: Field;
+	v: Field;
+	t: number;
 
-		//state variables
-		this.t=nx.t;
-		this.eta=new Field(this.nx,this.ny); //disturbance height
-		this.u=new Field(this.nx,this.ny); //u velocity
-		this.v=new Field(this.nx,this.ny); //v velocity
-		this.eta.equals(nx.eta);
-		this.u.equals(nx.u);
-		this.v.equals(nx.v);
+	constructor(state: SimState);
+	constructor(nx: number, ny: number, H: number, dt: number);
 
-		//drops
-		this.drop=new Drop(nx.drop.freq);
+	constructor(nx: SimState | number, ny?: number, H?: number, dt?: number) {
+		if (nx instanceof SimState) {
+			//The first parameter passed in is an instance of the SimState class, duplicate it:
+			// In this case, the variable "nx" is actually a SimState variable rather than the
+			// number of points in the x direction. I know, it's confusing.
 
-	} else {
-		//parameters
-		this.nx=nx;
-		this.ny=ny;
-		this.H=H;
-		this.dt=dt;
+			//parameters
+			this.nx=nx.nx;
+			this.ny=nx.ny;
+			this.H=nx.H;
+			this.dt=nx.dt;
 
-		//state variables
-		this.t=0;
-		this.eta=new Field(this.nx,this.ny);
-		this.u=new Field(this.nx,this.ny);
-		this.v=new Field(this.nx,this.ny);
+			//state variables
+			this.t=nx.t;
+			this.eta=new Field(this.nx,this.ny); //disturbance height
+			this.u=new Field(this.nx,this.ny); //u velocity
+			this.v=new Field(this.nx,this.ny); //v velocity
+			this.eta.equals(nx.eta);
+			this.u.equals(nx.u);
+			this.v.equals(nx.v);
 
-		this.drop=new Drop(dropFreq);
+		} else {
+			//parameters
+			this.nx=nx;
+			this.ny=ny;
+			this.H=H;
+			this.dt=dt;
+
+			//state variables
+			this.t=0;
+			this.eta=new Field(this.nx,this.ny);
+			this.u=new Field(this.nx,this.ny);
+			this.v=new Field(this.nx,this.ny);
+
+		}
 	}
 
-	this.RHS = RHS;
-	function RHS(state,deta,du,dv)
-	{
-
+	RHS(state,deta,du,dv) {
 		//Compute the right hand side of for the simulation
 		deta.equals( state.u.DX().add(state.v.DY()).multiply(-state.H) );
 		du.equals( state.eta.DX() );
@@ -371,12 +306,9 @@ export function SimState(nx,ny,H,dt,dropFreq)
 
 		//Artificial diffusion (for stability and smoothing):
 		deta.equals(deta.add(du.DX().add(dv.DY()).multiply(2)));
-
 	}
 
-	this.Step = Step;
-	function Step()
-	{
+	Step() {
 		//Midpoint (RK2) time step
 		var deta=new Field(this.eta.nx,this.eta.ny);
 		var du=new Field(this.u.nx,this.u.ny);
@@ -408,29 +340,24 @@ export function SimState(nx,ny,H,dt,dropFreq)
 			var expTerm1;
 			var expTerm2;
 			for (var jj=0; jj<this.ny; jj++)
-			{
-				for (var ii=0; ii<this.nx; ii++)
 				{
-					//Mouse makes the surface approach this shape (2d Gaussian):
-					expTerm1 = Math.exp( (-Math.pow(ii-i,2)-Math.pow(jj-j,2))*mouseState.size );
+					for (var ii=0; ii<this.nx; ii++)
+						{
+							//Mouse makes the surface approach this shape (2d Gaussian):
+							expTerm1 = Math.exp( (-Math.pow(ii-i,2)-Math.pow(jj-j,2))*mouseState.size );
 
-					//Mouse influence decays at this rate (2d Gaussian):
-					expTerm2 = Math.exp( (-Math.pow(((ii-i)),2)-Math.pow(((jj-j)),2))*mouseState.size/10 );
+							//Mouse influence decays at this rate (2d Gaussian):
+							expTerm2 = Math.exp( (-Math.pow(((ii-i)),2)-Math.pow(((jj-j)),2))*mouseState.size/10 );
 
-					this.eta.val[ii+this.nx*jj] += 25*(expTerm1-this.eta.val[ii+this.nx*jj])*this.dt*expTerm2;
+							this.eta.val[ii+this.nx*jj] += 25*(expTerm1-this.eta.val[ii+this.nx*jj])*this.dt*expTerm2;
+						}
 				}
-			}
 		}
-
-		//drops:
-		this.drop.DropNow(this);
 
 		this.t+=this.dt;
 	}
 
-	this.BoundaryConditions = BoundaryConditions;
-	function BoundaryConditions()
-	{
+	BoundaryConditions() {
 		//Apply reflecting boundary conditions on all sides:
 		var index;
 		var decay = .95; // use the boundaries to introduce height decay
