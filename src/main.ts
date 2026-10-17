@@ -4,7 +4,7 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { SimState } from "./sim";
+import {H,W,step} from "./simplesim";
 
 
 var mouseState = {
@@ -138,7 +138,11 @@ function LoopSim() {
 			} else {
 				params.dt=0.025;
 			}
-			sim = new SimState(params.nx,params.ny,params.H,params.dt,document.getElementById("drop_range").value);
+			sim = {
+        //new SimState(params.nx,params.ny,params.H,params.dt,document.getElementById("drop_range").value);
+        water:new Array(W).fill(0).map(()=>new Array(H).fill(0)),
+        ground:new Array(W).fill(0).map(()=>new Array(H).fill(0))
+      }
 
 			//Initialize:
 			for (var j=0; j<sim.ny; j++)
@@ -155,7 +159,24 @@ function LoopSim() {
 		newResolution=false;
 	}
 	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
-	sim.eta.Draw(canvas,ctx,0,0.25);
-	sim.Step(mouseState,canvas);
+	//sim.eta.Draw(canvas,ctx,0,0.25);
+	//sim.Step(mouseState,canvas);
+	let t = performance.now()
+	for(let i=0;i<10;i++)step(sim.water,sim.ground)
+  console.log(performance.now()-t)
+  //console.log(sim.water[3][3])
+  draw(sim.water,sim.ground)
 	requestAnimationFrame(LoopSim);
+}
+
+function draw(water,ground){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  let cw = canvas.width/W
+  let ch = canvas.height/H
+  for(let x=0;x<W;x++)
+    for(let y=0;y<H;y++){
+      ctx.fillStyle="hsl(240deg,90%,"+0.5*water[x][y]+"%)"
+      ctx.fillRect(x*cw,y*ch,cw,ch)
+    }
 }
