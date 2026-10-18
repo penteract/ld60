@@ -8,3 +8,6 @@ run = "prettier --write ."
 
 [tasks.precommit]
 run = "git diff --cached --name-only --diff-filter=ACMR -z | xargs -0 -r prettier --check --ignore-unknown"
+
+[tasks.bench]
+run = "npm run bench"
