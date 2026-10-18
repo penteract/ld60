@@ -30,8 +30,7 @@ void main() {
 		0.0,
 		1.0
 	);
-	float redColor = clamp(0.2 * dot(normal, sunpos), 0.0, 1.0); //clamp(0.7 * exp(-200.0 * waterOverGround), 0.0, 1.0);
-	vec3 col = vec3(redColor, groundColor, waterColor);
+	vec3 col = vec3(0.0, groundColor, waterColor);
 	float ambient = 0.1;
 	float diffuse = clamp(0.2 * dot(normal, sunpos), 0.0, 0.9);
 
