@@ -91,7 +91,6 @@ export function stepInput(sim: SimState) {
 		for (let [[dx, dy], height] of pileShape) {
 			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
 				sim.setTerrain(x + dx, y + dy, sim.getTerrain(x + dx, y + dy) + height);
-				sim.setWater(x + dx, y + dy, sim.getWater(x + dx, y + dy) + height);
 			}
 		}
 	}
