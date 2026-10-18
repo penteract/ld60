@@ -51,11 +51,13 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 
 	vec3 lightAbsorption = exp(-waterHeight * waterAbsorption);
 
-	vec3 mixBedAndWater = baseBed * lightAbsorption + waterColor * (1.0 - lightAbsorption);
+	vec3 mixBedAndWater =
+		baseBed * lightAbsorption + waterColor * (1.0 - lightAbsorption);
 
-	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(waterNormal.z ,0.0), 5.0);
+	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(waterNormal.z, 0.0), 5.0);
 
-	return mix(mixBedAndWater, skyColor, fresnelCoef) + vec3(1.0, 1.0, 1.0) * pow(max(waterNormal.z, 0.0), 200.0) * 0.1 ;
+	return mix(mixBedAndWater, skyColor, fresnelCoef) +
+	vec3(1.0, 1.0, 1.0) * pow(max(waterNormal.z, 0.0), 200.0) * 0.1;
 }
 
 vec3 baseColor(float waterHeight, float groundHeight) {
@@ -74,7 +76,10 @@ void main() {
 
 	vec3 baseSurfaceColor = baseColor(waterDepth, groundHeight);
 
-	float waterHeight = min((coordinateWaterData.a + coordinateWaterData.b) / heightScale, 1.0);
+	float waterHeight = min(
+		(coordinateWaterData.a + coordinateWaterData.b) / heightScale,
+		1.0
+	);
 
 	vec3 pos = vec3(gl_FragCoord.xy, waterHeight);
 	float k = 12.0;
