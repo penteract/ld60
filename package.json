@@ -17,8 +17,5 @@
 		"typescript": "~6.0.2",
 		"vite": "^8.3.4",
 		"vitest": "^5.0.5"
-	},
-	"dependencies": {
-		"GLOW": "github:empaempa/GLOW#802719cc772a517ecc82439db93d5d4c5113b306"
 	}
 }

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>GLOW - Hello Cube - Please Check Source</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#ffffff;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+			}
+
+			#glow { position: absolute; top: 10px; left: 10px; z-index:1000; }
+			#glow span.title {margin:0 0 0 2px;border-bottom:8px solid #000;font:bold 12pt/16pt Arial, Helvetica;letter-spacing:1px;line-height:1.50}
+			#glow span.title a {text-decoration:none;color:#000}
+			#glow span.title a:visited {text-decoration:none;color:#000;}
+			#glow span.sub {margin:0 0 0 3px;font:bold 6pt/6pt Arial, Helvetica, Sans-serif;text-transform:uppercase;}
+
+		</style>
+	</head>
+	<body>
+		<div id="glow"><span class="title"><a href="http://i-am-glow.com/">GLOW</a></span><br/><span class="sub">Hello Cube</span></div>
+		<div id="container"></div>
+		<script type="text/javascript" src="../build/GLOW.js"></script>
+		<script type="text/javascript">
+		
+			// To get GLOW going, you need to create a GLOW.Context
+			// We also set the background color to white
+		
+			var context = new GLOW.Context( { clear: { red: 1, green: 1, blue: 1 } } );
+
+			// Attach the context's DOM element
+		
+			var container = document.getElementById( "container" );
+			container.appendChild( context.domElement );
+
+
+			// for sake of simplicity, create an object that
+			// keep all information about our cube.
+			
+			// GLOW.Shader takes an object with the following properties:
+			// vertexShader: the vertex shader code
+			// fragmentShader: the fragment shader code
+			// data: the uniform, attribute and texture data
+			// indices: the primitive's index data
+			// primitives: the type of primitives (defaults to GL.TRIANGLES if left out) 
+		
+			var cubeShaderInfo = {
+				
+				// create vertex shader (note: cameraInverse * transform is usually done in JS)
+
+				vertexShader: [
+
+					"uniform	mat4 	transform;",
+					"uniform 	mat4 	cameraInverse;",
+					"uniform 	mat4 	cameraProjection;",
+
+					"attribute 	vec3 	vertices;",
+					"attribute  vec3	normals;",
+					"attribute  vec2    uvs;",
+					
+					"varying    vec2    uv;",
+					"varying    float   light;",
+
+					"void main(void)",
+					"{",
+						"uv = uvs;",
+						"light = dot( normalize( mat3( transform[0].xyz, transform[1].xyz, transform[2].xyz ) * normals ), vec3( 0.0, 0.0, 1.0 ));",
+						"gl_Position = cameraProjection * cameraInverse * transform * vec4( vertices, 1.0 );",
+					"}"
+						
+				].join( "\n" ),
+
+
+				// create fragment shader
+
+				fragmentShader: [ 	
+
+					"#ifdef GL_ES",
+						"precision highp float;",
+					"#endif",		
+
+					"uniform 	sampler2D 	texture;",
+					"varying    float  	 	light;",
+					"varying 	vec2		uv;",
+
+					"void main( void )",
+					"{",
+						"gl_FragColor = texture2D( texture, uv ) * light;",
+					"}"
+
+				].join( "\n" ),
+
+
+				// create all uniform and attribute data
+
+				data: {
+					
+					// create uniform data
+
+					transform: new GLOW.Matrix4(),
+					cameraInverse: GLOW.defaultCamera.inverse,
+					cameraProjection: GLOW.defaultCamera.projection,
+					texture: new GLOW.Texture( { url:"textures/crate.JPG" } ),
+
+
+					// create attribute data
+
+					vertices: GLOW.Geometry.Cube.vertices( 500 ),
+					uvs: GLOW.Geometry.Cube.uvs(),
+					normals: GLOW.Geometry.faceNormals( GLOW.Geometry.Cube.vertices(), GLOW.Geometry.Cube.indices())
+				},
+				
+
+				// create element data
+				
+				indices: GLOW.Geometry.Cube.indices(),
+				primitives: GLOW.Geometry.Cube.primitives()
+			}
+			
+
+			// Then we create a Shader using the info object created above 
+
+			var cube = new GLOW.Shader( cubeShaderInfo );
+			
+			
+			// Update the default camera position
+			
+			GLOW.defaultCamera.localMatrix.setPosition( 0, 0, 1500 );
+			GLOW.defaultCamera.update();
+			
+			
+			// Render (using setInterval as WebGL Inspector have problem with requestAnimationFrame)
+ 
+			setInterval( render, 1000 / 60 );
+
+			function render() {
+
+				// clear the context's cache and graphics
+				
+				context.cache.clear();
+				context.clear();
+
+
+				// update rotation on cube
+				
+				cube.transform.addRotation( 0.01, 0.005, 0.0025 );
+				
+
+				// draw cube
+				
+				cube.draw();
+			}
+		</script>
+	</body>
+</html>

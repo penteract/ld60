@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>GLOW - Hello FBO</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#ffffff;
+				color:#000;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+			}
+
+			#glow { position: absolute; top: 10px; left: 10px; z-index:1000; }
+			#glow span.title {margin:0 0 0 2px;border-bottom:8px solid #000;font:bold 12pt/16pt Arial, Helvetica;letter-spacing:1px;line-height:1.50}
+			#glow span.title a {text-decoration:none;color:#000}
+			#glow span.title a:visited {text-decoration:none;color:#000;}
+			#glow span.sub {margin:0 0 0 6px;font:bold 6pt/6pt Arial, Helvetica, Sans-serif;text-transform:uppercase;}
+
+		</style>
+	</head>
+	<body>
+		<div id="glow"><span class="title"><a href="http://i-am-glow.com/">GLOW</a></span><br/><span class="sub">Hello FBO</span></div>
+		<div id="container"></div>
+
+		<script type="text/javascript" src="../build/GLOW.js"></script>
+
+		<script type="text/javascript">
+		
+			// create a context and set white background
+		
+			var context = new GLOW.Context();
+			context.setupClear( { red: 1, green: 1, blue: 1 } );
+
+
+			// attach the context's DOM element
+		
+			var container = document.getElementById( "container" );
+			container.appendChild( context.domElement );
+
+
+			// setup the cube shader
+			
+			var cubeShader = {
+				
+				// create vertex shader (note: cameraInverse * transform is usually done in JS)
+
+				vertexShader: [
+
+					"uniform	mat4 	transform;",
+					"uniform 	mat4 	cameraInverse;",
+					"uniform 	mat4 	cameraProjection;",
+					"attribute 	vec3 	vertices;",
+					"attribute  vec3    normals;",
+					"varying 	float	light;",
+
+					"void main(void)",
+					"{",
+						"light = dot( mat3( transform[0].xyz, transform[1].xyz, transform[2].xyz ) * normals, vec3( 0.0, 0.0, -1.0 ));",
+						"gl_Position = cameraProjection * cameraInverse * transform * vec4( vertices, 1.0 );",
+					"}"
+						
+				].join( "\n" ),
+
+
+				// create fragment shader
+
+				fragmentShader: [ 	
+
+					"#ifdef GL_ES",
+						"precision highp float;",
+					"#endif",		
+
+					"varying	float	light;",
+
+					"void main( void )",
+					"{",
+						"gl_FragColor = vec4( light, light, light, 1.0 );",
+					"}"
+
+				].join( "\n" ),
+
+
+				// create all uniform and attribute data
+
+				data: {
+					
+					// create uniform data
+
+					transform: new GLOW.Matrix4(),
+					cameraInverse: GLOW.defaultCamera.inverse,
+					cameraProjection: GLOW.defaultCamera.projection,
+
+
+					// create attribute data
+
+					vertices: GLOW.Geometry.Cube.vertices( 500 ),
+					normals: GLOW.Geometry.faceNormals( GLOW.Geometry.Cube.vertices( 500 ), GLOW.Geometry.Cube.indices())
+				},
+				
+
+				// create element data
+				
+				indices: GLOW.Geometry.Cube.indices(),
+				primitives: GLOW.Geometry.Cube.primitives()
+			};
+			
+
+			// then create a shader using the object created above 
+
+			var cube = new GLOW.Shader( cubeShader );
+			
+			
+			// create a Frame Buffer Object (an off-screen buffer)
+			// and assign it to the post effect shader object that
+			// we create below
+			
+			var FBO = new GLOW.FBO( { depth:true, stencil:false } );
+
+			
+			// setup the post effect shader object
+			
+			var postEffectShader = {
+
+				// create vertex shader
+				
+				vertexShader: [
+
+					"attribute 	vec3 	vertices;",
+					"attribute  vec2	uvs;",
+					"varying 	vec2	uv;",
+
+					"void main(void)",
+					"{",
+						"uv = uvs;",
+						"gl_Position = vec4( vertices.x, vertices.y, 1.0, 1.0 );",
+					"}"
+
+				].join( "\n" ),
+
+				// create fragment shader
+
+				fragmentShader: [ 	
+
+					"#ifdef GL_ES",
+						"precision highp float;",
+					"#endif",		
+
+					"uniform 	sampler2D 	fboTexture;",
+					"uniform	float		time;",
+					"varying 	vec2		uv;",
+
+					"void main( void )",
+					"{",
+						"gl_FragColor = texture2D( fboTexture, vec2( uv.x + sin( gl_FragCoord.x * 0.01 + time ) * 0.1, uv.y + cos( gl_FragCoord.y * 0.01 + time ) * 0.1 ));",
+					"}"
+
+				].join( "\n" ),
+
+				// create uniforms and attributes
+				// note that we use the FBO as texture
+
+				data: {
+
+					fboTexture: FBO,
+					time: new GLOW.Float(),
+					vertices: GLOW.Geometry.Plane.vertices(),
+					uvs: GLOW.Geometry.Plane.uvs()
+				},
+
+				// create primitives
+
+				indices: GLOW.Geometry.Plane.indices(),
+				primitives: GLOW.Geometry.Plane.primitives()
+			};
+			
+			
+			// then create a shader using the object created above
+			
+			var postEffect = new GLOW.Shader( postEffectShader );
+			
+			
+			// Update the default camera position
+			
+			GLOW.defaultCamera.localMatrix.setPosition( 0, 0, 1500 );
+			GLOW.defaultCamera.update();
+			
+			
+			// Render (using setInterval as WebGL Inspector have problem with requestAnimationFrame)
+ 
+			setInterval( render, 1000 / 60 );
+
+			function render() {
+
+				// update rotation on cube and the time value for the post shader
+				
+				cube.transform.addRotation( 0.01, 0.005, 0.0025 );
+				postEffect.time.add( 0.01 );
+
+				// clear the context's cache
+
+				context.cache.clear();
+
+				// bind the FBO so we render to it
+
+				FBO.bind();
+
+				// clear (the FBO)
+
+				context.clear();
+
+				// draw cube
+				
+				cube.draw();
+				context.cache.clear();
+				cube.transform.addPosition( 0, 250, -50 );
+				cube.draw();
+				cube.transform.addPosition( 0, -250, 50 );
+
+				// unbind the FBO se we render to the screen
+				
+				FBO.unbind();
+				
+				// then draw the FBO.texture using the post effect shader
+				
+				postEffect.draw();
+			}
+		</script>
+	</body>
+</html>

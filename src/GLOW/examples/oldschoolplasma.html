@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>GLOW - Old School Plasma</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				background:#ffffff;
+				color:#ffffff;
+				padding:0;
+				margin:0;
+				overflow:hidden;
+			}
+
+			#glow { position: absolute; top: 10px; left: 10px; z-index:1000; }
+			#glow span.title {margin:0 0 0 0px;border-bottom:8px solid #ffffff;font:bold 12pt/16pt Arial, Helvetica;letter-spacing:1px;line-height:1.50}
+			#glow span.title a {text-decoration:none;color:#ffffff}
+			#glow span.title a:visited {text-decoration:none;color:#ffffff;}
+			#glow span.sub {margin:0 0 0 1px;font:bold 6pt/6pt Arial, Helvetica, Sans-serif;text-transform:uppercase;}
+
+		</style>
+	</head>
+	<body>
+		<div id="glow"><span class="title"><a href="http://i-am-glow.com/">GLOW</a></span><br/><span class="sub">Oldschool</span></div>
+		<div id="container"></div>
+
+		<script type="text/javascript" src="../build/GLOW.js"></script>
+		<script type="text/javascript">
+		
+			var plasmaShader = {
+				
+				data: {
+
+					screenWidth: new GLOW.Float( window.innerWidth ),
+					screenHeight: new GLOW.Float( window.innerHeight ),
+					time: new GLOW.Float(),
+					vertices: GLOW.Geometry.Plane.vertices(),
+					uvs: GLOW.Geometry.Plane.uvs(), 
+				},
+
+				indices: GLOW.Geometry.Plane.indices(),
+				
+				vertexShader: [
+
+					"attribute 	vec3 	vertices;",
+					"attribute  vec2	uvs;",
+					"varying 	vec2	uv;",
+
+					"void main(void)",
+					"{",
+						"uv = uvs;",
+						"gl_Position = vec4( vertices.x, vertices.y, 1.0, 1.0 );",
+					"}"
+						
+				].join( "\n" ),
+
+				fragmentShader: [ 	
+
+					"#ifdef GL_ES",
+						"precision highp float;",
+					"#endif",
+					
+					"uniform	float		screenWidth;",
+					"uniform	float		screenHeight;",
+					"uniform	float		time;",
+
+					"varying 	vec2		uv;",
+
+					"void main( void )",
+					"{",
+						"float x = gl_FragCoord.x / screenWidth;",
+						"float y = gl_FragCoord.y / screenHeight;",
+						"float sinTime = sin( time );",
+						"float cosTime = cos( time );",
+						"float twoTime = time * 2.0;",
+						"float red = ( sin( x * cosTime * 5.0 ) + cos( y * 6.0 + time + cosTime )) * ( sinTime * 0.25 + 0.25 ) + 0.5;",
+						"float green = ( sin( cosTime ) * cos( y * cosTime )) * 0.2 + 0.5;",
+						"float blue = ( sin( x * sinTime * 5.0 + time ) + cos( y * 5.0 * cosTime + time * cosTime )) * ( cosTime * 0.25 + 0.25 ) + 0.5;",
+						"gl_FragColor = vec4( red, green, blue, 1.0 );",
+					"}"
+
+				].join( "\n" )
+			}
+		
+		</script>
+
+		<script type="text/javascript">
+							
+			var container;
+			var context, plasma, t = 0;
+			
+			// init
+			context = new GLOW.Context();
+			plasma = new GLOW.Shader( plasmaShader );
+
+			document.getElementById( 'container' ).appendChild( context.domElement );
+			
+			// render
+			setInterval( render, 1000 / 30 );
+
+			function render() {
+
+				plasma.time.add( 0.01 );
+
+				context.cache.clear();
+				context.clear();
+				plasma.draw();
+			}
+		</script>
+	</body>
+</html>
