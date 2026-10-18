@@ -13,12 +13,14 @@ export class SimState extends Float32Array {
 	width: number;
 	height: number;
 	pumps: [[number, number], [number, number]][];
+	paused: boolean;
 
 	constructor(width: number, height: number) {
 		super(width * height * NUM_CHANNELS);
 		this.width = width;
 		this.height = height;
 		this.pumps = [];
+		this.paused = true;
 	}
 
 	idx(x: number, y: number): number {
