@@ -1,4 +1,4 @@
-import { SimState } from "./simstate";
+import { SimState } from "../simstate";
 
 const DAM_Y = 1 / 4; // ratio up the screen the dam is
 const DAM_THICKNESS = 4;

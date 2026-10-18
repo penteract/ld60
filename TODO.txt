@@ -11,7 +11,10 @@ consider scenarios:
 High Tide
 Broken dam upstream
 
-score: amount of dirt moved, amount of dry land; maximum height of works
+irrigation?
+river diversion?
+
+score: amount of dirt moved, amount of dry land; maximum height of works ; amount of land made wet
 
 
 sandbox - deal with erosion to slowly-ish grow an island
@@ -28,6 +31,7 @@ Creating boundry conditions/maps for the levels
 
 Toby:
 Input handling: dig trenches?
+draw lines
 create different scenarios
 
 Joe G:

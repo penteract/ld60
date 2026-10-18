@@ -27,14 +27,13 @@ for (let x = -pileSize; x < pileSize + 1; x++)
 	}
 console.log(pileShape);
 
-export function createHandlers(
-	addPump: (start: [number, number], end: [number, number]) => void,
-) {
+export function createHandlers(sim:SimState) {
 	//mouse monitoring events
 	document.addEventListener("keydown", function (e) {
 		console.log(e.key);
 		switch (e.key) {
-			case "Left":
+			case " ":
+				sim.paused = !sim.paused
 		}
 	});
 	document.addEventListener(
@@ -52,7 +51,7 @@ export function createHandlers(
 		function (e) {
 			if (e.button == 0) mouseState.clicking = false;
 			if (e.button == 2 && mouseState.pumpStart) {
-				addPump(mouseState.pumpStart, normalizeCoords(e.pageX, e.pageY));
+				/*addPump(mouseState.pumpStart, normalizeCoords(e.pageX, e.pageY))*/;
 			}
 		},
 		false,

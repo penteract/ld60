@@ -19,7 +19,7 @@ const canvas = document.getElementById("main_canvas") as HTMLCanvasElement;
 
 //get canvas and drawing context
 //var ctx=canvas.getContext("2d");
-
+/*
 //Monitoring event for form submission (to change resolution):
 const resolution = document.getElementById("resolution") as HTMLFormElement;
 resolution.setAttribute("action", "javascript:newRes();");
@@ -28,7 +28,7 @@ resolution.setAttribute("action", "javascript:newRes();");
 const NXinput = document.getElementById("nx") as HTMLInputElement;
 const NYinput = document.getElementById("ny") as HTMLInputElement;
 NXinput.value = "70";
-NYinput.value = "70";
+NYinput.value = "70";*/
 
 /*
 // Create the simulation
@@ -42,7 +42,7 @@ var params = {
 let canvas_state = setup(canvas);
 
 var sim = init();
-createHandlers((start, end) => sim.pumps.push([start, end]));
+createHandlers(sim);//(start, end) => sim.pumps.push([start, end]));
 
 LoopSim();
 let frame = 0;
@@ -64,11 +64,13 @@ function LoopSim() {
 	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
 	//sim.eta.Draw(canvas,ctx,0,0.25);
 	//sim.Step(mouseState,canvas);
-	let t = performance.now();
-	for (let i = 0; i < 1; i++) step(sim);
-	console.log(checkState(sim)+"")
+	if(!sim.paused){
+		let t = performance.now();
+		for (let i = 0; i < 1; i++) step(sim);
+		window.perf = performance.now() - t;
+	}
+	//console.log(checkState(sim)+"")
 	//console.log(performance.now()-t)
-	window.perf = performance.now() - t;
 	//console.log(sim.water[3][3])
 	stepInput(sim);
 	drawScene(canvas_state, sim);
