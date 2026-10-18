@@ -10,7 +10,6 @@ uniform float sourceWaterHeight;
 uniform float sourceWaterVelocity;
 
 // current and neighbor positions, passed from vertex shader
-
 varying vec2 pos, posLeft, posRight, posTop, posBottom;
 
 // macros to access components of simulation data vector
@@ -23,7 +22,6 @@ varying vec2 pos, posLeft, posRight, posTop, posBottom;
 #define L(D) (H(D) + T(D)) // water level
 
 // query (and interpolate) simulation data from texture
-
 vec4 simData(vec2 pos) {
 	vec4 data = texture2D(texture, pos);
 	float minExtent = unit;

@@ -1,5 +1,6 @@
 import simulationVertexShader from "./simulation/vertex.glsl?raw";
 import simulationPrefixShader from "./simulation/prefix.glsl?raw";
+import outflowScaleShader from "./simulation/outflow-scale.glsl?raw";
 import advectStepShader from "./simulation/steps/advect-height-velocity.glsl?raw";
 import updateHeightStepShader from "./simulation/steps/update-height.glsl?raw";
 import updateVelocityStepShader from "./simulation/steps/update-velocity.glsl?raw";
@@ -34,6 +35,9 @@ class FloodEngine {
 	private gl: WebGL2RenderingContext;
 	private steps: any[];
 	private state: FlipFlopFBO;
+	// per-cell outflow limiter, written by the outflow-scale step and read by
+	// update-height
+	private outflowScales: any;
 
 	constructor() {
 		let gl = document.createElement("canvas").getContext("webgl2");
@@ -48,6 +52,18 @@ class FloodEngine {
 
 		const context = new GLOW.Context({ context: gl });
 		context.viewport = { x: 0, y: 0, width: W, height: H };
+
+		this.outflowScales = new GLOW.FBO({
+			width: W,
+			height: H,
+			internalFormat: gl.R32F,
+			format: gl.RED,
+			type: gl.FLOAT,
+			magFilter: gl.NEAREST,
+			minFilter: gl.NEAREST,
+			depth: false,
+			data: new Float32Array(W * H),
+		});
 
 		const makeStep = (stepShader: string, uniforms: Record<string, any>) =>
 			new GLOW.Shader({
@@ -69,7 +85,9 @@ class FloodEngine {
 
 		this.steps = [
 			makeStep(advectStepShader, {}),
+			makeStep(outflowScaleShader, {}),
 			makeStep(updateHeightStepShader, {
+				outflowScales: this.outflowScales,
 				drainageAmount: new GLOW.Float(0),
 				minFluxArea: new GLOW.Float(MIN_FLUX_AREA / WORLD_SIZE),
 			}),
@@ -107,7 +125,14 @@ class FloodEngine {
 
 	step(sim: SimState) {
 		this.setState(sim);
-		for (const step of this.steps) {
+		for (const [i, step] of this.steps.entries()) {
+			if (i == 1) {
+				this.outflowScales.bind();
+				step.uniforms.texture.data = this.state.texture;
+				step.draw();
+				this.outflowScales.unbind();
+				continue;
+			}
 			this.state.target.bind();
 			step.uniforms.texture.data = this.state.texture;
 			step.draw();
