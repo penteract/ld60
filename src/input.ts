@@ -10,6 +10,11 @@ var mouseState = {
 	pumpStart: null as [number, number] | null,
 };
 
+// normalize coordinates to webGL convention
+function normalizeCoords(x: number, y: number): [number, number] {
+	return [x / window.innerWidth, 1 - y / window.innerHeight];
+}
+
 const pileShape: [[number, number], number][] = [];
 const pileSize = 4;
 for (let x = -pileSize; x < pileSize + 1; x++)
@@ -37,10 +42,7 @@ export function createHandlers(
 			//console.log(e.button)
 			if (e.button == 0) mouseState.clicking = true;
 			if (e.button == 2 && !mouseState.ignore)
-				mouseState.pumpStart = [
-					e.pageX / window.innerWidth,
-					e.pageY / window.innerHeight,
-				];
+				mouseState.pumpStart = normalizeCoords(e.pageX, e.pageY);
 		},
 		false,
 	);
@@ -49,10 +51,7 @@ export function createHandlers(
 		function (e) {
 			if (e.button == 0) mouseState.clicking = false;
 			if (e.button == 2 && mouseState.pumpStart) {
-				addPump(mouseState.pumpStart, [
-					e.pageX / window.innerWidth,
-					e.pageY / window.innerHeight,
-				]);
+				addPump(mouseState.pumpStart, normalizeCoords(e.pageX, e.pageY));
 			}
 		},
 		false,
@@ -86,9 +85,9 @@ export function createHandlers(
 }
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
-		//addPile([mouseState.x/window.innerWidth,mouseState.y/window.innerHeight],pileShape)
-		var x = Math.floor((mouseState.x / window.innerWidth) * W);
-		var y = Math.floor((mouseState.y / window.innerHeight) * H);
+		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
+		var x = Math.floor(mx * W);
+		var y = Math.floor(my * H);
 		for (let [[dx, dy], height] of pileShape) {
 			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
 				sim.setTerrain(x + dx, y + dy, sim.getTerrain(x + dx, y + dy) + height);
