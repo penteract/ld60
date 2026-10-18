@@ -10,13 +10,14 @@ vec4 simulationStep() {
 	vec4 X2 = simData(posRight);
 	vec4 Y1 = simData(posTop);
 	vec4 Y2 = simData(posBottom);
+	//vec2 up = vec2(H(Y2),V
 
-	float dVelocityX = (Vx(X2) - Vx(X1)) / (2.0 * unit);
-	float dVelocityY = (Vy(Y2) - Vy(Y1)) / (2.0 * unit);
+	float dVelocityX = (Vx(X2) - Vx(here))/unit; // (Vx(X2) - Vx(X1)) / (2.0 * unit);
+	float dVelocityY = (Vy(Y2) - Vy(here))/unit;//(Vy(Y2) - Vy(Y1)) / (2.0 * unit);
 	float velocityDivergence = dVelocityX + dVelocityY;
 
 	float newHeight;
-
+/*
 	if (H(here) <= 0.0) {
 		if (
 			H(X1) > wettingThreshold && L(X1) > T(here) + wettingThreshold ||
@@ -26,12 +27,13 @@ vec4 simulationStep() {
 		) {
 			newHeight = newlyWetHeight;
 		} else newHeight = H(here);
-	} else {
+	} else */
+	{
 		float fluxArea = max(H(here), minFluxArea);
 		newHeight = H(here) - fluxArea * velocityDivergence * dt;
 		newHeight -= drainageAmount;
 		newHeight = max(-0.00001, newHeight);
-		newHeight = min(H(here) * 2.0, newHeight);
+		//newHeight = min(H(here) * 2.0, newHeight);
 	}
 
 	return vec4(V(here), newHeight, T(here));
