@@ -21,6 +21,7 @@ vec4 simulationStep() {
 		max(BOTTOM(flow), 0.0);
 
 	float outflowScale = 1.0;
+	//if (outFlow > max(H(here),0.0)) outflowScale = max(H(here),0.0) / outFlow;
 	if (outFlow > H(here)) outflowScale = H(here) / outFlow;
 
 	return vec4(outflowScale);

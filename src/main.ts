@@ -45,7 +45,7 @@ var sim = init();
 createHandlers((start, end) => sim.pumps.push([start, end]));
 
 LoopSim();
-
+let frame = 0;
 function LoopSim() {
 	if (canvas_state === null) {
 		alert("failure to load canvas for game");
@@ -66,12 +66,29 @@ function LoopSim() {
 	//sim.Step(mouseState,canvas);
 	let t = performance.now();
 	for (let i = 0; i < 1; i++) step(sim);
+	console.log(checkState(sim)+"")
 	//console.log(performance.now()-t)
 	window.perf = performance.now() - t;
 	//console.log(sim.water[3][3])
 	stepInput(sim);
 	drawScene(canvas_state, sim);
 	requestAnimationFrame(LoopSim);
+}
+
+function checkState(sim : any){
+	let wrongcount = 0;
+	let max_xyht = [0,0,0,0];
+	for(let x=0;x<sim.width;x++)
+	for(let y=0;y<sim.height;y++){
+		if(sim.getWater(x,y)<0){
+			wrongcount+=1
+			//console.log(x,y)
+		}
+		for (let i of [0,1,2,3]){
+			max_xyht[i] = Math.max(max_xyht[i],Math.abs(sim.get(x,y,i)));
+		}
+	}
+	return [wrongcount,max_xyht]
 }
 
 /*
