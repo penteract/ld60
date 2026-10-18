@@ -14,8 +14,8 @@ import { DamDry } from "./starts";
 // currently tied to framerate
 const dt = 1 / 60;
 // width and height resolution of the simulation
-export const W = 512;
-export const H = 512;
+export const W = 256;
+export const H = 256;
 
 // world size in meters
 export const WORLD_SIZE = 128;
