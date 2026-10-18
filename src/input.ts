@@ -26,13 +26,13 @@ for (let x = -pileSize; x < pileSize + 1; x++)
 	}
 console.log(pileShape);
 
-export function createHandlers(sim:SimState) {
+export function createHandlers(sim: SimState) {
 	//mouse monitoring events
 	document.addEventListener("keydown", function (e) {
 		console.log(e.key);
 		switch (e.key) {
 			case " ":
-				sim.paused = !sim.paused
+				sim.paused = !sim.paused;
 		}
 	});
 	document.addEventListener(
@@ -50,7 +50,7 @@ export function createHandlers(sim:SimState) {
 		function (e) {
 			if (e.button == 0) mouseState.clicking = false;
 			if (e.button == 2 && mouseState.pumpStart) {
-				/*addPump(mouseState.pumpStart, normalizeCoords(e.pageX, e.pageY))*/;
+				/*addPump(mouseState.pumpStart, normalizeCoords(e.pageX, e.pageY))*/
 			}
 		},
 		false,
@@ -82,7 +82,7 @@ export function createHandlers(sim:SimState) {
 		.getElementById("main_canvas")
 		?.addEventListener("contextmenu", (e) => e.preventDefault());
 }
-let heightLimit = 0.01
+let heightLimit = 0.01;
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
 		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
@@ -90,8 +90,12 @@ export function stepInput(sim: SimState) {
 		var y = Math.floor(my * H);
 		for (let [[dx, dy], height] of pileShape) {
 			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
-				let prevTerrain = sim.getTerrain(x + dx, y + dy) 
-				sim.setTerrain(x + dx, y + dy, Math.max(prevTerrain,height*heightLimit));
+				let prevTerrain = sim.getTerrain(x + dx, y + dy);
+				sim.setTerrain(
+					x + dx,
+					y + dy,
+					Math.max(prevTerrain, height * heightLimit),
+				);
 			}
 		}
 	}

@@ -42,7 +42,7 @@ var params = {
 let canvas_state = setup(canvas);
 
 var sim = init();
-createHandlers(sim);//(start, end) => sim.pumps.push([start, end]));
+createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 LoopSim();
 let frame = 0;
@@ -64,7 +64,7 @@ function LoopSim() {
 	//sim.eta.Draw(canvas,ctx,params.eta*1.00,params.eta*1.03);
 	//sim.eta.Draw(canvas,ctx,0,0.25);
 	//sim.Step(mouseState,canvas);
-	if(!sim.paused){
+	if (!sim.paused) {
 		let t = performance.now();
 		for (let i = 0; i < 1; i++) step(sim);
 		window.perf = performance.now() - t;
@@ -77,20 +77,20 @@ function LoopSim() {
 	requestAnimationFrame(LoopSim);
 }
 
-function checkState(sim : any){
+function checkState(sim: any) {
 	let wrongcount = 0;
-	let max_xyht = [0,0,0,0];
-	for(let x=0;x<sim.width;x++)
-	for(let y=0;y<sim.height;y++){
-		if(sim.getWater(x,y)<0){
-			wrongcount+=1
-			//console.log(x,y)
+	let max_xyht = [0, 0, 0, 0];
+	for (let x = 0; x < sim.width; x++)
+		for (let y = 0; y < sim.height; y++) {
+			if (sim.getWater(x, y) < 0) {
+				wrongcount += 1;
+				//console.log(x,y)
+			}
+			for (let i of [0, 1, 2, 3]) {
+				max_xyht[i] = Math.max(max_xyht[i], Math.abs(sim.get(x, y, i)));
+			}
 		}
-		for (let i of [0,1,2,3]){
-			max_xyht[i] = Math.max(max_xyht[i],Math.abs(sim.get(x,y,i)));
-		}
-	}
-	return [wrongcount,max_xyht]
+	return [wrongcount, max_xyht];
 }
 
 /*

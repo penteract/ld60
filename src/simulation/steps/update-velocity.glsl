@@ -41,7 +41,8 @@ vec4 simulationStep() {
 		pow((Hends.x + Hstarts.x) / 2.0, 4.0 / 3.0),
 		pow((Hends.y + Hstarts.y) / 2.0, 4.0 / 3.0)
 	);
-	vec2 frictionSlope = V(here) * length(V(here)) * pow(n, 2.0) / max(p,vec2(0.000001,0.000001));
+	vec2 frictionSlope =
+		V(here) * length(V(here)) * pow(n, 2.0) / max(p, vec2(0.000001, 0.000001));
 
 	vec2 totalSlope = slope + frictionSlope;
 

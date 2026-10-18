@@ -4,7 +4,7 @@
 vec4 simulationStep() {
 	vec4 here = simData(pos);
 
-	if (H(here) < 0.0) return vec4(0.0); //comment out because it should never happen?
+	if (DRY(here)) return vec4(0.0);
 
 	vec4 flow = edgeFlow(
 		here,

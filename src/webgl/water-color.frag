@@ -16,13 +16,16 @@ vec3 groundColorCalc(float groundHeight) {
 	vec3 grassColorRGB = vec3(0.1, 1.0, 0.0);
 
 	if (0.0 <= groundHeight && groundHeight < 0.5) {
-		return ((0.5 - groundHeight) * seabedColorRGB + groundHeight * shoreColorRGB) * 2.0;
+		return ((0.5 - groundHeight) * seabedColorRGB +
+			groundHeight * shoreColorRGB) *
+		2.0;
 	}
 
 	if (0.5 <= groundHeight && groundHeight < 0.7) {
-		return ((0.7 - groundHeight) * shoreColorRGB + (groundHeight - 0.5) * grassColorRGB) * 5.0;
+		return ((0.7 - groundHeight) * shoreColorRGB +
+			(groundHeight - 0.5) * grassColorRGB) *
+		5.0;
 	}
-
 
 	return grassColorRGB;
 }
@@ -37,7 +40,8 @@ vec3 baseColor(float waterHeight, float groundHeight) {
 		0.0,
 		1.0
 	);
-	return groundColorFilter * groundColorRGB + waterColorFilter * vec3(0.0, 0.0, 1.0);
+	return groundColorFilter * groundColorRGB +
+	waterColorFilter * vec3(0.0, 0.0, 1.0);
 }
 
 void main() {

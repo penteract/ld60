@@ -27,9 +27,8 @@ const GRAVITY = 9.81;
 const MANNING_COEFFICIENT = 0.022;
 // depth floor (m) in the divergence term, so near-dry cells still flow
 const MIN_FLUX_AREA = 0.001;
-// the shaders treat a cell as dry only when its water height is negative; at
-// exactly 0 it reads as wet, so walls exert pressure and never block flow
-const DRY = 0.0;
+// the depth of water (in m) below which a tile should be considered dry
+const DRY_DEPTH = 0.001;
 
 class FloodEngine {
 	private gl: WebGL2RenderingContext;
@@ -78,6 +77,7 @@ class FloodEngine {
 					// the y = 0 edge holds water at this depth + velocity
 					sourceWaterHeight: new GLOW.Float(10 / WORLD_SIZE),
 					sourceWaterVelocity: new GLOW.Float(0.1 / WORLD_SIZE),
+					dryDepth: new GLOW.Float(DRY_DEPTH / WORLD_SIZE),
 					...uniforms,
 				},
 				indices: GLOW.Geometry.Plane.indices(),
@@ -161,7 +161,7 @@ let engine: FloodEngine;
 export function init(): SimState {
 	engine = new FloodEngine();
 
-	return DamDry(DRY, W, H, WORLD_SIZE);
+	return DamDry(0, W, H, WORLD_SIZE);
 }
 
 export function step(sim: SimState) {

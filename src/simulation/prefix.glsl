@@ -8,6 +8,7 @@ uniform sampler2D texture;
 uniform float unit, time, dt;
 uniform float sourceWaterHeight;
 uniform float sourceWaterVelocity;
+uniform float dryDepth;
 
 // current and neighbor positions, passed from vertex shader
 varying vec2 pos, posLeft, posRight, posTop, posBottom;
@@ -20,6 +21,9 @@ varying vec2 pos, posLeft, posRight, posTop, posBottom;
 #define H(D) (D).z // water height
 #define T(D) (D).w // terrain height
 #define L(D) (H(D) + T(D)) // water level
+
+#define WET(D) (H(D) > dryDepth)
+#define DRY(D) (H(D) <= dryDepth)
 
 // query (and interpolate) simulation data from texture
 vec4 simData(vec2 pos) {
@@ -45,7 +49,8 @@ vec4 simData(vec2 pos) {
 		data.w = borderData.w;
 	}
 
-	if (pos.y < minExtent) { // flow in with sourceWaterHeight and sourceWaterVelocity
+	if (pos.y < minExtent) {
+		// flow in with sourceWaterHeight and sourceWaterVelocity
 		vec4 borderData = texture2D(
 			texture,
 			vec2(clamp(pos.x, minExtent, maxExtent), minExtent)
