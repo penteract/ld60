@@ -1,39 +1,32 @@
-/*
-GLOW.Compiler.compileFragmentShader: WARNING: 0:82: '=' : global variable initializers should be constant expressions (uniforms and globals are allowed in global initializers for legacy compatibility)
-ERROR: 0:111: 'fas' : undeclared identifier
-ERROR: 0:111: 'asdf' : syntax error
-*/
-
 float maxVelocity = 0.5 * unit / dt;
 uniform float manningCoefficient;
 uniform float gravity;
 
 uniform sampler2D frictionMap;
 
+bool isWall(vec4 point, vec4 target) {
+	return DRY(point) && T(point) > L(target);
+}
+
 vec4 simulationStep() {
 	vec4 here = simData(pos);
 
 	vec4 X1 = simData(posLeft);
-	//vec4 X2 = simData(posRight);
 	vec4 Y1 = simData(posTop);
-	//vec4 Y2 = simData(posBottom);
 
 	vec2 Hends = vec2(H(here), H(here));
 	vec2 Hstarts = vec2(H(X1), H(Y1));
 	vec2 Tends = vec2(T(here), T(here));
 	vec2 Tstarts = vec2(T(X1), T(Y1));
-	vec2 endLevels = Tends + Hends;
-	vec2 startLevels = Tstarts + Hstarts;
-
-	//if (ht.x < 0.0) return vec4(0.0, 0.0, ht);
-
-	// boundary: assume water is flat until shoreline
 	/*
 	float L_X1 = H(X1) < 0.0 && T(X1) > L(here) ? L(here) : L(X1);
 	float L_X2 = H(X2) < 0.0 && T(X2) > L(here) ? L(here) : L(X2);
 	float L_Y1 = H(Y1) < 0.0 && T(Y1) > L(here) ? L(here) : L(Y1);
 	float L_Y2 = H(Y2) < 0.0 && T(Y2) > L(here) ? L(here) : L(Y2);*/
-	vec2 slope = (endLevels - startLevels) / unit; //vec2(L_X2 - L_X1, L_Y2 - L_Y1) / (2.0 * unit);
+	vec2 endLevels = Tends + Hends;
+	vec2 startLevels = Tstarts + Hstarts;
+
+	vec2 slope = (endLevels - startLevels) / unit;
 
 	float n = manningCoefficient;
 	n *= texture2D(frictionMap, pos).x;
@@ -59,6 +52,9 @@ vec4 simulationStep() {
 	totalSlope.y = slope.y == 0.0 ? 0.0 : totalSlope.y;
 
 	vec2 newVelocity = V(here) - gravity * totalSlope * dt;
+
+	if (isWall(here, X1) || isWall(X1, here)) newVelocity.x = 0.0;
+	if (isWall(here, Y1) || isWall(Y1, here)) newVelocity.y = 0.0;
 
 	if (length(newVelocity) > maxVelocity)
 		newVelocity *= maxVelocity / length(newVelocity);

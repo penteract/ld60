@@ -14,11 +14,11 @@ vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
 	vec3 grassColorRGB = vec3(0.7, 0.9, 0.7);
 
-    if (0.0 <= groundHeight && groundHeight < 0.1) {
-        return ((0.05 - groundHeight) * seabedColorRGB +
-        groundHeight * grassColorRGB) *
-        20.0;
-    }
+	if (0.0 <= groundHeight && groundHeight < 0.1) {
+		return ((0.05 - groundHeight) * seabedColorRGB +
+			groundHeight * grassColorRGB) *
+		20.0;
+	}
 
 	return grassColorRGB;
 }
