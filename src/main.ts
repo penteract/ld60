@@ -4,7 +4,7 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { H, W, step, init } from "./simplesim";
+import { step, init } from "./simplesim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
@@ -22,15 +22,7 @@ const canvas = document.getElementById("main_canvas") as HTMLCanvasElement;
 
 //Monitoring event for form submission (to change resolution):
 const resolution = document.getElementById("resolution") as HTMLFormElement;
-let newResolution = true;
 resolution.setAttribute("action", "javascript:newRes();");
-resolution.addEventListener(
-	"submit",
-	function (_) {
-		newResolution = true;
-	},
-	false,
-);
 
 //Default resolution:
 const NXinput = document.getElementById("nx") as HTMLInputElement;
@@ -78,7 +70,7 @@ function LoopSim() {
 	window.perf = performance.now() - t;
 	//console.log(sim.water[3][3])
 	stepInput(sim);
-	drawScene(canvas_state, sim.water, sim.ground, W, H);
+	drawScene(canvas_state, sim);
 	requestAnimationFrame(LoopSim);
 }
 
