@@ -6,23 +6,22 @@ vec4 simulationStep() {
 
 	if (H(here) < 0.0) return vec4(0.0);
 
-	// vec4 flux = edgeFlux(
-	// 	here,
-	// 	simData(posLeft),
-	// 	simData(posTop),
-	// 	simData(posRight),
-	// 	simData(posBottom)
-	// );
+	vec4 flow = edgeFlow(
+		here,
+		simData(posLeft),
+		simData(posTop),
+		simData(posRight),
+		simData(posBottom)
+	);
 
-	// flux = min(L-T', H) * velocity * dt / unit
-
-	// water height this cell would lose this tick, as a ratio of H
-	float outHeight = dt * 1.0 / unit;
+	float outFlow =
+		-min(LEFT(flow), 0.0) -
+		min(TOP(flow), 0.0) +
+		max(RIGHT(flow), 0.0) +
+		max(BOTTOM(flow), 0.0);
 
 	float outflowScale = 1.0;
-	if (outHeight > H(here)) outflowScale = H(here) / outHeight;
-
-	// outflow = vec4();
+	if (outFlow > H(here)) outflowScale = H(here) / outFlow;
 
 	return vec4(outflowScale);
 }

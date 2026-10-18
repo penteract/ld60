@@ -66,6 +66,36 @@ vec4 simData(vec2 pos) {
 	return data;
 }
 
+#define LEFT(V) (V).x
+#define TOP(V) (V).y
+#define RIGHT(V) (V).z
+#define BOTTOM(V) (V).w
+
+float fluxArea(vec4 source, vec4 target) {
+	return max(min(L(source) - T(target), H(source)), 0.0);
+}
+
+vec4 edgeFlow(vec4 here, vec4 X1, vec4 Y1, vec4 X2, vec4 Y2) {
+	float leftV = Vx(here);
+	float rightV = Vx(X2);
+	float topV = Vy(here);
+	float bottomV = Vy(Y2);
+
+	float leftFlux = leftV >= 0.0 ? fluxArea(X1, here) : fluxArea(here, X1);
+	float rightFlux = rightV >= 0.0 ? fluxArea(here, X2) : fluxArea(X2, here);
+	float topFlux = topV >= 0.0 ? fluxArea(Y1, here) : fluxArea(here, Y1);
+	float bottomFlux = bottomV >= 0.0 ? fluxArea(here, Y2) : fluxArea(Y2, here);
+
+	return dt *
+	vec4(
+		leftFlux * leftV,
+		topFlux * topV,
+		rightFlux * rightV,
+		bottomFlux * bottomV
+	) /
+	unit;
+}
+
 // forward declare simulationStep
 // will be implemented by simulation shader
 

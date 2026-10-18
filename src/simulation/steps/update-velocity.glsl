@@ -4,7 +4,6 @@ ERROR: 0:111: 'fas' : undeclared identifier
 ERROR: 0:111: 'asdf' : syntax error
 */
 
-
 float maxVelocity = 0.5 * unit / dt;
 uniform float manningCoefficient;
 uniform float gravity;
@@ -19,12 +18,12 @@ vec4 simulationStep() {
 	vec4 Y1 = simData(posTop);
 	//vec4 Y2 = simData(posBottom);
 
-	vec2 Hends = vec2(H(here),H(here));
-	vec2 Hstarts = vec2(H(X1),H(Y1));
-	vec2 Tends = vec2(T(here),T(here));
-	vec2 Tstarts = vec2(T(X1),T(Y1));
-	vec2 endLevels = Tends+Hends;
-	vec2 startLevels = Tstarts+Hstarts;
+	vec2 Hends = vec2(H(here), H(here));
+	vec2 Hstarts = vec2(H(X1), H(Y1));
+	vec2 Tends = vec2(T(here), T(here));
+	vec2 Tstarts = vec2(T(X1), T(Y1));
+	vec2 endLevels = Tends + Hends;
+	vec2 startLevels = Tstarts + Hstarts;
 
 	//if (ht.x < 0.0) return vec4(0.0, 0.0, ht);
 
@@ -34,13 +33,15 @@ vec4 simulationStep() {
 	float L_X2 = H(X2) < 0.0 && T(X2) > L(here) ? L(here) : L(X2);
 	float L_Y1 = H(Y1) < 0.0 && T(Y1) > L(here) ? L(here) : L(Y1);
 	float L_Y2 = H(Y2) < 0.0 && T(Y2) > L(here) ? L(here) : L(Y2);*/
-	vec2 slope = (endLevels-startLevels)/unit; //vec2(L_X2 - L_X1, L_Y2 - L_Y1) / (2.0 * unit);
+	vec2 slope = (endLevels - startLevels) / unit; //vec2(L_X2 - L_X1, L_Y2 - L_Y1) / (2.0 * unit);
 
 	float n = manningCoefficient;
 	n *= texture2D(frictionMap, pos).x;
-	vec2 p = vec2(pow((Hends.x+Hstarts.x)/2.0, 4.0 / 3.0), pow((Hends.y+Hstarts.y)/2.0, 4.0 / 3.0));
-	vec2 frictionSlope =
-		V(here) * length(V(here)) * pow(n, 2.0) / p;
+	vec2 p = vec2(
+		pow((Hends.x + Hstarts.x) / 2.0, 4.0 / 3.0),
+		pow((Hends.y + Hstarts.y) / 2.0, 4.0 / 3.0)
+	);
+	vec2 frictionSlope = V(here) * length(V(here)) * pow(n, 2.0) / p;
 
 	vec2 totalSlope = slope + frictionSlope;
 

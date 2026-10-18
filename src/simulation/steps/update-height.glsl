@@ -1,5 +1,6 @@
 uniform float drainageAmount;
 uniform float minFluxArea;
+uniform sampler2D outflowScale;
 
 const float wettingThreshold = 0.000001;
 const float newlyWetHeight = 0.0000003;
@@ -12,12 +13,12 @@ vec4 simulationStep() {
 	vec4 Y2 = simData(posBottom);
 	//vec2 up = vec2(H(Y2),V
 
-	float dVelocityX = (Vx(X2) - Vx(here))/unit; // (Vx(X2) - Vx(X1)) / (2.0 * unit);
-	float dVelocityY = (Vy(Y2) - Vy(here))/unit;//(Vy(Y2) - Vy(Y1)) / (2.0 * unit);
+	float dVelocityX = (Vx(X2) - Vx(here)) / unit; // (Vx(X2) - Vx(X1)) / (2.0 * unit);
+	float dVelocityY = (Vy(Y2) - Vy(here)) / unit; //(Vy(Y2) - Vy(Y1)) / (2.0 * unit);
 	float velocityDivergence = dVelocityX + dVelocityY;
 
 	float newHeight;
-/*
+	/*
 	if (H(here) <= 0.0) {
 		if (
 			H(X1) > wettingThreshold && L(X1) > T(here) + wettingThreshold ||
