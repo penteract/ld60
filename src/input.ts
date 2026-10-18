@@ -84,6 +84,7 @@ export function createHandlers(
 		.getElementById("main_canvas")
 		?.addEventListener("contextmenu", (e) => e.preventDefault());
 }
+let heightLimit = 0.01
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
 		audio.playNote();
@@ -92,7 +93,8 @@ export function stepInput(sim: SimState) {
 		var y = Math.floor(my * H);
 		for (let [[dx, dy], height] of pileShape) {
 			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
-				sim.setTerrain(x + dx, y + dy, sim.getTerrain(x + dx, y + dy) + height);
+				let prevTerrain = sim.getTerrain(x + dx, y + dy) 
+				sim.setTerrain(x + dx, y + dy, Math.max(prevTerrain,height*heightLimit));
 			}
 		}
 	}

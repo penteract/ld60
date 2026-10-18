@@ -29,7 +29,7 @@ const MANNING_COEFFICIENT = 0.022;
 const MIN_FLUX_AREA = 0.001;
 // the shaders treat a cell as dry only when its water height is negative; at
 // exactly 0 it reads as wet, so walls exert pressure and never block flow
-const DRY = -0.00001;
+const DRY = 0.0;
 
 class FloodEngine {
 	private gl: WebGL2RenderingContext;
