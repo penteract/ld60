@@ -45,7 +45,7 @@ void main() {
 
 	vec4 coordinateWaterData = texture(uWaterData, uv);
 
-	float groundHeight = coordinateWaterData.g;
+	float groundHeight = coordinateWaterData.a;
 	float waterHeight = coordinateWaterData.b;
 
 	vec3 baseSurfaceColor = baseColor(waterHeight, groundHeight);
