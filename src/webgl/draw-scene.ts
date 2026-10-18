@@ -1,5 +1,5 @@
 import type { Buffers, ProgramInfo, CanvasState } from "./types.ts";
-import type { SimState } from "../simplesim";
+import type { SimState } from "../simstate";
 
 function drawScene(canvasState: CanvasState, sim: SimState) {
 	const { gl, programInfo, buffers } = canvasState;

@@ -1,4 +1,4 @@
-import SimState from "./simstate";
+import { SimState } from "./simstate";
 
 export var W = 50;
 export var H = 50;

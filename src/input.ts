@@ -1,5 +1,5 @@
-import type { SimState } from "./simplesim";
-import { H, W } from "./simplesim";
+import type { SimState } from "./simstate";
+import { W, H } from "./globals";
 
 var mouseState = {
 	size: 0.25, //size used for wave interaction

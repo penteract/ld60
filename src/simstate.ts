@@ -57,7 +57,7 @@ export class SimState extends Float32Array {
 		this.setAt(x, y, WATER, value);
 	}
 
-	getGround(x: number, y: number): number {
+	getTerrain(x: number, y: number): number {
 		return this.get(x, y, TERRAIN);
 	}
 
