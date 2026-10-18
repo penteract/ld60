@@ -7,6 +7,23 @@ uniform sampler2D uWaterData;
 out vec4 fragColor;
 const vec3 sunpos = vec3(1.0, 0.0, 3.0);
 
+vec3 groundColorCalc(float groundHeight) {
+	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
+	vec3 shoreColorRGB = vec3(0.7, 0.7, 0.0);
+	vec3 grassColorRGB = vec3(0.1, 1.0, 0.0);
+
+	if (0.0 <= groundHeight && groundHeight < 0.5) {
+		return ((0.5 - groundHeight) * seabedColorRGB + groundHeight * shoreColorRGB) * 2.0;
+	}
+
+	if (0.5 <= groundHeight && groundHeight < 0.7) {
+		return ((0.7 - groundHeight) * shoreColorRGB + (groundHeight - 0.5) * grassColorRGB) * 5.0;
+	}
+
+
+	return grassColorRGB;
+}
+
 void main() {
 	vec2 uv = gl_FragCoord.xy / uResolution;
 
@@ -23,6 +40,7 @@ void main() {
 	// TODO: compute better normals and work out specular stuff
 
 	float waterOverGround = max(waterHeight - groundHeight - 0.01, 0.0);
+	vec3 groundColorRGB = groundColorCalc(groundHeight);
 
 	float groundColor = clamp(exp(-waterOverGround * 6.0), 0.0, 1.0);
 	float waterColor = clamp(
