@@ -11,10 +11,13 @@ const float specularStrength = 0.5;
 const vec3 sunlight = vec3(1.0, 0.98, 0.94);
 const float heightScale = 20.0 / 128.0;
 const float waterOpacityScale = 30.0;
+const vec3 waterColor = vec3(0.0, 0.1, 0.2);
+const vec3 waterAbsorption = vec3(0.45, 0.09, 0.06) * 256.0;
+const vec3 skyColor = vec3(0.3, 0.7, 0.9);
 
-vec4 groundColorCalc(float groundHeight) {
-	vec4 seabedColorRGB = vec4(0.3, 0.3, 0.3, 1.0);
-	vec4 grassColorRGB = vec4(0.7, 0.9, 0.7, 1.0);
+vec3 groundColorCalc(float groundHeight) {
+	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
+	vec3 grassColorRGB = vec3(0.3, 0.9, 0.3);
 
 	if (0.0 <= groundHeight && groundHeight < 0.1) {
 		return ((0.05 - groundHeight) * seabedColorRGB +
@@ -25,11 +28,40 @@ vec4 groundColorCalc(float groundHeight) {
 	return grassColorRGB;
 }
 
-vec4 baseColor(float waterHeight, float groundHeight) {
-	vec4 groundColor = groundColorCalc(groundHeight);
-	vec4 waterColor = vec4(0.0, 0.0, 1.0, (1.0 - exp(-waterOpacityScale * waterHeight)) / (1.2 - exp(-waterOpacityScale)));
+vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
+	float waterSurface = waterHeight + groundHeight;
+	vec3 bedAmbient = 0.3 * sunlight;
 
-	return vec4(waterColor.rgb * waterColor.a + groundColor.rgb * groundColor.a * (1.0 - waterColor.a), 1.0);
+	float k = 12.0;
+
+	float bedDx = dFdx(groundHeight) * k;
+	float bedDy = dFdy(groundHeight) * k;
+
+	vec3 bedNormal = normalize(vec3(-bedDx, -bedDy, 1));
+	vec3 bedDiffuse = 0.7 * max(dot(bedNormal, vec3(0, 0, 1)), 0.0) * sunlight;
+
+	vec3 baseBed = (bedAmbient + bedDiffuse) * bedColor;
+
+	if (waterHeight <= 0.0) return baseBed;
+
+	float waterDx = dFdx(waterSurface) * k;
+	float waterDy = dFdy(waterSurface) * k;
+
+	vec3 waterNormal = normalize(vec3(-waterDx, -waterDy, 1));
+
+	vec3 lightAbsorption = exp(-waterHeight * waterAbsorption);
+
+	vec3 mixBedAndWater = baseBed * lightAbsorption + waterColor * (1.0 - lightAbsorption);
+
+	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(waterNormal.z ,0.0), 5.0);
+
+	return mix(mixBedAndWater, skyColor, fresnelCoef) + vec3(1.0, 1.0, 1.0) * pow(max(waterNormal.z, 0.0), 200.0) * 0.1 ;
+}
+
+vec3 baseColor(float waterHeight, float groundHeight) {
+	vec3 groundColor = groundColorCalc(groundHeight);
+
+	return applyWater(groundColor, waterHeight, groundHeight);
 }
 
 void main() {
@@ -38,12 +70,14 @@ void main() {
 	vec4 coordinateWaterData = texture(uWaterData, uv);
 
 	float groundHeight = min(coordinateWaterData.a / heightScale, 1.0);
-	float waterHeight = min(coordinateWaterData.b / heightScale, 1.0);
+	float waterDepth = min(coordinateWaterData.b / heightScale, 1.0);
 
-	vec4 baseSurfaceColor = baseColor(waterHeight, groundHeight);
+	vec3 baseSurfaceColor = baseColor(waterDepth, groundHeight);
+
+	float waterHeight = min((coordinateWaterData.a + coordinateWaterData.b) / heightScale, 1.0);
 
 	vec3 pos = vec3(gl_FragCoord.xy, waterHeight);
-	float k = 12.0 ;
+	float k = 12.0;
 	float dx = dFdx(waterHeight) * k;
 	float dy = dFdy(waterHeight) * k;
 	vec3 t1 = vec3(1.0, 0.0, dx);
@@ -59,5 +93,5 @@ void main() {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
 	vec3 specular = specularStrength * spec * sunlight;
 
-	fragColor = vec4((ambient + diffuse + specular) * baseSurfaceColor.rgb, 1.0);
+	fragColor = vec4(baseSurfaceColor.rgb, 1.0);
 }
