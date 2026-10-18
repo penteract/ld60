@@ -1,5 +1,6 @@
 import type { SimState } from "./simstate";
 import { W, H } from "./sim";
+import { audio } from "./audio";
 
 var mouseState = {
 	size: 0.25, //size used for wave interaction
@@ -85,6 +86,7 @@ export function createHandlers(sim: SimState) {
 let heightLimit = 0.01;
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
+		audio.playNote();
 		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
 		var x = Math.floor(mx * W);
 		var y = Math.floor(my * H);
