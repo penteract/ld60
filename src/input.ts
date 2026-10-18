@@ -1,5 +1,5 @@
 import type { SimState } from "./simstate";
-import { W, H } from "./sim";
+import { W, H } from "./simulation/sim";
 import { audio } from "./audio";
 
 var mouseState = {

@@ -4,7 +4,7 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { step, init } from "./sim";
+import { step, init } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
