@@ -7,7 +7,7 @@ uniform sampler2D uWaterData;
 out vec4 fragColor;
 const vec3 sunpos = vec3(0.5, 0.5, 1024.0);
 const vec3 viewpos = vec3(0.5, 0.5, 2.0);
-const float specularStrength = 0.5;
+const float specularStrength = 0.1;
 const vec3 sunlight = vec3(1.0, 0.98, 0.94);
 const float heightScale = 20.0 / 128.0;
 const float waterOpacityScale = 30.0;
@@ -17,15 +17,9 @@ const vec3 skyColor = vec3(0.3, 0.7, 0.9);
 
 vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
-	vec3 grassColorRGB = vec3(0.3, 0.9, 0.3);
+	vec3 damRGB = vec3(0.1, 0.4, 0.1);
 
-	if (0.0 <= groundHeight && groundHeight < 0.1) {
-		return ((0.05 - groundHeight) * seabedColorRGB +
-			groundHeight * grassColorRGB) *
-		20.0;
-	}
-
-	return grassColorRGB;
+	return groundHeight < 0.1 ? seabedColorRGB : damRGB;
 }
 
 vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
@@ -34,8 +28,8 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 
 	float k = 12.0;
 
-	float bedDx = dFdx(groundHeight) * k;
-	float bedDy = dFdy(groundHeight) * k;
+	float bedDx = dFdx(groundHeight) * 200.0;
+	float bedDy = dFdy(groundHeight) * 200.0;
 
 	vec3 bedNormal = normalize(vec3(-bedDx, -bedDy, 1));
 	vec3 bedDiffuse = 0.7 * max(dot(bedNormal, vec3(0, 0, 1)), 0.0) * sunlight;
@@ -56,8 +50,13 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 
 	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(waterNormal.z, 0.0), 5.0);
 
-	return mix(mixBedAndWater, skyColor, fresnelCoef) +
-	vec3(1.0, 1.0, 1.0) * pow(max(waterNormal.z, 0.0), 200.0) * 0.1;
+	vec3 specularReflection = sunlight * specularStrength *  pow(max(waterNormal.z, 0.0), 200.0);
+
+	vec3 colorWithReflections = mix(mixBedAndWater, skyColor, fresnelCoef) + specularReflection;
+
+	vec3 smoothWaterEdge = mix(bedColor, colorWithReflections, smoothstep(0.0, 0.0008, waterHeight));
+
+	return smoothWaterEdge;
 }
 
 vec3 baseColor(float waterHeight, float groundHeight) {
