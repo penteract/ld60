@@ -52,9 +52,11 @@ void main() {
 
 	vec3 pos = vec3(gl_FragCoord.xy, waterHeight);
 	float k = 12.0;
-	vec3 t1 = vec3(1.0, 0.0, dFdx(waterHeight) * k);
-	vec3 t2 = vec3(0.0, 1.0, dFdy(waterHeight) * k);
-	vec3 normal = normalize(cross(t1, t2)); // this could be simpler given the 1s and 0s above
+	float dx = dFdx(waterHeight) * k;
+	float dy = dFdy(waterHeight) * k;
+	vec3 t1 = vec3(1.0, 0.0, dx);
+	vec3 t2 = vec3(0.0, 1.0, dy);
+	vec3 normal = normalize(vec3(-dx, -dy, 1));
 	// TODO: compute better normals and work out specular stuff
 	vec3 ambient = 0.1 * sunlight;
 	vec3 lightDir = normalize(sunpos - vec3(uv, waterHeight));
