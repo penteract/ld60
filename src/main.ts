@@ -19,7 +19,7 @@ const canvas = document.getElementById("main_canvas") as HTMLCanvasElement;
 
 //get canvas and drawing context
 //var ctx=canvas.getContext("2d");
-
+/*
 //Monitoring event for form submission (to change resolution):
 const resolution = document.getElementById("resolution") as HTMLFormElement;
 resolution.setAttribute("action", "javascript:newRes();");
@@ -28,7 +28,7 @@ resolution.setAttribute("action", "javascript:newRes();");
 const NXinput = document.getElementById("nx") as HTMLInputElement;
 const NYinput = document.getElementById("ny") as HTMLInputElement;
 NXinput.value = "70";
-NYinput.value = "70";
+NYinput.value = "70";*/
 
 /*
 // Create the simulation

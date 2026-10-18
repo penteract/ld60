@@ -1,13 +1,13 @@
-import simulationVertexShader from "./simulation/vertex.glsl?raw";
-import simulationPrefixShader from "./simulation/prefix.glsl?raw";
-import outflowScaleShader from "./simulation/outflow-scale.glsl?raw";
-import advectStepShader from "./simulation/steps/advect-height-velocity.glsl?raw";
-import updateHeightStepShader from "./simulation/steps/update-height.glsl?raw";
-import updateVelocityStepShader from "./simulation/steps/update-velocity.glsl?raw";
+import simulationVertexShader from "./vertex.glsl?raw";
+import simulationPrefixShader from "./prefix.glsl?raw";
+import outflowScaleShader from "./outflow-scale.glsl?raw";
+import advectStepShader from "./steps/advect-height-velocity.glsl?raw";
+import updateHeightStepShader from "./steps/update-height.glsl?raw";
+import updateVelocityStepShader from "./steps/update-velocity.glsl?raw";
 
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
-import { SimState } from "./simstate";
+import { SimState } from "../simstate";
 import { DamDry } from "./starts";
 
 // time resolution of the simulation
