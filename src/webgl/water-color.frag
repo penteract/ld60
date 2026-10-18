@@ -12,20 +12,13 @@ const vec3 sunlight = vec3(1.0, 0.98, 0.94);
 
 vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
-	vec3 shoreColorRGB = vec3(0.7, 0.7, 0.0);
-	vec3 grassColorRGB = vec3(0.1, 1.0, 0.0);
+	vec3 grassColorRGB = vec3(0.7, 0.9, 0.7);
 
-	if (0.0 <= groundHeight && groundHeight < 0.5) {
-		return ((0.5 - groundHeight) * seabedColorRGB +
-			groundHeight * shoreColorRGB) *
-		2.0;
-	}
-
-	if (0.5 <= groundHeight && groundHeight < 0.7) {
-		return ((0.7 - groundHeight) * shoreColorRGB +
-			(groundHeight - 0.5) * grassColorRGB) *
-		5.0;
-	}
+    if (0.0 <= groundHeight && groundHeight < 0.1) {
+        return ((0.05 - groundHeight) * seabedColorRGB +
+        groundHeight * grassColorRGB) *
+        20.0;
+    }
 
 	return grassColorRGB;
 }
@@ -34,9 +27,9 @@ vec3 baseColor(float waterHeight, float groundHeight) {
 	float waterOverGround = max(waterHeight - groundHeight, 0.0);
 	vec3 groundColorRGB = groundColorCalc(groundHeight);
 
-	float groundColorFilter = clamp(exp(-waterOverGround * 6.0), 0.0, 1.0);
+	float groundColorFilter = clamp(exp(-waterOverGround * 200.0), 0.0, 1.0);
 	float waterColorFilter = clamp(
-		(1.0 - exp(-100.0 * waterOverGround)) * exp(-waterOverGround),
+		(1.0 - exp(-200.0 * waterOverGround)) * exp(-waterOverGround),
 		0.0,
 		1.0
 	);
@@ -55,7 +48,7 @@ void main() {
 	vec3 baseSurfaceColor = baseColor(waterHeight, groundHeight);
 
 	vec3 pos = vec3(gl_FragCoord.xy, waterHeight);
-	float k = 12.0;
+	float k = 50.0;
 	float dx = dFdx(waterHeight) * k;
 	float dy = dFdy(waterHeight) * k;
 	vec3 t1 = vec3(1.0, 0.0, dx);
