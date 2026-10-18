@@ -12,7 +12,8 @@ import { DamDry } from "./starts";
 
 // time resolution of the simulation
 // currently tied to framerate
-const dt = 1 / 60;
+const dt = 1 / 120;
+const STEPS_PER_FRAME = 2;
 // width and height resolution of the simulation
 export const W = 256;
 export const H = 256;
@@ -32,11 +33,17 @@ const DRY_DEPTH = 0.001;
 
 class FloodEngine {
 	private gl: WebGL2RenderingContext;
-	private steps: any[];
+	// each step renders into target, then flips it; inputs maps sampler
+	// uniforms to the FlipFlopFBOs they read, rebound before every draw
+	private steps: {
+		shader: any;
+		target: FlipFlopFBO;
+		inputs: Record<string, FlipFlopFBO>;
+	}[];
 	private state: FlipFlopFBO;
 	// per-cell outflow limiter, written by the outflow-scale step and read by
 	// update-height
-	private outflowScales: any;
+	private outflowScales: FlipFlopFBO;
 
 	constructor() {
 		let gl = document.createElement("canvas").getContext("webgl2");
@@ -52,7 +59,7 @@ class FloodEngine {
 		const context = new GLOW.Context({ context: gl });
 		context.viewport = { x: 0, y: 0, width: W, height: H };
 
-		this.outflowScales = new GLOW.FBO({
+		this.outflowScales = new FlipFlopFBO({
 			width: W,
 			height: H,
 			internalFormat: gl.R32F,
@@ -64,12 +71,21 @@ class FloodEngine {
 			data: new Float32Array(W * H),
 		});
 
-		const makeStep = (stepShader: string, uniforms: Record<string, any>) =>
-			new GLOW.Shader({
+		const makeStep = (
+			target: FlipFlopFBO,
+			stepShader: string,
+			uniforms: Record<string, any>,
+			inputs: Record<string, FlipFlopFBO> = {},
+		) => ({
+			target,
+			// every step reads the state as `texture`
+			inputs: { texture: this.state, ...inputs },
+			shader: new GLOW.Shader({
 				vertexShader: simulationVertexShader,
 				fragmentShader: simulationPrefixShader + "\n" + stepShader,
 				data: {
 					texture: undefined,
+					...Object.fromEntries(Object.keys(inputs).map((k) => [k, undefined])),
 					vertices: GLOW.Geometry.Plane.vertices(),
 					uvs: GLOW.Geometry.Plane.uvs(),
 					unit: new GLOW.Float(1 / W),
@@ -81,17 +97,33 @@ class FloodEngine {
 					...uniforms,
 				},
 				indices: GLOW.Geometry.Plane.indices(),
-			});
+			}),
+		});
+
+		this.state = new FlipFlopFBO({
+			width: W,
+			height: H,
+			internalFormat: gl.RGBA32F,
+			type: gl.FLOAT,
+			magFilter: gl.LINEAR,
+			minFilter: gl.LINEAR,
+			depth: false,
+			data: new Float32Array(W * H * 4),
+		});
 
 		this.steps = [
-			makeStep(advectStepShader, {}),
-			makeStep(outflowScaleShader, {}),
-			makeStep(updateHeightStepShader, {
-				outflowScales: this.outflowScales,
-				drainageAmount: new GLOW.Float(0),
-				minFluxArea: new GLOW.Float(MIN_FLUX_AREA / WORLD_SIZE),
-			}),
-			makeStep(updateVelocityStepShader, {
+			makeStep(this.state, advectStepShader, {}),
+			makeStep(this.outflowScales, outflowScaleShader, {}),
+			makeStep(
+				this.state,
+				updateHeightStepShader,
+				{
+					drainageAmount: new GLOW.Float(0),
+					minFluxArea: new GLOW.Float(MIN_FLUX_AREA / WORLD_SIZE),
+				},
+				{ outflowScales: this.outflowScales },
+			),
+			makeStep(this.state, updateVelocityStepShader, {
 				frictionMap: new GLOW.Texture({
 					data: new Float32Array([1, 0, 0, 0]),
 					width: 1,
@@ -108,36 +140,21 @@ class FloodEngine {
 			}),
 		];
 
-		this.state = new FlipFlopFBO({
-			width: W,
-			height: H,
-			internalFormat: gl.RGBA32F,
-			type: gl.FLOAT,
-			magFilter: gl.LINEAR,
-			minFilter: gl.LINEAR,
-			depth: false,
-			data: new Float32Array(W * H * 4),
-		});
-
 		// needed because we manually set the state texture
 		context.cache.active = false;
 	}
 
 	step(sim: SimState) {
 		this.setState(sim);
-		for (const [i, step] of this.steps.entries()) {
-			if (i == 1) {
-				this.outflowScales.bind();
-				step.uniforms.texture.data = this.state.texture;
-				step.draw();
-				this.outflowScales.unbind();
-				continue;
+		for (let substep = 0; substep < STEPS_PER_FRAME; substep++) {
+			for (const { shader, target, inputs } of this.steps) {
+				for (const [name, input] of Object.entries(inputs))
+					shader.uniforms[name].data = input.texture;
+				target.target.bind();
+				shader.draw();
+				target.target.unbind();
+				target.flip();
 			}
-			this.state.target.bind();
-			step.uniforms.texture.data = this.state.texture;
-			step.draw();
-			this.state.target.unbind();
-			this.state.flip();
 		}
 		this.getState(sim);
 	}
