@@ -1,5 +1,6 @@
 import type { Buffers, ProgramInfo, CanvasState } from "./types.ts";
 import type { SimState } from "../simstate";
+import { WORLD_SIZE } from "../sim";
 
 function drawScene(canvasState: CanvasState, sim: SimState) {
 	const { gl, programInfo, buffers } = canvasState;
@@ -27,14 +28,16 @@ function drawScene(canvasState: CanvasState, sim: SimState) {
 
 	let buildingArray = [];
 
-	const MAX_HEIGHT = 200;
+	const MAX_HEIGHT = 20 / WORLD_SIZE;
 
 	for (let y = 0; y < sim.height; y++) {
 		for (let x = 0; x < sim.width; x++) {
+			const terrain = sim.getTerrain(x, y);
+			const level = terrain + Math.max(sim.getWater(x, y), 0);
 			buildingArray.push(
 				0,
-				Math.floor(Math.min(sim.getTerrain(x, y) / MAX_HEIGHT, 1.0) * 255),
-				Math.floor(Math.min(sim.getWater(x, y) / MAX_HEIGHT, 1.0) * 255),
+				Math.floor(Math.min(terrain / MAX_HEIGHT, 1.0) * 255),
+				Math.floor(Math.min(level / MAX_HEIGHT, 1.0) * 255),
 				0,
 			);
 		}

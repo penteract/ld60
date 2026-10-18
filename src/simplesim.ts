@@ -4,6 +4,8 @@ export var W = 50;
 export var H = 50;
 export var dt = 1 / 40;
 
+export var WORLD_SIZE = 0.1;
+
 // assumes state's water >= terrain
 
 export function init(): SimState {
