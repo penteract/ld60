@@ -4,6 +4,7 @@ import outflowScaleShader from "./outflow-scale.glsl?raw";
 import advectStepShader from "./steps/advect-height-velocity.glsl?raw";
 import updateHeightStepShader from "./steps/update-height.glsl?raw";
 import updateVelocityStepShader from "./steps/update-velocity.glsl?raw";
+import calcMetricsShader from "./calc-metrics.glsl?raw";
 
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
@@ -44,6 +45,8 @@ class FloodEngine {
 	// per-cell outflow limiter, written by the outflow-scale step and read by
 	// update-height
 	private outflowScales: FlipFlopFBO;
+	// per-cell running max of velocity and depth
+	private metrics: FlipFlopFBO;
 
 	constructor() {
 		let gl = document.createElement("canvas").getContext("webgl2");
@@ -69,6 +72,17 @@ class FloodEngine {
 			minFilter: gl.NEAREST,
 			depth: false,
 			data: new Float32Array(W * H),
+		});
+
+		this.metrics = new FlipFlopFBO({
+			width: W,
+			height: H,
+			internalFormat: gl.RGBA32F,
+			type: gl.FLOAT,
+			magFilter: gl.NEAREST,
+			minFilter: gl.NEAREST,
+			depth: false,
+			data: new Float32Array(W * H * 4),
 		});
 
 		const makeStep = (
@@ -138,6 +152,7 @@ class FloodEngine {
 				),
 				gravity: new GLOW.Float(GRAVITY / WORLD_SIZE),
 			}),
+			makeStep(this.metrics, calcMetricsShader, {}, { metrics: this.metrics }),
 		];
 
 		// needed because we manually set the state texture
@@ -165,6 +180,14 @@ class FloodEngine {
 		gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, W, H, gl.RGBA, gl.FLOAT, sim);
 	}
 
+	getMetrics(out: Float32Array = new Float32Array(W * H * 4)): Float32Array {
+		const { gl } = this;
+		this.metrics.texture.bind();
+		gl.readPixels(0, 0, W, H, gl.RGBA, gl.FLOAT, out);
+		this.metrics.texture.unbind();
+		return out.map((x) => x * WORLD_SIZE);
+	}
+
 	private getState(sim: SimState) {
 		const { gl } = this;
 		this.state.texture.bind();
@@ -183,4 +206,9 @@ export function init(): SimState {
 
 export function step(sim: SimState) {
 	engine.step(sim);
+}
+
+// get metrics, in SI units
+export function getMetrics(out?: Float32Array): Float32Array {
+	return engine.getMetrics(out);
 }
