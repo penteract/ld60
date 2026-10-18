@@ -6,11 +6,19 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"bench": "vitest bench --run --reporter=verbose",
+		"bench:setup": "playwright install chromium"
 	},
 	"devDependencies": {
+		"@vitest/browser-playwright": "^5.0.5",
+		"playwright": "^1.64.1",
 		"prettier-plugin-glsl": "^0.3.1",
 		"typescript": "~6.0.2",
-		"vite": "^8.3.4"
+		"vite": "^8.3.4",
+		"vitest": "^5.0.5"
+	},
+	"dependencies": {
+		"GLOW": "github:empaempa/GLOW#802719cc772a517ecc82439db93d5d4c5113b306"
 	}
 }
