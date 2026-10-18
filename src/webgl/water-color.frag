@@ -17,7 +17,9 @@ vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
 	vec3 damRGB = vec3(0.1, 0.4, 0.1);
 
-	return groundHeight < 0.1 ? seabedColorRGB : damRGB;
+	return groundHeight < 0.1
+		? seabedColorRGB
+		: damRGB;
 }
 
 vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
@@ -48,11 +50,17 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 
 	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(waterNormal.z, 0.0), 5.0);
 
-	vec3 specularReflection = sunlight * specularStrength *  pow(max(waterNormal.z, 0.0), 200.0);
+	vec3 specularReflection =
+		sunlight * specularStrength * pow(max(waterNormal.z, 0.0), 200.0);
 
-	vec3 colorWithReflections = mix(mixBedAndWater, skyColor, fresnelCoef) + specularReflection;
+	vec3 colorWithReflections =
+		mix(mixBedAndWater, skyColor, fresnelCoef) + specularReflection;
 
-	vec3 smoothWaterEdge = mix(bedColor, colorWithReflections, smoothstep(0.0, 0.0008, waterHeight));
+	vec3 smoothWaterEdge = mix(
+		bedColor,
+		colorWithReflections,
+		smoothstep(0.0, 0.0008, waterHeight)
+	);
 
 	return smoothWaterEdge;
 }
