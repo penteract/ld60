@@ -6,6 +6,6 @@ vec4 simulationStep() {
 	vec4 origin = simData(pos - dt * V(here));
 	vec2 newVelocity = V(origin);
 
-	return vec4(newVelocity, H(here), T(here));
+	//return vec4(newVelocity, H(here), T(here));
 	return here;
 }
