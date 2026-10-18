@@ -11,24 +11,26 @@ var mouseState = {
 };
 
 const pileShape: [[number, number], number][] = [];
-const pileSize = 4
-for (let x = -pileSize ; x < pileSize +1; x++)
-	for (let y = -pileSize ; y < pileSize +1; y++) {
-		pileShape.push([[x, y], Math.exp(-(x * x + y * y)*9/(pileSize*pileSize))]);
+const pileSize = 4;
+for (let x = -pileSize; x < pileSize + 1; x++)
+	for (let y = -pileSize; y < pileSize + 1; y++) {
+		pileShape.push([
+			[x, y],
+			Math.exp((-(x * x + y * y) * 9) / (pileSize * pileSize)),
+		]);
 	}
-	console.log(pileShape)
+console.log(pileShape);
 
 export function createHandlers(
 	addPump: (start: [number, number], end: [number, number]) => void,
 ) {
 	//mouse monitoring events
-	document.addEventListener("keydown",function(e){
-		console.log(e.key)
-		switch(e.key){
+	document.addEventListener("keydown", function (e) {
+		console.log(e.key);
+		switch (e.key) {
 			case "Left":
-				
 		}
-	})
+	});
 	document.addEventListener(
 		"mousedown",
 		function (e) {
@@ -89,8 +91,8 @@ export function stepInput(sim: SimState) {
 		var y = Math.floor((mouseState.y / window.innerHeight) * H);
 		for (let [[dx, dy], height] of pileShape) {
 			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
-				sim.ground[x + dx][y + dy] += height;
-				sim.water[x + dx][y + dy] += height;
+				sim.setTerrain(x + dx, y + dy, sim.getTerrain(x + dx, y + dy) + height);
+				sim.setWater(x + dx, y + dy, sim.getWater(x + dx, y + dy) + height);
 			}
 		}
 	}

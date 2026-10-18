@@ -1,12 +1,7 @@
 import type { Buffers, ProgramInfo, CanvasState } from "./types.ts";
+import type { SimState } from "../simplesim";
 
-function drawScene(
-	canvasState: CanvasState,
-	water: number[][],
-	ground: number[][],
-	nX: number,
-	nY: number,
-) {
+function drawScene(canvasState: CanvasState, sim: SimState) {
 	const { gl, programInfo, buffers } = canvasState;
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clearDepth(1.0);
@@ -34,14 +29,12 @@ function drawScene(
 
 	const MAX_HEIGHT = 200;
 
-	for (let i = 0; i < water.length; i++) {
-		const waterRow = water[i];
-		const groundRow = ground[i];
-		for (let j = 0; j < waterRow.length; j++) {
+	for (let y = 0; y < sim.height; y++) {
+		for (let x = 0; x < sim.width; x++) {
 			buildingArray.push(
 				0,
-				Math.floor(Math.min(groundRow[j] / MAX_HEIGHT, 1.0) * 255),
-				Math.floor(Math.min(waterRow[j] / MAX_HEIGHT, 1.0) * 255),
+				Math.floor(Math.min(sim.getTerrain(x, y) / MAX_HEIGHT, 1.0) * 255),
+				Math.floor(Math.min(sim.getWater(x, y) / MAX_HEIGHT, 1.0) * 255),
 				0,
 			);
 		}
@@ -51,8 +44,8 @@ function drawScene(
 		gl.TEXTURE_2D,
 		0,
 		gl.RGBA,
-		nX,
-		nY,
+		sim.width,
+		sim.height,
 		0,
 		gl.RGBA,
 		gl.UNSIGNED_BYTE,
