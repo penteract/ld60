@@ -41,7 +41,10 @@ var params = {
 
 let canvas_state = setup(canvas);
 
-var sim = init();
+const params = new URLSearchParams(window.location.search);
+const mapName = params.get("map");
+
+var sim = init(mapName);
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 LoopSim();

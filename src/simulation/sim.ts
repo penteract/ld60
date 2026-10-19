@@ -209,11 +209,23 @@ class FloodEngine {
 
 let engine: FloodEngine;
 
-export function init(): SimState {
-	let _dam_dry = DamDry(0, W, H);
-	let _london = London(0, W, H);
-	let guy = Guy(W, H);
-	engine = new FloodEngine(guy);
+export function init(mapName: string): SimState {
+	let map: Map;
+	switch (mapName) {
+		case "london":
+			map = London(0, W, H);
+			break;
+		case "dam":
+			map = DamDry(0, W, H);
+			break;
+		case "guy":
+			map = Guy(W, H);
+			break;
+		default:
+			throw "you suck";
+	}
+
+	engine = new FloodEngine(map);
 	return engine.state;
 }
 
