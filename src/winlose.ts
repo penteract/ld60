@@ -20,5 +20,5 @@ export function win(message) {
 export function lose(message) {
 	msgbox.hidden = false;
 	msgtitle.textContent = "You Lost :(";
-	msgbody.textContent = message;
+	msgbody?.setHTMLUnsafe(message);
 }
