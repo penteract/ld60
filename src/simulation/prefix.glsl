@@ -28,8 +28,8 @@ varying vec2 pos, posLeft, posRight, posTop, posBottom;
 // query (and interpolate) simulation data from texture
 vec4 simData(vec2 pos) {
 	vec4 data = texture2D(texture, pos);
-	float minExtent = 0.5*unit;
-	float maxExtent = 1.0 - 0.5*unit;
+	float minExtent = 0.5 * unit;
+	float maxExtent = 1.0 - 0.5 * unit;
 
 	// x heights
 	if (pos.x < 0.0) {
@@ -50,7 +50,7 @@ vec4 simData(vec2 pos) {
 	} else if (pos.x < unit) {
 		vec4 borderData = texture2D(
 			texture,
-			vec2(minExtent+unit, clamp(pos.y, minExtent, maxExtent))
+			vec2(minExtent + unit, clamp(pos.y, minExtent, maxExtent))
 		);
 		data.x = min(borderData.x, 0.0);
 	}
