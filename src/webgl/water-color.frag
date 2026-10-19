@@ -4,10 +4,11 @@ precision mediump float;
 
 uniform vec2 uResolution;
 uniform sampler2D uWaterData;
+// width of the map in m; one sim unit == worldSize
+uniform float uWorldSize;
 out vec4 fragColor;
 const float specularStrength = 0.1;
 const vec3 sunlight = vec3(1.0, 0.98, 0.94);
-const float heightScale = 20.0 / 128.0;
 const float waterOpacityScale = 30.0;
 const vec3 waterColor = vec3(0.0, 0.1, 0.2);
 const vec3 waterAbsorption = vec3(0.45, 0.09, 0.06) * 256.0;
@@ -75,6 +76,8 @@ void main() {
 	vec2 uv = gl_FragCoord.xy / uResolution;
 
 	vec4 coordinateWaterData = texture(uWaterData, uv);
+
+	float heightScale = 20.0 / uWorldSize;
 
 	float groundHeight = min(coordinateWaterData.a / heightScale, 1.0);
 	float waterDepth = min(coordinateWaterData.b / heightScale, 1.0);

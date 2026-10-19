@@ -4,7 +4,7 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { step, init } from "./simulation/sim";
+import { step, init, worldSize } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
@@ -73,7 +73,7 @@ function LoopSim() {
 	//console.log(performance.now()-t)
 	//console.log(sim.water[3][3])
 	stepInput(sim);
-	drawScene(canvas_state, sim);
+	drawScene(canvas_state, sim, worldSize());
 	requestAnimationFrame(LoopSim);
 }
 

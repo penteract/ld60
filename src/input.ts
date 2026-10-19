@@ -1,5 +1,5 @@
 import type { SimState } from "./simstate";
-import { W, H, WORLD_SIZE } from "./simulation/sim";
+import { W, H, worldSize } from "./simulation/sim";
 import { audio } from "./audio";
 
 var mouseState = {
@@ -83,7 +83,7 @@ export function createHandlers(sim: SimState) {
 		.getElementById("main_canvas")
 		?.addEventListener("contextmenu", (e) => e.preventDefault());
 }
-let heightLimit = 3.;
+let heightLimit = 3;
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
 		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
@@ -96,43 +96,63 @@ export function stepInput(sim: SimState) {
 				sim.setTerrain(
 					x + dx,
 					y + dy,
-					Math.max(prevTerrain, baseTerrain + height/WORLD_SIZE * heightLimit),
+					Math.max(
+						prevTerrain,
+						baseTerrain + (height / worldSize()) * heightLimit,
+					),
 				);
 			}
 		}
 		audio.playNote(sim.getWater(x, y));
-	}
-	else{
+	} else {
 		audio.playing = false;
 	}
 }
 
 //map touch events to mouse events for touch compatibility:
-function touchHandler(event: TouchEvent)
-{
-    var touches = event.changedTouches,
-	first = touches[0],
-	type = "";
-	switch(event.type)
-	{
-	  case "touchstart": type="mousedown"; break;
-	  case "touchmove":  type="mousemove"; break;
-	  case "touchend":   type="mouseup"; break;
-	  default: return;
+function touchHandler(event: TouchEvent) {
+	var touches = event.changedTouches,
+		first = touches[0],
+		type = "";
+	switch (event.type) {
+		case "touchstart":
+			type = "mousedown";
+			break;
+		case "touchmove":
+			type = "mousemove";
+			break;
+		case "touchend":
+			type = "mouseup";
+			break;
+		default:
+			return;
 	}
 
-    //initMouseEvent(type, canBubble, cancelable, view, clickCount,
-    //               screenX, screenY, clientX, clientY, ctrlKey,
-    //               altKey, shiftKey, metaKey, button, relatedTarget);
+	//initMouseEvent(type, canBubble, cancelable, view, clickCount,
+	//               screenX, screenY, clientX, clientY, ctrlKey,
+	//               altKey, shiftKey, metaKey, button, relatedTarget);
 
-    var simulatedEvent = document.createEvent("MouseEvent");
-    simulatedEvent.initMouseEvent(type, true, true, window, 1,
-                                  first.screenX, first.screenY,
-                                  first.clientX, first.clientY, false,
-                                  false, false, false, 0, null);
+	var simulatedEvent = document.createEvent("MouseEvent");
+	simulatedEvent.initMouseEvent(
+		type,
+		true,
+		true,
+		window,
+		1,
+		first.screenX,
+		first.screenY,
+		first.clientX,
+		first.clientY,
+		false,
+		false,
+		false,
+		false,
+		0,
+		null,
+	);
 
-    first.target.dispatchEvent(simulatedEvent);
-    event.preventDefault();
+	first.target.dispatchEvent(simulatedEvent);
+	event.preventDefault();
 }
 document.addEventListener("touchstart", touchHandler, true);
 document.addEventListener("touchmove", touchHandler, true);
