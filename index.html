@@ -4,53 +4,26 @@
 	<head>
 		<meta charset="utf-8" />
 
-		<title>Interactive waves</title>
+		<title>WaterBox</title>
 		<meta
 			name="description"
-			content="JavaScript and HTML5 simulation of shallow water waves and rain drops. Users may modify the simulation parameters and generate waves with the mouse."
+			content='A "game" about stopping and moving water .'
 		/>
-		<meta name="author" content="Doug Lipinski" />
+		<meta name="author" content="Somebody" />
 		<link rel="stylesheet" href="./src/waves.css" type="text/css" />
 
 		<!--[if lt IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 	</head>
-
-	<body style="margin: 0; padding: 0">
-		<div id="info">Space to begin simulation</div>
-		<!--
-		<form id="resolution" action="javascript:newRes()">
-			Resolution:<br />
-			<input
-				type="submit"
-				value="Update"
-				style="
-					position: relative;
-					left: -800px;
-					width: 0;
-					margin: 0;
-					padding: 0;
-				"
-			/>
-			n<sub>x</sub> <input id="nx" type="number" /> &nbsp; n<sub>y</sub>
-			<input id="ny" type="number" />
-		</form>-->
-
-		<!--<div id="copy">&copy; 2014 Doug Lipinski</div>-->
-
-		<form id="drops">
-			Left click:<br />
-			add dirt<br />
-			<br />
-			<!--Right click and drag: <br />build pump-->
-			<!--<input id="drop_range" type="range" min="0" max="100" value="20" onchange="javascript:sim.drop.freq=this.value;">-->
-		</form>
-		<canvas id="main_canvas"></canvas>
-		<div style="visibility:hidden">
-		<img id="heightmap" src="heightmap_Lon.png">
-		<canvas id="spare_canvas" width=256 height=256>
-		</div>
-		<script type="module" src="/src/main.ts"></script>
+	<body>
+		<h1>WaterBox</h1>
+		<p>Select a level:</p>
+		<ul>
+			<li><a href="game.html?map=guy">Level 1: Save the Guy</a></li>
+			<li><a href="game.html?map=dam">Level 2: The Dam</a></li>
+			<li><a href="game.html?map=london">Level 3: London</a></li>
+			<!-- <li><a href="game.html?map=sandbox">Sandbox</a></li> -->
+		</ul>
 	</body>
 </html>

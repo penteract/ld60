@@ -4,6 +4,7 @@ type ProgramInfo = {
 	uniformLocations: {
 		resolution: WebGLUniformLocation;
 		waterData: WebGLUniformLocation;
+		worldSize: WebGLUniformLocation;
 	};
 };
 

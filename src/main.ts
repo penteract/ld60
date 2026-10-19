@@ -4,7 +4,7 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { step, init } from "./simulation/sim";
+import { step, init, worldSize } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
@@ -41,7 +41,10 @@ var params = {
 
 let canvas_state = setup(canvas);
 
-var sim = init();
+const params = new URLSearchParams(window.location.search);
+const mapName = params.get("map");
+
+var sim = init(mapName);
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 LoopSim();
@@ -73,7 +76,7 @@ function LoopSim() {
 	//console.log(performance.now()-t)
 	//console.log(sim.water[3][3])
 	stepInput(sim);
-	drawScene(canvas_state, sim);
+	drawScene(canvas_state, sim, worldSize());
 	requestAnimationFrame(LoopSim);
 }
 
@@ -91,6 +94,22 @@ function checkState(sim: any) {
 			}
 		}
 	return [wrongcount, max_xyht];
+}
+
+function addListener(id: string, eventType: string, listener: EventListener) {
+	document.getElementById(id).addEventListener(eventType, listener);
+}
+
+addListener("menubutton", "click", toggleMenu);
+addListener("menuclose", "click", toggleMenu);
+addListener("mainmenu", "click", () => {
+	window.location.href = "/";
+});
+
+function toggleMenu(event: Event) {
+	event.preventDefault();
+	let el = document.getElementById("menu");
+	el.hidden = !el.hidden;
 }
 
 /*

@@ -42,6 +42,12 @@ export function setup(canvas: HTMLCanvasElement): CanvasState | null {
 		return null;
 	}
 
+	const worldSize = gl.getUniformLocation(shaderProgram, "uWorldSize");
+	if (worldSize == null) {
+		console.log("uWorldSize is not found");
+		return null;
+	}
+
 	const programInfo: ProgramInfo = {
 		program: shaderProgram,
 		attribLocations: {
@@ -50,6 +56,7 @@ export function setup(canvas: HTMLCanvasElement): CanvasState | null {
 		uniformLocations: {
 			resolution: resolution,
 			waterData: waterData,
+			worldSize: worldSize,
 		},
 	};
 

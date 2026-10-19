@@ -9,7 +9,7 @@ import calcMetricsShader from "./calc-metrics.glsl?raw";
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
-import { DamDry } from "./starts";
+import { DamDry, Guy, type Map } from "./starts";
 import { London } from "./startmap";
 
 // time resolution of the simulation
@@ -20,8 +20,6 @@ const STEPS_PER_FRAME = 2;
 export const W = 256;
 export const H = 256;
 
-// world size in meters
-export const WORLD_SIZE = 128;
 const GRAVITY = 9.81;
 // https://en.wikipedia.org/wiki/Manning_formula
 // a coefficient for empirically determined friction for the surface.
@@ -42,14 +40,20 @@ class FloodEngine {
 		target: FlipFlopFBO;
 		inputs: Record<string, FlipFlopFBO>;
 	}[];
-	private state: FlipFlopFBO;
+	state: SimState;
+	private stateTexture: FlipFlopFBO;
 	// per-cell outflow limiter, written by the outflow-scale step and read by
 	// update-height
 	private outflowScales: FlipFlopFBO;
 	// per-cell running max of velocity and depth
 	private metrics: FlipFlopFBO;
 
-	constructor() {
+	// width of the map in m; it varies per map
+	readonly worldSize: number;
+
+	constructor(map: Map) {
+		this.state = map.initState;
+		this.worldSize = map.worldSize;
 		let gl = document.createElement("canvas").getContext("webgl2");
 		if (gl == null) {
 			throw "No WebGL";
@@ -94,7 +98,7 @@ class FloodEngine {
 		) => ({
 			target,
 			// every step reads the state as `texture`
-			inputs: { texture: this.state, ...inputs },
+			inputs: { texture: this.stateTexture, ...inputs },
 			shader: new GLOW.Shader({
 				vertexShader: simulationVertexShader,
 				fragmentShader: simulationPrefixShader + "\n" + stepShader,
@@ -106,16 +110,20 @@ class FloodEngine {
 					unit: new GLOW.Float(1 / W),
 					dt: new GLOW.Float(dt),
 					// the y = 0 edge holds water at this depth + velocity
-					sourceWaterHeight: new GLOW.Float(10 / WORLD_SIZE),
-					sourceWaterVelocity: new GLOW.Float(0.1 / WORLD_SIZE),
-					dryDepth: new GLOW.Float(DRY_DEPTH / WORLD_SIZE),
+					sourceWaterHeight: new GLOW.Float(
+						map.sourceHeight ?? 10 / this.worldSize,
+					),
+					sourceWaterVelocity: new GLOW.Float(
+						map.sourceVelocity ?? 0.1 / this.worldSize,
+					),
+					dryDepth: new GLOW.Float(DRY_DEPTH / this.worldSize),
 					...uniforms,
 				},
 				indices: GLOW.Geometry.Plane.indices(),
 			}),
 		});
 
-		this.state = new FlipFlopFBO({
+		this.stateTexture = new FlipFlopFBO({
 			width: W,
 			height: H,
 			internalFormat: gl.RGBA32F,
@@ -127,18 +135,18 @@ class FloodEngine {
 		});
 
 		this.steps = [
-			makeStep(this.state, advectStepShader, {}),
+			makeStep(this.stateTexture, advectStepShader, {}),
 			makeStep(this.outflowScales, outflowScaleShader, {}),
 			makeStep(
-				this.state,
+				this.stateTexture,
 				updateHeightStepShader,
 				{
 					drainageAmount: new GLOW.Float(0),
-					minFluxArea: new GLOW.Float(MIN_FLUX_AREA / WORLD_SIZE),
+					minFluxArea: new GLOW.Float(MIN_FLUX_AREA / this.worldSize),
 				},
 				{ outflowScales: this.outflowScales },
 			),
-			makeStep(this.state, updateVelocityStepShader, {
+			makeStep(this.stateTexture, updateVelocityStepShader, {
 				frictionMap: new GLOW.Texture({
 					data: new Float32Array([1, 0, 0, 0]),
 					width: 1,
@@ -149,9 +157,9 @@ class FloodEngine {
 					minFilter: gl.NEAREST,
 				}),
 				manningCoefficient: new GLOW.Float(
-					MANNING_COEFFICIENT * Math.cbrt(WORLD_SIZE),
+					MANNING_COEFFICIENT * Math.cbrt(this.worldSize),
 				),
-				gravity: new GLOW.Float(GRAVITY / WORLD_SIZE),
+				gravity: new GLOW.Float(GRAVITY / this.worldSize),
 			}),
 			makeStep(this.metrics, calcMetricsShader, {}, { metrics: this.metrics }),
 		];
@@ -177,7 +185,7 @@ class FloodEngine {
 
 	private setState(sim: SimState) {
 		const { gl } = this;
-		gl.bindTexture(gl.TEXTURE_2D, this.state.texture.texture);
+		gl.bindTexture(gl.TEXTURE_2D, this.stateTexture.texture.texture);
 		gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, W, H, gl.RGBA, gl.FLOAT, sim);
 	}
 
@@ -186,23 +194,42 @@ class FloodEngine {
 		this.metrics.texture.bind();
 		gl.readPixels(0, 0, W, H, gl.RGBA, gl.FLOAT, out);
 		this.metrics.texture.unbind();
-		return out.map((x) => x * WORLD_SIZE);
+		return out.map((x) => x * this.worldSize);
 	}
 
 	private getState(sim: SimState) {
 		const { gl } = this;
-		this.state.texture.bind();
+		this.stateTexture.texture.bind();
 		gl.readPixels(0, 0, W, H, gl.RGBA, gl.FLOAT, sim);
-		this.state.texture.unbind();
+		this.stateTexture.texture.unbind();
 	}
 }
 
 let engine: FloodEngine;
 
-export function init(): SimState {
-	engine = new FloodEngine();
-	return London(0, W, H, WORLD_SIZE);
-	//return DamDry(0, W, H, WORLD_SIZE);
+export function init(mapName: string): SimState {
+	let map: Map;
+	switch (mapName) {
+		case "london":
+			map = London(0, W, H);
+			break;
+		case "dam":
+			map = DamDry(0, W, H);
+			break;
+		case "guy":
+			map = Guy(W, H);
+			break;
+		default:
+			throw "you suck";
+	}
+
+	engine = new FloodEngine(map);
+	return engine.state;
+}
+
+// width of the current map, in m
+export function worldSize(): number {
+	return engine.worldSize;
 }
 
 export function step(sim: SimState) {

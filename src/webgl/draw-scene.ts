@@ -1,7 +1,7 @@
 import type { Buffers, ProgramInfo, CanvasState } from "./types.ts";
 import type { SimState } from "../simstate";
 
-function drawScene(canvasState: CanvasState, sim: SimState) {
+function drawScene(canvasState: CanvasState, sim: SimState, worldSize: number) {
 	const { gl, programInfo, buffers } = canvasState;
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clearDepth(1.0);
@@ -21,6 +21,7 @@ function drawScene(canvasState: CanvasState, sim: SimState) {
 		canvas.width,
 		canvas.height,
 	);
+	gl.uniform1f(programInfo.uniformLocations.worldSize, worldSize);
 
 	gl.getExtension("OES_texture_float_linear");
 

@@ -6,6 +6,8 @@ const float wettingThreshold = 0.000001;
 const float newlyWetHeight = 0.0000003;
 
 float scale(vec2 pos) {
+    if (pos.x < 0.0 || pos.x > 1.0 || pos.y < 0.0 || pos.y > 1.0)
+        return 1.0;
 	return texture2D(outflowScales, pos).r;
 }
 
@@ -29,33 +31,6 @@ vec4 simulationStep() {
 	newHeight -= RIGHT(flow) * (rightV < 0.0 ? scale(posRight) : hereScale);
 	newHeight += TOP(flow) * (topV >= 0.0 ? scale(posTop) : hereScale);
 	newHeight -= BOTTOM(flow) * (bottomV < 0.0 ? scale(posBottom) : hereScale);
-	return vec4(V(here), newHeight, T(here));
-	//vec2 up = vec2(H(Y2),V
-	/*
-
-	float dVelocityX = (Vx(X2) - Vx(here)) / unit; // (Vx(X2) - Vx(X1)) / (2.0 * unit);
-	float dVelocityY = (Vy(Y2) - Vy(here)) / unit; //(Vy(Y2) - Vy(Y1)) / (2.0 * unit);
-	float velocityDivergence = dVelocityX + dVelocityY;
-
-	float newHeight;
-	if (H(here) <= 0.0) {
-		if (
-			H(X1) > wettingThreshold && L(X1) > T(here) + wettingThreshold ||
-			H(X2) > wettingThreshold && L(X2) > T(here) + wettingThreshold ||
-			H(Y1) > wettingThreshold && L(Y1) > T(here) + wettingThreshold ||
-			H(Y2) > wettingThreshold && L(Y2) > T(here) + wettingThreshold
-		) {
-			newHeight = newlyWetHeight;
-		} else newHeight = H(here);
-	} else
-	{
-		float fluxArea = max(H(here), minFluxArea);
-		newHeight = H(here) - fluxArea * velocityDivergence * dt;
-		newHeight -= drainageAmount;
-		newHeight = max(-0.00001, newHeight);
-		//newHeight = min(H(here) * 2.0, newHeight);
-	}
 
 	return vec4(V(here), newHeight, T(here));
-	*/
 }
