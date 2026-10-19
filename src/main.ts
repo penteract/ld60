@@ -9,6 +9,7 @@ import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
 import {win,lose} from "./winlose.ts";
+import { audio } from "./audio.ts";
 
 declare global {
 	interface Window {
@@ -58,8 +59,8 @@ if(map.person){
 }
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
-LoopSim();
 let frame = 0;
+LoopSim();
 function LoopSim() {
 	if (canvas_state === null) {
 		alert("failure to load canvas for game");
@@ -111,6 +112,8 @@ function LoopSim() {
 	stepInput(sim);
 	drawScene(canvas_state, sim, worldSize());
 	requestAnimationFrame(LoopSim);
+	frame++;
+	audio.update(sim, frame);
 }
 
 function checkState(sim: any) {

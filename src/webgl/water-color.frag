@@ -7,13 +7,15 @@ uniform sampler2D uWaterData;
 // width of the map in m; one sim unit == worldSize
 uniform float uWorldSize;
 out vec4 fragColor;
-const float specularStrength = 0.1;
+const float specularStrength = 0.5;
 const vec3 sunlight = vec3(1.0, 0.98, 0.94);
 const float waterOpacityScale = 30.0;
 const vec3 waterColor = vec3(0.0, 0.1, 0.2);
-const vec3 waterAbsorption = vec3(0.45, 0.09, 0.06) * 256.0;
+const vec3 waterAbsorption = vec3(0.45, 0.09, 0.06) * 128.0;
 const vec3 skyColor = vec3(0.3, 0.7, 0.9);
-const vec3 sunDir = vec3(0.6, 0, 0.8);
+const vec3 sunDir = normalize(vec3(0.4 , 0.3   , 0.86 ));
+
+const vec3 viewerPos = vec3(0.5, 0.5, 1.5 );
 
 vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
@@ -53,10 +55,15 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 	vec3 mixBedAndWater =
 		baseBed * lightAbsorption + waterColor * (1.0 - lightAbsorption);
 
-	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(waterNormal.z, 0.0), 5.0);
+	vec2 uv = gl_FragCoord.xy / uResolution  ;
+
+	vec3 viewerDir = normalize(viewerPos - vec3(uv, 0.0));
+	vec3 reflectDir = reflect(-sunDir, waterNormal);
+
+	float fresnelCoef = 0.02 + 0.98 * pow(1.0 - max(dot(viewerDir, waterNormal), 0.0), 5.0);
 
 	vec3 specularReflection =
-		sunlight * specularStrength * pow(max(waterNormal.z, 0.0), 200.0);
+		sunlight * specularStrength * pow(max(dot(viewerDir, reflectDir), 0.0), 200.0) ;
 
 	vec3 colorWithReflections =
 		mix(mixBedAndWater, skyColor, fresnelCoef) + specularReflection;
