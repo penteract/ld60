@@ -12,15 +12,13 @@ addListener("mainmenu1", "click", () => {
 	window.location.href = "./";
 });
 
-export function win(message: string) {
+export function win(score: string) {
 	msgbox.hidden = false;
 	msgtitle.textContent = "You Won!";
-	message??=""
-	msgbody.setHTMLUnsafe(`${message}<br>dirt used: ${score}`);
+	msgbody.setHTMLUnsafe(`dirt used: ${score}`);
 }
-export function lose(message: string) {
+export function lose() {
 	msgbox.hidden = false;
 	msgtitle.textContent = "You Lost :(";
-	message??=""
-	msgbody.setHTMLUnsafe(message);
+	msgbody.setHTMLUnsafe("");
 }

@@ -4,10 +4,10 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { step, init, worldSize,engine } from "./simulation/sim";
+import { W, H, step, init, worldSize,engine } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
-import { createHandlers, stepInput } from "./input.ts";
+import { createHandlers, stepInput, score } from "./input.ts";
 import {win,lose} from "./winlose.ts";
 import { audio } from "./audio.ts";
 
@@ -105,8 +105,21 @@ function LoopSim() {
 					}
 			}
 			if(map.timeLimit && map.timeLimit<engine.elapsed && !target.classList.contains("sad")){
-				win()
+					win(score.toPrecision(3));
 			}
+
+		} else
+			if (map.timeLimit && map.timeLimit < engine.elapsed) {
+				sim.paused = true;
+				let metrics = engine.getMetrics();
+				let count = 0;
+				for (let x = 0; x < W; x++)
+					for (let y = 0; y < H; y++) {
+						if (metrics[x + y * W] * worldSize() > 0.001) {
+							count++;
+						}
+					}
+			win((count-46579)/(1+score).toPrecision());
 		}
 	}
 	//console.log(checkState(sim)+"")

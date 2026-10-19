@@ -53,5 +53,6 @@ export function London(dry: number, W: number, H: number): Map {
 		speed: 400,
 		dt: 5,
 		sourceWater: tsunamiSource,
+		timeLimit: 20000,
 	};
 }
