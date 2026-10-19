@@ -9,7 +9,7 @@ import calcMetricsShader from "./calc-metrics.glsl?raw";
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
-import { DamDry, Guy, type Map } from "./starts";
+import { DamDry, DamWet, Guy, type Map } from "./starts";
 import { London } from "./startmap";
 
 // time resolution of the simulation
@@ -225,6 +225,9 @@ export function init(mapName: string): SimState {
 			break;
 		case "dam":
 			map = DamDry(0, W, H);
+			break;
+		case "damwet":
+			map = DamWet(0, W, H);
 			break;
 		case "guy":
 			map = Guy(W, H);
