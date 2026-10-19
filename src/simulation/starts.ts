@@ -171,5 +171,6 @@ export function Snooker(W: number, H: number): Map {
 		person: [0.5, 0.75],
 		sourceWater,
 		dt: 1 / 480,
+		timeLimit: 20,
 	};
 }
