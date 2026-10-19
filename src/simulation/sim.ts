@@ -47,7 +47,7 @@ class FloodEngine {
 	// per-cell running max of velocity and depth
 	private metrics: FlipFlopFBO;
 
-	private elapsed: number;
+	elapsed: number;
 
 	constructor(map: Map) {
 		this.map = map;
