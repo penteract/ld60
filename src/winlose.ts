@@ -1,5 +1,20 @@
+const msgbox = document.getElementById("msgbox");
+const msgtitle = document.getElementById("msgtitle");
+const msgbody = document.getElementById("msgbody");
 
-export function win(message){
+function addListener(id: string, eventType: string, listener: EventListener) {
+	document.getElementById(id).addEventListener(eventType, listener);
 }
-export function lose(message){
+
+addListener("mainmenu1", "click", () => {
+	window.location.href = "/";
+});
+
+export function win(message) {
+	msgbox.hidden = false;
+	msgbody.textContent = message;
+}
+export function lose(message) {
+	msgbox.hidden = false;
+	msgbody.textContent = message;
 }

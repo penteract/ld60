@@ -21,7 +21,7 @@
 		<!-- ========================= menu ========================== -->
 		<form><button id="menubutton">Menu</button></form>
 
-		<form id="menu" hidden>
+		<form id="menu" class="modal" hidden>
 			<div>
 				<div class="header">
 					<button id="menuclose" type="button">Close</button>
@@ -29,6 +29,16 @@
 
 				<button type="button" id="mainmenu">Return to Main Menu</button>
 				<button id="reset" type="button">Restart</button>
+			</div>
+		</form>
+
+		<form id="msgbox" class="modal" hidden>
+			<div>
+				<h1 id="msgtitle"></h1>
+				<p id="msgbody"></p>
+
+				<button type="button" id="mainmenu1">Return to Main Menu</button>
+				<button id="reset1" type="button">Replay</button>
 			</div>
 		</form>
 
@@ -60,7 +70,9 @@
 			<!--Right click and drag: <br />build pump-->
 			<!--<input id="drop_range" type="range" min="0" max="100" value="20" onchange="javascript:sim.drop.freq=this.value;">-->
 		</form>
-		<div id="Target" class="hidden" style="bottom:90%;left:10%"><img src="smile_happy2.png"><img src="smile_sad2.png"></div>
+		<div id="Target" class="hidden" style="bottom: 90%; left: 10%">
+			<img src="smile_happy2.png" /><img src="smile_sad2.png" />
+		</div>
 		<canvas id="main_canvas"></canvas>
 		<div style="visibility: hidden">
 			<img id="heightmap" src="heightmap_Lon.png" />
