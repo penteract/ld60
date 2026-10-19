@@ -36,7 +36,7 @@ export function London(
 	// a dam with a gap leading to dry ground
 	for (let x = 0; x < H; x++)
 		for (let y = 0; y < W; y++) {
-			let t = Math.pow(d[(x+y*W)*4],0.5)/WORLD_SIZE
+			let t = Math.pow(d[(x+y*W)*4],0.5)/WORLD_SIZE/2
 			sim.setTerrain(y,H-1-x,t)
 			if (H-1-x < H * DAM_Y){
 				sim.setWater(y,H-1-x, RESERVOIR_DEPTH/WORLD_SIZE - t)

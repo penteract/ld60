@@ -1,5 +1,5 @@
 import type { SimState } from "./simstate";
-import { W, H } from "./simulation/sim";
+import { W, H, WORLD_SIZE } from "./simulation/sim";
 import { audio } from "./audio";
 
 var mouseState = {
@@ -83,7 +83,7 @@ export function createHandlers(sim: SimState) {
 		.getElementById("main_canvas")
 		?.addEventListener("contextmenu", (e) => e.preventDefault());
 }
-let heightLimit = 0.01;
+let heightLimit = 3.;
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
 		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
@@ -96,7 +96,7 @@ export function stepInput(sim: SimState) {
 				sim.setTerrain(
 					x + dx,
 					y + dy,
-					Math.max(prevTerrain, baseTerrain + height * heightLimit),
+					Math.max(prevTerrain, baseTerrain + height/WORLD_SIZE * heightLimit),
 				);
 			}
 		}
