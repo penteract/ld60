@@ -30,28 +30,15 @@ vec4 simulationStep() {
 
 	float n = manningCoefficient;
 	n *= texture2D(frictionMap, pos).x;
+	vec2 Vx = V(simData(pos + vec2(0.0, -0.5)));
+	vec2 Vy = V(simData(pos + vec2(-0.5, 0.0)));
 	vec2 p = vec2(
-		pow((Hends.x + Hstarts.x) / 2.0, 4.0 / 3.0),
-		pow((Hends.y + Hstarts.y) / 2.0, 4.0 / 3.0)
+		length(Vx) / pow(max((Hends.x + Hstarts.x) / 2.0, 0.00001), 4.0 / 3.0),
+		length(Vy) / pow(max((Hends.y + Hstarts.y) / 2.0, 0.00001), 4.0 / 3.0)
 	);
-	vec2 frictionSlope =
-		V(here) * length(V(here)) * pow(n, 2.0) / max(p, vec2(0.000001, 0.000001));
+	vec2 friction = 1.0 + gravity * n * n * dt * p;
 
-	vec2 totalSlope = slope + frictionSlope;
-
-	// make sure new slope doesn't point in other direction
-	totalSlope.x =
-		slope.x < 0.0
-			? min(totalSlope.x, 0.0)
-			: max(totalSlope.x, 0.0);
-	totalSlope.x = slope.x == 0.0 ? 0.0 : totalSlope.x;
-	totalSlope.y =
-		slope.y < 0.0
-			? min(totalSlope.y, 0.0)
-			: max(totalSlope.y, 0.0);
-	totalSlope.y = slope.y == 0.0 ? 0.0 : totalSlope.y;
-
-	vec2 newVelocity = V(here) - gravity * totalSlope * dt;
+	vec2 newVelocity = (V(here) - gravity * slope * dt) / friction;
 
 	if (isWall(here, X1) || isWall(X1, here)) newVelocity.x = 0.0;
 	if (isWall(here, Y1) || isWall(Y1, here)) newVelocity.y = 0.0;
