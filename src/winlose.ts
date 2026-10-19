@@ -14,9 +14,11 @@ addListener("mainmenu1", "click", () => {
 
 export function win(message) {
 	msgbox.hidden = false;
-	msgbody.textContent = `message\ndirt used: ${score}`;
+	msgtitle.textContent = "You Won!";
+	msgbody?.setHTMLUnsafe(`${message}<br>dirt used: ${score}`);
 }
 export function lose(message) {
 	msgbox.hidden = false;
+	msgtitle.textContent = "You Lost :(";
 	msgbody.textContent = message;
 }
