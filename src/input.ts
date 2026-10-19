@@ -134,7 +134,11 @@ export function createHandlers(sim: SimState) {
 			//console.log(e.button)
 			if (e.button == 0){
 				mouseState.clicking = true;
-				if(!mouseState.ignore)mouseState.lastClickHeld = [e.pageX, e.pageY]
+				if(!mouseState.ignore){
+					mouseState.lastClickHeld = [e.pageX, e.pageY]
+					let nc = normalizeCoords(...mouseState.lastClickHeld)
+					drawPath(nc,nc,sim)
+				}
 			}
 			if (e.button == 2 && !mouseState.ignore)
 				mouseState.pumpStart = normalizeCoords(e.pageX, e.pageY);
@@ -188,24 +192,10 @@ export function createHandlers(sim: SimState) {
 }
 let heightLimit = 3;
 export function stepInput(sim: SimState) {
-	if (mouseState.clicking && !mouseState.ignore && false) {
+	if (mouseState.clicking && !mouseState.ignore) {
 		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
 		var x = Math.floor(mx);
 		var y = Math.floor(my);
-		for (let [[dx, dy], height] of pileShape) {
-			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
-				let prevTerrain = sim.getTerrain(x + dx, y + dy);
-				let baseTerrain = sim.getBaseTerrain(x + dx, y + dy);
-				sim.setTerrain(
-					x + dx,
-					y + dy,
-					Math.max(
-						prevTerrain,
-						baseTerrain + (height / worldSize()) * heightLimit,
-					),
-				);
-			}
-		}
 		audio.playNote(sim.getWater(x, y));
 	} else {
 		audio.playing = false;
