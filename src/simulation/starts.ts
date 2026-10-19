@@ -11,7 +11,7 @@ export type Map = {
 
 export type WaterSource = {
 	height: number;
-	velocity: number;gi
+	velocity: number;
 };
 
 export function Guy(W: number, H: number): Map {
