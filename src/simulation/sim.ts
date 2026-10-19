@@ -9,7 +9,7 @@ import calcMetricsShader from "./calc-metrics.glsl?raw";
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
-import { DamDry, Guy, type Map } from "./starts";
+import { DamDry, DamWet, Guy, type Map } from "./starts";
 import { London } from "./startmap";
 
 // time resolution of the simulation
@@ -41,6 +41,9 @@ class FloodEngine {
 		inputs: Record<string, FlipFlopFBO>;
 	}[];
 	map: Map;
+	private speed;
+	private sourceHeight;
+	private sourceVelocity;
 	private stateTexture: FlipFlopFBO;
 	// per-cell outflow limiter, written by the outflow-scale step and read by
 	// update-height
@@ -52,6 +55,14 @@ class FloodEngine {
 
 	constructor(map: Map) {
 		this.map = map;
+		this.speed = this.map.speed ?? 1;
+		this.sourceHeight =
+			this.map.sourceHeight ??
+			((_) => (9.5 + Math.random()) / this.map.worldSize);
+		this.sourceVelocity =
+			this.map.sourceVelocity ??
+			this.map.sourceVelocity ??
+			((_) => 0.1 / this.map.worldSize);
 		this.elapsed = 0;
 		let gl = document.createElement("canvas").getContext("webgl2");
 		if (gl == null) {
@@ -162,24 +173,17 @@ class FloodEngine {
 
 	step(sim: SimState) {
 		this.setState(sim);
-		for (let substep = 0; substep < STEPS_PER_FRAME; substep++) {
+		for (let substep = 0; substep < STEPS_PER_FRAME * this.speed; substep++) {
 			for (const { shader, target, inputs } of this.steps) {
 				for (const [name, input] of Object.entries(inputs))
 					shader.uniforms[name].data = input.texture;
 
-				let sourceWaterHeight = (
-					this.map.sourceHeight ?? ((_) => (9.5 + Math.random()) / this.map.worldSize)
-				)(this.elapsed);
-				let sourceWaterVelocity = (
-					this.map.sourceVelocity ?? ((_) => 0.1 / this.map.worldSize)
-				)(this.elapsed);
-
 				// source water height and velocity
 				shader.uniforms["sourceWaterHeight"].data = new GLOW.Float(
-					sourceWaterHeight,
+					this.sourceHeight(this.elapsed),
 				);
 				shader.uniforms["sourceWaterVelocity"].data = new GLOW.Float(
-					sourceWaterVelocity,
+					this.sourceVelocity(this.elapsed),
 				);
 
 				target.target.bind();
@@ -224,6 +228,9 @@ export function init(mapName: string): SimState {
 			break;
 		case "dam":
 			map = DamDry(0, W, H);
+			break;
+		case "damwet":
+			map = DamWet(0, W, H);
 			break;
 		case "guy":
 			map = Guy(W, H);

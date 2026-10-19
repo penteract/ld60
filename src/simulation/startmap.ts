@@ -46,5 +46,5 @@ export function London(dry: number, W: number, H: number): Map {
 		}
 	initState.setBaseTerrain();
 
-	return { initState, worldSize: WORLD_SIZE };
+	return { initState, worldSize: WORLD_SIZE, speed: 100 };
 }
