@@ -60,8 +60,11 @@ if(map.person){
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 let frame = 0;
+let time = performance.now()
 LoopSim();
 function LoopSim() {
+	let time2= performance.now()
+	//console.log(time2-time )
 	if (canvas_state === null) {
 		alert("failure to load canvas for game");
 		return;
@@ -81,7 +84,7 @@ function LoopSim() {
 	//sim.Step(mouseState,canvas);
 	if (!sim.paused) {
 		let t = performance.now();
-		for (let i = 0; i < 1; i++) step(sim);
+		step(sim,time2-time);
 		window.perf = performance.now() - t;
 		if(map.person && !target.classList.contains("sad")){
 			let sz = Math.floor(sim.width/20)
@@ -111,6 +114,7 @@ function LoopSim() {
 	//console.log(sim.water[3][3])
 	stepInput(sim);
 	drawScene(canvas_state, sim, worldSize());
+	time=time2
 	requestAnimationFrame(LoopSim);
 	frame++;
 	audio.update(sim, frame);
@@ -141,6 +145,30 @@ addListener("menuclose", "click", toggleMenu);
 addListener("mainmenu", "click", () => {
 	window.location.href = "/";
 });
+addListener("reset", "click", () => {
+	window.location.reload();
+	// sim = reset(mapName);
+	// document.getElementById("menu").hidden = true;
+});
+addListener("reset1", "click", () => {
+	window.location.reload();
+	// sim = reset(mapName);
+	// document.getElementById("menu").hidden = true;
+});
+
+
+document.addEventListener("keydown", function (e) {
+		switch (e.key) {
+			case "Escape":
+			let el = document.getElementById("menu");
+			el.hidden = !el.hidden;
+			break;
+			case "r":
+			// sim = reset(mapName);
+			window.location.reload();
+			break;
+		}
+	});
 
 function toggleMenu(event: Event) {
 	event.preventDefault();
