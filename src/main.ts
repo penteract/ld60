@@ -96,6 +96,18 @@ function checkState(sim: any) {
 	return [wrongcount, max_xyht];
 }
 
+let menuButton = document.getElementById("menubutton");
+menuButton.addEventListener("click", toggleMenu);
+
+let menuCloseButton = document.getElementById("menuclose");
+menuCloseButton.addEventListener("click", toggleMenu);
+
+function toggleMenu(event: Event) {
+	event.preventDefault();
+	let el = document.getElementById("menu");
+	el.hidden = !el.hidden;
+}
+
 /*
 function draw(water,ground){
   canvas.width = window.innerWidth;
