@@ -10,6 +10,7 @@ const WATER = 2;
 const TERRAIN = 3;
 
 export class SimState extends Float32Array {
+	baseTerrain : Float32Array;
 	width: number;
 	height: number;
 	pumps: [[number, number], [number, number]][];
@@ -21,6 +22,13 @@ export class SimState extends Float32Array {
 		this.height = height;
 		this.pumps = [];
 		this.paused = true;
+		this.baseTerrain = new Float32Array(width * height*NUM_CHANNELS)
+	}
+	setBaseTerrain(){
+		this.baseTerrain.set(this)
+	}
+	getBaseTerrain(x:number,y:number){
+		return this.baseTerrain[this.idx(x,y)+TERRAIN]
 	}
 
 	idx(x: number, y: number): number {
