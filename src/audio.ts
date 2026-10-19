@@ -9,7 +9,7 @@ export const audio = {
         let oscillator = audio.audioContext.createOscillator();
         let gainNode = audio.audioContext.createGain();
 
-        gainNode.gain.value=0.2;
+        gainNode.gain.value = 0.2;
         gainNode.connect(audio.audioContext.destination);
 
         oscillator = this.audioContext.createOscillator();
@@ -25,20 +25,26 @@ export const audio = {
 
     // takes the height of the water and compares it to the height being placed at
 	playNote(waterHeight: number) {
-        if (!this.initialised || this.oscillators[0] === undefined || this.gainNodes[0] === undefined ){
+        // sanity
+        if (!this.initialised || this.oscillators.length === 0 || this.gainNodes.length === 0 ){
             this.initialise();
         }
+
         this.gainNodes[0].gain.value = 0.02;
-        this.oscillators[0].frequency.value = this.getNoiseNote(waterHeight < 0.01);
+
+        // placing on/above water: play a high pitch; placing below water: play a lower "submerged" pitch
+        let base = (waterHeight < 0.01) ? 350 : 150;
+        this.oscillators[0].frequency.value = this.getNoiseNote(base);
 	},
 
-    getNoiseNote(high: boolean) {
+    getNoiseNote(base: number) {
         const octaves = 0.3;
         const noise = Math.pow(2, (2* octaves *(Math.random()-0.5)));
-        return (high ? 350 : 150) * noise;
+        return base * noise;
     },
-    stop(){
-        if (this.initialised){
+
+    stop() {
+        if (this.initialised && this.gainNodes.length > 0) {
             this.gainNodes[0].gain.value = 0.0;
         }
     }
