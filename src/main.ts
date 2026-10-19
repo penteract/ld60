@@ -4,7 +4,7 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { step, init, worldSize } from "./simulation/sim";
+import { step, init, worldSize,engine } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
@@ -45,6 +45,15 @@ const params = new URLSearchParams(window.location.search);
 const mapName = params.get("map");
 
 var sim = init(mapName);
+console.log(sim)
+let map = engine.map
+
+if(map.person){
+	var target = document.getElementById("Target") as HTMLDivElement
+	target.classList.remove("hidden")
+	target.style.left=map.person[0]*100+"%"
+	target.style.top=map.person[1]*100+"%"
+}
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 LoopSim();

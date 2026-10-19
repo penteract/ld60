@@ -7,6 +7,7 @@ export type Map = {
   sourceHeight?: (time: number) => number;
   dt?: number;
 	speed?: number;
+	person?:[number,number];//center of person to keep safe between 0 and 1
 };
 
 export function Guy(W: number, H: number): Map {
@@ -34,6 +35,7 @@ export function Guy(W: number, H: number): Map {
 		worldSize,
 		sourceVelocity: (_) => sourceVelocity,
 		sourceHeight: (_) => sourceHeight,
+		person:[6/7,1/7]
 	};
 }
 

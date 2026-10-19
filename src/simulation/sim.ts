@@ -216,7 +216,7 @@ class FloodEngine {
 	}
 }
 
-let engine: FloodEngine;
+export let engine: FloodEngine;
 
 export function init(mapName: string): SimState {
 	let map: Map;
