@@ -46,9 +46,16 @@ let canvas_state = setup(canvas);
 const params = new URLSearchParams(window.location.search);
 const mapName = params.get("map");
 
-var sim = init(mapName);
+var sim
+let map
+let frame,time
+
+// london must be loaded after image // TODO: 
+window.addEventListener("load", function(){
+	
+sim = init(mapName);
 console.log(engine)
-let map = engine.map
+map = engine.map
 console.log(engine.map)
 
 if(map.person){
@@ -59,9 +66,10 @@ if(map.person){
 }
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
-let frame = 0;
-let time = performance.now()
+frame = 0;
+time = performance.now()
 LoopSim();
+});
 function LoopSim() {
 	let time2= performance.now()
 	//console.log(time2-time )
