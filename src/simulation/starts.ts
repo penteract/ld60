@@ -133,10 +133,7 @@ export function DamNoWall(dry: number, W: number, H: number): Map {
 		for (let y = 0; y < H; y++) {
 			const inWall = Math.abs(y + 0.5 - H * DAM_Y) < DAM_THICKNESS / 2;
 			const inBreach = Math.abs(x + 0.5 - W / 2) < BREACH_WIDTH / 2;
-			if (inWall && !inBreach) {
-				//initState.setTerrain(x, y, DAM_HEIGHT / worldSize);
-				initState.setWater(x, y, dry);
-			} else if (y < H * DAM_Y) {
+			if (y < H * DAM_Y) {
 				initState.setWater(x, y, RESERVOIR_DEPTH / worldSize);
 			} else initState.setWater(x, y, dry);
 		}
