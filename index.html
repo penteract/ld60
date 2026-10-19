@@ -46,8 +46,11 @@
 			<!--Right click and drag: <br />build pump-->
 			<!--<input id="drop_range" type="range" min="0" max="100" value="20" onchange="javascript:sim.drop.freq=this.value;">-->
 		</form>
-
 		<canvas id="main_canvas"></canvas>
+		<div style="visibility:hidden">
+		<img id="heightmap" src="heightmap_Lon.png">
+		<canvas id="spare_canvas" width=256 height=256>
+		</div>
 		<script type="module" src="/src/main.ts"></script>
 	</body>
 </html>

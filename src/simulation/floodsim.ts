@@ -9,6 +9,7 @@ import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
 import { DamDry } from "./starts";
+import { London } from "./startmap";
 
 // time resolution of the simulation
 // currently tied to framerate
@@ -160,8 +161,8 @@ let engine: FloodEngine;
 
 export function init(): SimState {
 	engine = new FloodEngine();
-
-	return DamDry(0, W, H, WORLD_SIZE);
+	return London(0, W, H, WORLD_SIZE);
+	//return DamDry(0, W, H, WORLD_SIZE);
 }
 
 export function step(sim: SimState) {
