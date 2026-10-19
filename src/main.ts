@@ -49,6 +49,7 @@ const mapName = params.get("map");
 var sim;
 let map;
 let frame, time;
+var target;
 
 // london must be loaded after image // TODO:
 window.addEventListener("load", function () {
@@ -58,7 +59,7 @@ window.addEventListener("load", function () {
 	console.log(engine.map);
 
 	if (map.person) {
-		var target = document.getElementById("Target") as HTMLDivElement;
+		target = document.getElementById("Target") as HTMLDivElement;
 		target.classList.remove("hidden");
 		target.style.left = map.person[0] * 100 + "%";
 		target.style.bottom = map.person[1] * 100 + "%";
