@@ -32,15 +32,15 @@ body {
             align-items: center;
 
             li {
-
                 a {
                     padding: 1em 1em;
-                    margin: 1em 0;
+                    margin: 1em auto;
                     background: aliceblue;
                     border-radius: 20px;
                     box-shadow: #00060f 5px 5px;
 
                     display: block;
+                    width: 80%;
                     text-decoration: none;
                     color: #002143;
 
