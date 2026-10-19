@@ -119,7 +119,7 @@ function LoopSim() {
 							count++;
 						}
 					}
-			win((count-46421)/(1+score).toPrecision(3));
+			win((count-46579)/(1+score).toPrecision());
 		}
 	}
 	//console.log(checkState(sim)+"")
