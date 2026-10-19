@@ -1,5 +1,5 @@
 import { test } from "vitest";
-import { init, step } from "./sim";
+import { init, step } from "./simulation/sim";
 
 test("step()", async ({ bench }) => {
 	const sim = init();
