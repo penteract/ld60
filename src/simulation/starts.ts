@@ -52,7 +52,7 @@ export function DamDry(dry: number, W: number, H: number): Map {
 	const DAM_THICKNESS = 4;
 	const DAM_HEIGHT = 15;
 	const BREACH_WIDTH = 25;
-	const RESERVOIR_DEPTH = 8.5;
+	const RESERVOIR_DEPTH = 12;
 	const sourceWater = (_: number) => ({
 		height: RESERVOIR_DEPTH / worldSize,
 		velocity: -1,
