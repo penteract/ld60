@@ -7,6 +7,7 @@ export type Map = {
 	dt?: number;
 	speed?: number;
 	person?:[number,number];//center of person to keep safe between 0 and 1
+	timeLimit?:number
 };
 
 export type WaterSource = {

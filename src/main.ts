@@ -82,25 +82,28 @@ function LoopSim() {
 		let t = performance.now();
 		for (let i = 0; i < 1; i++) step(sim);
 		window.perf = performance.now() - t;
-	}{
-	if(map.person && !target.classList.contains("sad")){
-		let sz = Math.floor(sim.width/20)
-		map.person[0]
-		for(let x=-sz;x<sz+1;x++)
-			for(let y=-sz;y<sz+1;y++){
-				let px = Math.round(map.person[0]*sim.width+x)
-				let py = Math.round(map.person[1]*sim.height+y)
-				let dx = px-map.person[0]*sim.width
-				let dy = py-map.person[1]*sim.height
-				if(dx*dx+dy*dy < (sz-2)*(sz-2)){
-					//console.log(sim.getWater(x,y)*worldSize())
-					if(sim.getWater(px,py)*worldSize()>0.00){
-						target.classList.add("sad")
+		if(map.person && !target.classList.contains("sad")){
+			let sz = Math.floor(sim.width/20)
+			map.person[0]
+			for(let x=-sz;x<sz+1;x++)
+				for(let y=-sz;y<sz+1;y++){
+					let px = Math.round(map.person[0]*sim.width+x)
+					let py = Math.round(map.person[1]*sim.height+y)
+					let dx = px-map.person[0]*sim.width
+					let dy = py-map.person[1]*sim.height
+					if(dx*dx+dy*dy < (sz-2)*(sz-2)){
+						//console.log(sim.getWater(x,y)*worldSize())
+						if(sim.getWater(px,py)*worldSize()>0.001){
+							target.classList.add("sad")
+							lose(":(")
+						}
+						//sim.setWater(px,py,100)
 					}
-					//sim.setWater(px,py,100)
-				}
 			}
-	}
+			if(map.timeLimit && map.timeLimit<engine.elapsed && !target.classList.contains("sad")){
+				win()
+			}
+		}
 	}
 	//console.log(checkState(sim)+"")
 	//console.log(performance.now()-t)
