@@ -9,7 +9,7 @@ import calcMetricsShader from "./calc-metrics.glsl?raw";
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
-import { DamDry } from "./starts";
+import { DamDry, Guy, type Map } from "./starts";
 import { London } from "./startmap";
 
 // time resolution of the simulation
@@ -110,8 +110,14 @@ class FloodEngine {
 					unit: new GLOW.Float(1 / W),
 					dt: new GLOW.Float(dt),
 					// the y = 0 edge holds water at this depth + velocity
-					sourceWaterHeight: new GLOW.Float(10 / this.worldSize),
-					sourceWaterVelocity: new GLOW.Float(0.1 / this.worldSize),
+					sourceWaterHeight: new GLOW.Float(
+						map.sourceHeight === null ? 10 / this.worldSize : map.sourceHeight,
+					),
+					sourceWaterVelocity: new GLOW.Float(
+						map.sourceVelocity === null
+							? 0.1 / this.worldSize
+							: map.sourceVelocity,
+					),
 					dryDepth: new GLOW.Float(DRY_DEPTH / this.worldSize),
 					...uniforms,
 				},
@@ -205,8 +211,9 @@ let engine: FloodEngine;
 
 export function init(): SimState {
 	let _dam_dry = DamDry(0, W, H);
-	let london = London(0, W, H);
-	engine = new FloodEngine(london);
+	let _london = London(0, W, H);
+	let guy = Guy(W, H);
+	engine = new FloodEngine(guy);
 	return engine.state;
 }
 
