@@ -3,8 +3,8 @@ import { SimState } from "../simstate";
 export type Map = {
 	initState: SimState;
 	worldSize: number;
-	sourceVelocity?: number;
-	sourceHeight?: number;
+	sourceVelocity?: (time: number) => number;
+	sourceHeight?: (time: number) => number;
 };
 
 export function Guy(W: number, H: number): Map {
@@ -27,7 +27,12 @@ export function Guy(W: number, H: number): Map {
 			}
 		}
 
-	return { initState, worldSize, sourceVelocity, sourceHeight };
+	return {
+		initState,
+		worldSize,
+		sourceVelocity: (_) => sourceVelocity,
+		sourceHeight: (_) => sourceHeight,
+	};
 }
 
 export function DamDry(dry: number, W: number, H: number): Map {

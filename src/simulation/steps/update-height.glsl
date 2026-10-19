@@ -6,8 +6,7 @@ const float wettingThreshold = 0.000001;
 const float newlyWetHeight = 0.0000003;
 
 float scale(vec2 pos) {
-    if (pos.x < 0.0 || pos.x > 1.0 || pos.y < 0.0 || pos.y > 1.0)
-        return 1.0;
+	if (pos.x < 0.0 || pos.x > 1.0 || pos.y < 0.0 || pos.y > 1.0) return 1.0;
 	return texture2D(outflowScales, pos).r;
 }
 
