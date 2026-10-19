@@ -137,7 +137,7 @@ export const audio = {
 	},
 
 	async setupSample() {
-		const filePath = "./src/assets/oceanwaves.m4a";
+		const filePath = "./oceanwaves.m4a";
 		const sample = await this.getFile(this.audioContext, filePath);
 		return sample;
 	},
