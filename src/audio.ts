@@ -1,24 +1,42 @@
 export const audio = {
 	audioContext: new AudioContext(),
     initialised: false,
-    oscillators: [] as OscillatorNode[], // shoot me if this is terrible
     gainNodes: [] as GainNode[],
+    noiseBuffer: [] as AudioBufferSourceNode[],
+    noiseFilter: [] as BiquadFilterNode[],
     initialise() {
         if(this.initialised) return;
 
-        let oscillator = audio.audioContext.createOscillator();
-        let gainNode = audio.audioContext.createGain();
-
+        const gainNode = this.audioContext.createGain();
         gainNode.gain.value = 0.2;
-        gainNode.connect(audio.audioContext.destination);
+        
+        // create a noise buffer for placing land (taken from Mozilla's tutorial on noise buffer)
+        const sampleCount = this.audioContext.sampleRate * 2; // 2 seconds
+        const buffer = this.audioContext.createBuffer(1, sampleCount, this.audioContext.sampleRate);
+        const samples = buffer.getChannelData(0);
+        
+        for (let i = 0; i < sampleCount; i++) {
+            samples[i] = Math.random() * 2 - 1;
+        }
+        
+        const noise = this.audioContext.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+        
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = 350; // raise this to make the noise brighter
 
-        oscillator = this.audioContext.createOscillator();
-        oscillator.type = "sine";
-        oscillator.connect(gainNode);
-
-        this.oscillators.push(oscillator);
+        //connect the nodes in series
+        noise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        
+        noise.start();
+        
         this.gainNodes.push(gainNode);
-        oscillator.start();
+        this.noiseBuffer.push(noise);
+        this.noiseFilter.push(filter);
 
         this.initialised = true;
     },
@@ -26,26 +44,35 @@ export const audio = {
     // takes the height of the water and compares it to the height being placed at
 	playNote(waterHeight: number) {
         // sanity
-        if (!this.initialised || this.oscillators.length === 0 || this.gainNodes.length === 0 ){
+        if (!this.initialised ||
+            this.gainNodes.length === 0 || this.noiseBuffer.length === 0 ){
             this.initialise();
         }
 
-        this.gainNodes[0].gain.value = 0.02;
+        this.gainNodes[0].gain.value = 0.2;
 
         // placing on/above water: play a high pitch; placing below water: play a lower "submerged" pitch
-        let base = (waterHeight < 0.01) ? 350 : 150;
-        this.oscillators[0].frequency.value = this.getNoiseNote(base);
+        let base = (waterHeight < 0.01) ? 1000 :
+        ((waterHeight > 0.02 || isNaN(waterHeight) ) ? 200 : 1800 - 80000 * waterHeight);
+        this.noiseFilter[0].frequency.value = this.getNoiseNote(base);
 	},
 
-    getNoiseNote(base: number) {
-        const octaves = 0.3;
-        const noise = Math.pow(2, (2* octaves *(Math.random()-0.5)));
-        return base * noise;
-    },
+	getNoiseNote(base: number) {
+		const octaves = 0.3;
+		const noise = Math.pow(2, 2 * octaves * (Math.random() - 0.5));
+		return base * noise;
+	},
 
-    stop() {
-        if (this.initialised && this.gainNodes.length > 0) {
-            this.gainNodes[0].gain.value = 0.0;
-        }
-    }
+	stop() {
+		if (this.initialised && this.gainNodes.length > 0) {
+			this.gainNodes[0].gain.value = 0.0;
+		}
+	},
 };
+
+async function getFile(audioContext: AudioContext, filepath: string) {
+  const response = await fetch(filepath);
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+  return audioBuffer;
+}

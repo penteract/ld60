@@ -1,16 +1,26 @@
-import type { Map } from "./starts";
+import type { Map, WaterSource } from "./starts";
 import { SimState } from "../simstate";
 //import heightmap from "../assets/heightmap_20261018231006_O0UX.png?raw";
 // width of the map in m: ~30 mi across
 const WORLD_SIZE = 30 * 1609.344;
-const SEA_LEVEL = 1.8 / WORLD_SIZE;
+const SEA_LEVEL = 2 / WORLD_SIZE;
 
-function tsunamiHeight(elapsed: number) {
-  const PERIOD = 600;
+function tsunamiSource(elapsed: number): WaterSource {
+	const PERIOD = 1200;
+	const TSUNAMI_DEPTH = 2.5;
 
-  if (elapsed < 0) {
-    return (Math.sin(elapsed * Math.PI / PERIOD) * 0.2) / WORLD_SIZE + SEA_LEVEL;
-  } else return SEA_LEVEL;
+	let height = SEA_LEVEL,
+		velocity = -1;
+
+	if (elapsed < PERIOD) {
+		let anomaly =
+			(Math.sin((elapsed * Math.PI) / PERIOD) * TSUNAMI_DEPTH) / WORLD_SIZE;
+		height = anomaly + SEA_LEVEL;
+		velocity = (anomaly * Math.sqrt(9.81 / height) * 1024) / WORLD_SIZE;
+		console.log(velocity);
+	}
+
+	return { height, velocity };
 }
 
 export function London(dry: number, W: number, H: number): Map {
@@ -30,19 +40,18 @@ export function London(dry: number, W: number, H: number): Map {
 
 	for (let x = 0; x < H; x++)
 		for (let y = 0; y < W; y++) {
-      let t = Math.pow(d[(x + y * W) * 4], 0.5) / WORLD_SIZE / 2;
-      let sea = Math.max(0, SEA_LEVEL - t);
+			let t = Math.pow(d[(x + y * W) * 4], 0.5) / WORLD_SIZE / 2;
+			let sea = Math.max(0, SEA_LEVEL - t);
 			initState.setTerrain(y, H - 1 - x, t);
 			initState.setWater(y, H - 1 - x, sea);
 		}
 	initState.setBaseTerrain();
 
-	return { initState,
+	return {
+		initState,
 		worldSize: WORLD_SIZE,
-		speed: 200,
-		dt: 1,
-		sourceHeight: tsunamiHeight,
-		sourceVelocity: (_) => 9 / WORLD_SIZE,
-		
+		speed: 400,
+		dt: 5,
+		sourceWater: tsunamiSource,
 	};
 }
