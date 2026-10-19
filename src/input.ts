@@ -86,7 +86,6 @@ export function createHandlers(sim: SimState) {
 let heightLimit = 0.01;
 export function stepInput(sim: SimState) {
 	if (mouseState.clicking && !mouseState.ignore) {
-		audio.playNote();
 		var [mx, my] = normalizeCoords(mouseState.x, mouseState.y);
 		var x = Math.floor(mx * W);
 		var y = Math.floor(my * H);
@@ -100,6 +99,10 @@ export function stepInput(sim: SimState) {
 				);
 			}
 		}
+		audio.playNote(sim.getWater(x, y));
+	}
+	else{
+		audio.playing = false;
 	}
 }
 /*
