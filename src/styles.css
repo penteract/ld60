@@ -32,27 +32,28 @@ body {
             align-items: center;
 
             li {
-                padding: 1em 1em;
-                margin: 1em 0;
-                background: aliceblue;
-                border-radius: 20px;
-                box-shadow: #00060f 5px 5px;
 
                 a {
+                    padding: 1em 1em;
+                    margin: 1em 0;
+                    background: aliceblue;
+                    border-radius: 20px;
+                    box-shadow: #00060f 5px 5px;
+
+                    display: block;
                     text-decoration: none;
                     color: #002143;
-                }
 
-                &:hover {
-                    background: #90cbff;
-                    cursor: pointer;
-                    box-shadow: #00060f 2px 2px;
-                    transform: scale(0.98);
-
-                    a {
+                    &:hover {
+                        background: #90cbff;
+                        cursor: pointer;
+                        box-shadow: #00060f 2px 2px;
+                        transform: scale(0.98);
                         color: #00060f;
                     }
                 }
+
+
             }
         }
     }
