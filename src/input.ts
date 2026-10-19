@@ -103,7 +103,7 @@ export function stepInput(sim: SimState) {
 		audio.playNote(sim.getWater(x, y));
 	}
 	else{
-		audio.playing = false;
+		audio.stop();
 	}
 }
 /*
