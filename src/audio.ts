@@ -108,7 +108,7 @@ export const audio = {
             }
         }
 
-        this.gainNodes[1].gain.value = maxSqSpd * 10;
+        this.gainNodes[1].gain.value = sim.paused ? 0.0 : maxSqSpd * 10;
     },
 
     async getFile(audioContext: AudioContext, filepath: string) {
