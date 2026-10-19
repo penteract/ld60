@@ -145,6 +145,30 @@ addListener("menuclose", "click", toggleMenu);
 addListener("mainmenu", "click", () => {
 	window.location.href = "/";
 });
+addListener("reset", "click", () => {
+	window.location.reload();
+	// sim = reset(mapName);
+	// document.getElementById("menu").hidden = true;
+});
+addListener("reset1", "click", () => {
+	window.location.reload();
+	// sim = reset(mapName);
+	// document.getElementById("menu").hidden = true;
+});
+
+
+document.addEventListener("keydown", function (e) {
+		switch (e.key) {
+			case "Escape":
+			let el = document.getElementById("menu");
+			el.hidden = !el.hidden;
+			break;
+			case "r":
+			// sim = reset(mapName);
+			window.location.reload();
+			break;
+		}
+	});
 
 function toggleMenu(event: Event) {
 	event.preventDefault();
