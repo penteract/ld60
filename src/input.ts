@@ -2,6 +2,8 @@ import type { SimState } from "./simstate";
 import { W, H, worldSize } from "./simulation/sim";
 import { audio } from "./audio";
 
+export let score = 0;
+
 var mouseState = {
 	size: 0.25, //size used for wave interaction
 	clicking: false,
@@ -85,7 +87,9 @@ function drawPath(start: Vec2, end: Vec2, sim: SimState) {
 			//console.log(x,y,h)
 			let prevTerrain = sim.getTerrain(x, y);
 			let baseTerrain = sim.getBaseTerrain(x, y);
-			sim.setTerrain(x, y, Math.max(prevTerrain, baseTerrain + h));
+			let newTerrain = Math.max(prevTerrain, baseTerrain + h)
+			score += newTerrain - prevTerrain
+			sim.setTerrain(x, y, newTerrain);
 		}
 	} /*
 	//if (Math.random()<0.99)return
