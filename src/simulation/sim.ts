@@ -9,7 +9,7 @@ import calcMetricsShader from "./calc-metrics.glsl?raw";
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
-import { DamDry, DamWet, Guy, type Map } from "./starts";
+import {Snooker, DamDry, DamWet, Guy, type Map} from "./starts";
 import { London } from "./startmap";
 
 // width and height resolution of the simulation
@@ -229,6 +229,9 @@ export function init(mapName: string): SimState {
 			break;
 		case "guy":
 			map = Guy(W, H);
+			break;
+		case "snooker":
+			map = Snooker(W, H);
 			break;
 		default:
 			throw "you suck";
