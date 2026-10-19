@@ -40,7 +40,7 @@ export function London(dry: number, W: number, H: number): Map {
 
 	for (let x = 0; x < H; x++)
 		for (let y = 0; y < W; y++) {
-			let t = Math.pow(d[(x + y * W) * 4], 0.5) / WORLD_SIZE / 2;
+			let t = d[(x + y * W) * 4] / WORLD_SIZE / 8;
 			let sea = Math.max(0, SEA_LEVEL - t);
 			initState.setTerrain(y, H - 1 - x, t);
 			initState.setWater(y, H - 1 - x, sea);
