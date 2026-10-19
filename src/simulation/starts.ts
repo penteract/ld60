@@ -5,6 +5,7 @@ export type Map = {
 	worldSize: number;
 	sourceVelocity?: (time: number) => number;
 	sourceHeight?: (time: number) => number;
+	speed?: number;
 };
 
 export function Guy(W: number, H: number): Map {
