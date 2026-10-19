@@ -18,14 +18,14 @@ vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
 	vec3 damRGB = vec3(0.1, 0.4, 0.1);
 
-	return groundHeight < 0.1
-		? seabedColorRGB
-		: damRGB;
+	return mix(seabedColorRGB,damRGB, smoothstep(0.,1.,groundHeight*5.));
+
+	//return groundHeight < 0.1 ? seabedColorRGB: damRGB;
 }
 
 vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 	float waterSurface = waterHeight + groundHeight;
-	vec3 bedAmbient = 0.3 * sunlight;
+	vec3 bedAmbient = 0.5 * sunlight;
 
 	float k = 12.0;
 
@@ -33,11 +33,12 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 	float bedDy = dFdy(groundHeight) * 200.0;
 
 	vec3 bedNormal = normalize(vec3(-bedDx, -bedDy, 1));
-	vec3 bedDiffuse = 0.7 * max(dot(bedNormal, vec3(0, 0, 1)), 0.0) * sunlight;
+	// bedNormal = vec3(0.,0.,1.);
+	vec3 bedDiffuse = 0.5 * max(dot(bedNormal, vec3(.6, 0, .8)), 0.0) * sunlight;
 
 	vec3 baseBed = (bedAmbient + bedDiffuse) * bedColor;
 
-	if (waterHeight <= 0.0) return baseBed;
+	//if (waterHeight <= 0.0) return baseBed;
 
 	float waterDx = dFdx(waterSurface) * k;
 	float waterDy = dFdy(waterSurface) * k;
@@ -58,7 +59,7 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 		mix(mixBedAndWater, skyColor, fresnelCoef) + specularReflection;
 
 	vec3 smoothWaterEdge = mix(
-		bedColor,
+		baseBed,
 		colorWithReflections,
 		smoothstep(0.0, 0.0008, waterHeight)
 	);
