@@ -4,7 +4,8 @@ export type Map = {
 	initState: SimState;
 	worldSize: number;
 	sourceVelocity?: (time: number) => number;
-	sourceHeight?: (time: number) => number;
+  sourceHeight?: (time: number) => number;
+  dt?: number;
 	speed?: number;
 };
 
@@ -14,7 +15,7 @@ export function Guy(W: number, H: number): Map {
 
 	const worldSize = 32; // meters
 	const initState = new SimState(W, H);
-	const sourceVelocity = 1000 / worldSize;
+	const sourceVelocity = 10 / worldSize;
 	const sourceHeight = 0.5 / worldSize;
 
 	// a fairly straightforward map where there is a small flow from the
