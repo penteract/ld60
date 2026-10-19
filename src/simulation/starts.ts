@@ -3,9 +3,15 @@ import { SimState } from "../simstate";
 export type Map = {
 	initState: SimState;
 	worldSize: number;
-	sourceVelocity?: (time: number) => number;
-	sourceHeight?: (time: number) => number;
+	sourceWater?: (elapsed: number) => { height: number; velocity: number };
+	dt?: number;
 	speed?: number;
+	person?:[number,number];//center of person to keep safe between 0 and 1
+};
+
+export type WaterSource = {
+	height: number;
+	velocity: number;gi
 };
 
 export function Guy(W: number, H: number): Map {
@@ -14,8 +20,10 @@ export function Guy(W: number, H: number): Map {
 
 	const worldSize = 32; // meters
 	const initState = new SimState(W, H);
-	const sourceVelocity = 1000 / worldSize;
-	const sourceHeight = 0.5 / worldSize;
+	const sourceWater = (_: number) => ({
+		height: 10 / worldSize,
+		velocity: 0.5 / worldSize,
+	});
 
 	// a fairly straightforward map where there is a small flow from the
 	// south and a guy that needs protecting
@@ -31,17 +39,17 @@ export function Guy(W: number, H: number): Map {
 	return {
 		initState,
 		worldSize,
-		sourceVelocity: (_) => sourceVelocity,
-		sourceHeight: (_) => sourceHeight,
+		sourceWater,
+		person:[6/7,1/7]
 	};
 }
 
 export function DamDry(dry: number, W: number, H: number): Map {
 	const DAM_Y = 1 / 4; // ratio up the screen the dam is
 	const DAM_THICKNESS = 4;
-	const DAM_HEIGHT = 12;
+	const DAM_HEIGHT = 20;
 	const BREACH_WIDTH = 32;
-	const RESERVOIR_DEPTH = 10;
+	const RESERVOIR_DEPTH = 15;
 
 	const worldSize = 128; // meters
 	const initState = new SimState(W, H);

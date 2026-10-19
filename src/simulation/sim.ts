@@ -12,10 +12,6 @@ import { SimState } from "../simstate";
 import { DamDry, DamWet, Guy, type Map } from "./starts";
 import { London } from "./startmap";
 
-// time resolution of the simulation
-// currently tied to framerate
-const dt = 1 / 120;
-const STEPS_PER_FRAME = 2;
 // width and height resolution of the simulation
 export const W = 256;
 export const H = 256;
@@ -41,9 +37,9 @@ class FloodEngine {
 		inputs: Record<string, FlipFlopFBO>;
 	}[];
 	map: Map;
-	private speed;
-	private sourceHeight;
-	private sourceVelocity;
+	private dt;
+	private steps_per_frame;
+	private sourceWater;
 	private stateTexture: FlipFlopFBO;
 	// per-cell outflow limiter, written by the outflow-scale step and read by
 	// update-height
@@ -55,14 +51,16 @@ class FloodEngine {
 
 	constructor(map: Map) {
 		this.map = map;
-		this.speed = this.map.speed ?? 1;
-		this.sourceHeight =
-			this.map.sourceHeight ??
-			((_) => (9.5 + Math.random()) / this.map.worldSize);
-		this.sourceVelocity =
-			this.map.sourceVelocity ??
-			this.map.sourceVelocity ??
-			((_) => 0.1 / this.map.worldSize);
+		this.dt = map.dt ?? 1 / 120;
+		this.steps_per_frame = (map.speed ?? 1) * (1 / (60 * this.dt));
+		this.sourceWater =
+			map.sourceWater ??
+			((_) => {
+				return {
+					height: (9.5 + Math.random()) / this.map.worldSize,
+					velocity: 0.1 / this.map.worldSize,
+				};
+			});
 		this.elapsed = 0;
 		let gl = document.createElement("canvas").getContext("webgl2");
 		if (gl == null) {
@@ -118,7 +116,7 @@ class FloodEngine {
 					vertices: GLOW.Geometry.Plane.vertices(),
 					uvs: GLOW.Geometry.Plane.uvs(),
 					unit: new GLOW.Float(1 / W),
-					dt: new GLOW.Float(dt),
+					dt: new GLOW.Float(this.dt),
 					dryDepth: new GLOW.Float(DRY_DEPTH / this.map.worldSize),
 					...uniforms,
 				},
@@ -173,25 +171,22 @@ class FloodEngine {
 
 	step(sim: SimState) {
 		this.setState(sim);
-		for (let substep = 0; substep < STEPS_PER_FRAME * this.speed; substep++) {
+		for (let substep = 0; substep < this.steps_per_frame; substep++) {
 			for (const { shader, target, inputs } of this.steps) {
 				for (const [name, input] of Object.entries(inputs))
 					shader.uniforms[name].data = input.texture;
 
+				let { height, velocity } = this.sourceWater(this.elapsed);
 				// source water height and velocity
-				shader.uniforms["sourceWaterHeight"].data = new GLOW.Float(
-					this.sourceHeight(this.elapsed),
-				);
-				shader.uniforms["sourceWaterVelocity"].data = new GLOW.Float(
-					this.sourceVelocity(this.elapsed),
-				);
+				shader.uniforms["sourceWaterHeight"].data = new GLOW.Float(height);
+				shader.uniforms["sourceWaterVelocity"].data = new GLOW.Float(velocity);
 
 				target.target.bind();
 				shader.draw();
 				target.target.unbind();
 				target.flip();
 			}
-			this.elapsed += dt;
+			this.elapsed += this.dt;
 		}
 		this.getState(sim);
 	}
@@ -218,7 +213,7 @@ class FloodEngine {
 	}
 }
 
-let engine: FloodEngine;
+export let engine: FloodEngine;
 
 export function init(mapName: string): SimState {
 	let map: Map;

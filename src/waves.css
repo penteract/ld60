@@ -108,6 +108,32 @@ div#info {
 	letter-spacing: 2px;
 	padding-top: 0.5ex;
 }
+div#Target{
+	width:10%;
+	height:10%;
+	margin-left:-5%;
+	margin-top:-5%;
+}
+#Target>img{
+  width:100%;
+  height:100%;
+}
+#Target.hidden{
+	display:none;
+}
+#Target>img:last-child{
+  display:none;
+}
+#Target>img:first-child{
+  display:initial;
+}
+#Target.sad>img:last-child{
+  display:initial;
+}
+#Target.sad>img:first-child{
+  display:none;
+}
+
 
 form {
 	z-index: 2;

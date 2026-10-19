@@ -57,17 +57,17 @@ export const audio = {
         this.noiseFilter[0].frequency.value = this.getNoiseNote(base);
 	},
 
-    getNoiseNote(base: number) {
-        const octaves = 0.3;
-        const noise = Math.pow(2, (2* octaves *(Math.random()-0.5)));
-        return base * noise;
-    },
+	getNoiseNote(base: number) {
+		const octaves = 0.3;
+		const noise = Math.pow(2, 2 * octaves * (Math.random() - 0.5));
+		return base * noise;
+	},
 
-    stop() {
-        if (this.initialised && this.gainNodes.length > 0) {
-            this.gainNodes[0].gain.value = 0.0;
-        }
-    }
+	stop() {
+		if (this.initialised && this.gainNodes.length > 0) {
+			this.gainNodes[0].gain.value = 0.0;
+		}
+	},
 };
 
 async function getFile(audioContext: AudioContext, filepath: string) {
