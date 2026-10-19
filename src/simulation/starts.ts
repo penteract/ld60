@@ -46,11 +46,11 @@ export function Guy(W: number, H: number): Map {
 }
 
 export function DamDry(dry: number, W: number, H: number): Map {
-	const DAM_Y = 1 / 4; // ratio up the screen the dam is
+	const DAM_Y = 1 / 3; // ratio up the screen the dam is
 	const DAM_THICKNESS = 4;
 	const DAM_HEIGHT = 20;
-	const BREACH_WIDTH = 32;
-	const RESERVOIR_DEPTH = 15;
+	const BREACH_WIDTH = 25;
+	const RESERVOIR_DEPTH = 18;
 
 	const worldSize = 128; // meters
 	const initState = new SimState(W, H);
