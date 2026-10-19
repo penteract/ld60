@@ -1,5 +1,4 @@
-// renders into the outflowScales map (scale in .r, via gl_FragColor), not the
-// state texture; floodsim.ts handles the different target
+// renders into the outflowScales map, not the state texture
 
 vec4 simulationStep() {
 	vec4 here = simData(pos);
