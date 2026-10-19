@@ -1,3 +1,5 @@
+import { score } from "./input";
+
 const msgbox = document.getElementById("msgbox");
 const msgtitle = document.getElementById("msgtitle");
 const msgbody = document.getElementById("msgbody");
@@ -12,7 +14,7 @@ addListener("mainmenu1", "click", () => {
 
 export function win(message) {
 	msgbox.hidden = false;
-	msgbody.textContent = message;
+	msgbody.textContent = `message\ndirt used: ${score}`;
 }
 export function lose(message) {
 	msgbox.hidden = false;
