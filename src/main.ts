@@ -4,11 +4,11 @@
 |                                                              |
 \*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-import { W, H, step, init, worldSize,engine } from "./simulation/sim";
+import { W, H, step, init, worldSize, engine } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput, score } from "./input.ts";
-import {win,lose} from "./winlose.ts";
+import { win, lose } from "./winlose.ts";
 import { audio } from "./audio.ts";
 
 declare global {
@@ -46,32 +46,31 @@ let canvas_state = setup(canvas);
 const params = new URLSearchParams(window.location.search);
 const mapName = params.get("map");
 
-var sim
-let map
-let frame,time
+var sim;
+let map;
+let frame, time;
 
-// london must be loaded after image // TODO: 
-window.addEventListener("load", function(){
-	
-sim = init(mapName);
-console.log(engine)
-map = engine.map
-console.log(engine.map)
+// london must be loaded after image // TODO:
+window.addEventListener("load", function () {
+	sim = init(mapName);
+	console.log(engine);
+	map = engine.map;
+	console.log(engine.map);
 
-if(map.person){
-	var target = document.getElementById("Target") as HTMLDivElement
-	target.classList.remove("hidden")
-	target.style.left=map.person[0]*100+"%"
-	target.style.bottom=map.person[1]*100+"%"
-}
-createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
+	if (map.person) {
+		var target = document.getElementById("Target") as HTMLDivElement;
+		target.classList.remove("hidden");
+		target.style.left = map.person[0] * 100 + "%";
+		target.style.bottom = map.person[1] * 100 + "%";
+	}
+	createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
-frame = 0;
-time = performance.now()
-LoopSim();
+	frame = 0;
+	time = performance.now();
+	LoopSim();
 });
 function LoopSim() {
-	let time2= performance.now()
+	let time2 = performance.now();
 	//console.log(time2-time )
 	if (canvas_state === null) {
 		alert("failure to load canvas for game");
@@ -92,30 +91,33 @@ function LoopSim() {
 	//sim.Step(mouseState,canvas);
 	if (!sim.paused) {
 		let t = performance.now();
-		step(sim,time2-time);
+		step(sim, time2 - time);
 		window.perf = performance.now() - t;
-		if(map.person && !target.classList.contains("sad")){
-			let sz = Math.floor(sim.width/20)
-			map.person[0]
-			for(let x=-sz;x<sz+1;x++)
-				for(let y=-sz;y<sz+1;y++){
-					let px = Math.round(map.person[0]*sim.width+x)
-					let py = Math.round(map.person[1]*sim.height+y)
-					let dx = px-map.person[0]*sim.width
-					let dy = py-map.person[1]*sim.height
-					if(dx*dx+dy*dy < (sz-2)*(sz-2)){
+		if (map.person && !target.classList.contains("sad")) {
+			let sz = Math.floor(sim.width / 20);
+			map.person[0];
+			for (let x = -sz; x < sz + 1; x++)
+				for (let y = -sz; y < sz + 1; y++) {
+					let px = Math.round(map.person[0] * sim.width + x);
+					let py = Math.round(map.person[1] * sim.height + y);
+					let dx = px - map.person[0] * sim.width;
+					let dy = py - map.person[1] * sim.height;
+					if (dx * dx + dy * dy < (sz - 2) * (sz - 2)) {
 						//console.log(sim.getWater(x,y)*worldSize())
 						if (sim.getWater(px, py) * worldSize() > 0.001) {
-							target.classList.add("sad")
-							lose(":(")
+							target.classList.add("sad");
+							lose(":(");
 						}
 						//sim.setWater(px,py,100)
 					}
+				}
+			if (
+				map.timeLimit &&
+				map.timeLimit < engine.elapsed &&
+				!target.classList.contains("sad")
+			) {
+				win(score.toFixed(2));
 			}
-			if(map.timeLimit && map.timeLimit<engine.elapsed && !target.classList.contains("sad")){
-					win(score.toFixed(2));
-			}
-
 		}
 	}
 	//console.log(checkState(sim)+"")
@@ -123,7 +125,7 @@ function LoopSim() {
 	//console.log(sim.water[3][3])
 	stepInput(sim);
 	drawScene(canvas_state, sim, worldSize());
-	time=time2
+	time = time2;
 	requestAnimationFrame(LoopSim);
 	frame++;
 	audio.update(sim, frame);
@@ -165,19 +167,18 @@ addListener("reset1", "click", () => {
 	// document.getElementById("menu").hidden = true;
 });
 
-
 document.addEventListener("keydown", function (e) {
-		switch (e.key) {
-			case "Escape":
+	switch (e.key) {
+		case "Escape":
 			let el = document.getElementById("menu");
 			el.hidden = !el.hidden;
 			break;
-			case "r":
+		case "r":
 			// sim = reset(mapName);
 			window.location.reload();
 			break;
-		}
-	});
+	}
+});
 
 function toggleMenu(event: Event) {
 	event.preventDefault();

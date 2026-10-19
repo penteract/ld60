@@ -76,9 +76,14 @@ export function DamDry(dry: number, W: number, H: number): Map {
 			} else initState.setWater(x, y, dry);
 		}
 
-	return { initState, worldSize, sourceWater, person: [6 / 7, 6 / 7], timeLimit: 20, };
+	return {
+		initState,
+		worldSize,
+		sourceWater,
+		person: [6 / 7, 6 / 7],
+		timeLimit: 20,
+	};
 }
-
 
 export function DamDryHard(dry: number, W: number, H: number): Map {
 	const DAM_Y = 1 / 3; // ratio up the screen the dam is
@@ -109,7 +114,11 @@ export function DamDryHard(dry: number, W: number, H: number): Map {
 			} else initState.setWater(x, y, dry);
 		}
 
-	return { initState, worldSize, sourceWater, person: [6 / 7, 6 / 7],
+	return {
+		initState,
+		worldSize,
+		sourceWater,
+		person: [6 / 7, 6 / 7],
 		timeLimit: 20,
 	};
 }
@@ -138,7 +147,13 @@ export function DamNoWall(dry: number, W: number, H: number): Map {
 			} else initState.setWater(x, y, dry);
 		}
 
-	return { initState, worldSize, sourceWater, person: [6 / 7, 6 / 7], timeLimit: 20, };
+	return {
+		initState,
+		worldSize,
+		sourceWater,
+		person: [6 / 7, 6 / 7],
+		timeLimit: 20,
+	};
 }
 
 export function DamWet(dry: number, W: number, H: number): Map {
@@ -167,7 +182,7 @@ export function DamWet(dry: number, W: number, H: number): Map {
 			} else initState.setWater(x, y, WATER_HEIGHT / worldSize);
 		}
 
-	return { initState, worldSize, timeLimit: 20, };
+	return { initState, worldSize, timeLimit: 20 };
 }
 
 export function Snooker(W: number, H: number): Map {

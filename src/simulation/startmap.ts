@@ -17,7 +17,9 @@ function tsunamiSource(elapsed: number): WaterSource {
 		let anomaly =
 			(Math.sin((elapsed * Math.PI) / PERIOD) * TSUNAMI_DEPTH) / WORLD_SIZE;
 		height = anomaly + SEA_LEVEL;
-		velocity = (anomaly * Math.sqrt((9.81 / height) * WORLD_SIZE)) * FUDGE_FACTOR / WORLD_SIZE;
+		velocity =
+			(anomaly * Math.sqrt((9.81 / height) * WORLD_SIZE) * FUDGE_FACTOR) /
+			WORLD_SIZE;
 	}
 
 	return { height, velocity };

@@ -87,8 +87,8 @@ function drawPath(start: Vec2, end: Vec2, sim: SimState) {
 			//console.log(x,y,h)
 			let prevTerrain = sim.getTerrain(x, y);
 			let baseTerrain = sim.getBaseTerrain(x, y);
-			let newTerrain = Math.max(prevTerrain, baseTerrain + h)
-			score += newTerrain - prevTerrain
+			let newTerrain = Math.max(prevTerrain, baseTerrain + h);
+			score += newTerrain - prevTerrain;
 			sim.setTerrain(x, y, newTerrain);
 		}
 	} /*
