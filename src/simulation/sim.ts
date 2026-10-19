@@ -9,7 +9,7 @@ import calcMetricsShader from "./calc-metrics.glsl?raw";
 import { GLOW } from "./glow";
 import { FlipFlopFBO } from "./flipflopfbo";
 import { SimState } from "../simstate";
-import {Snooker, DamDry, DamWet, Guy, type Map} from "./starts";
+import {Snooker, DamDry, DamWet, Guy, type Map, DamNoWall,DamDryHard} from "./starts";
 import { London } from "./startmap";
 
 // width and height resolution of the simulation
@@ -233,6 +233,12 @@ export function init(mapName: string): SimState {
 			break;
 		case "snooker":
 			map = Snooker(W, H);
+			break;
+		case "water":
+			map=DamNoWall(0,W,H)
+			break;
+		case "damhard":
+			map=DamDryHard(0,W,H)
 			break;
 		default:
 		map = Guy(W, H);
