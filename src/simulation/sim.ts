@@ -111,12 +111,10 @@ class FloodEngine {
 					dt: new GLOW.Float(dt),
 					// the y = 0 edge holds water at this depth + velocity
 					sourceWaterHeight: new GLOW.Float(
-						map.sourceHeight === null ? 10 / this.worldSize : map.sourceHeight,
+						map.sourceHeight ?? 10 / this.worldSize,
 					),
 					sourceWaterVelocity: new GLOW.Float(
-						map.sourceVelocity === null
-							? 0.1 / this.worldSize
-							: map.sourceVelocity,
+						map.sourceVelocity ?? 0.1 / this.worldSize,
 					),
 					dryDepth: new GLOW.Float(DRY_DEPTH / this.worldSize),
 					...uniforms,
