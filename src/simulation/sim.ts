@@ -168,7 +168,8 @@ class FloodEngine {
 					shader.uniforms[name].data = input.texture;
 
 				let sourceWaterHeight = (
-					this.map.sourceHeight ?? ((_) => (9.5 + Math.random()) / this.map.worldSize)
+					this.map.sourceHeight ??
+					((_) => (9.5 + Math.random()) / this.map.worldSize)
 				)(this.elapsed);
 				let sourceWaterVelocity = (
 					this.map.sourceVelocity ?? ((_) => 0.1 / this.map.worldSize)

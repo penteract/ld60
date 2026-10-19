@@ -53,9 +53,11 @@ export function DamDry(dry: number, W: number, H: number): Map {
 			if (inWall && !inBreach) {
 				initState.setTerrain(x, y, DAM_HEIGHT / worldSize);
 				initState.setWater(x, y, dry);
-			} else if (y < H * DAM_Y)
-				initState.setWater(x, y, RESERVOIR_DEPTH / worldSize);
-			else initState.setWater(x, y, dry);
+			} else if (y < H * DAM_Y) {
+				if (x == 0 || x == W - 1)
+					initState.setTerrain(x, y, DAM_HEIGHT / worldSize);
+				else initState.setWater(x, y, RESERVOIR_DEPTH / worldSize);
+			} else initState.setWater(x, y, dry);
 		}
 
 	return { initState, worldSize };
