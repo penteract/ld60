@@ -13,6 +13,7 @@ const float waterOpacityScale = 30.0;
 const vec3 waterColor = vec3(0.0, 0.1, 0.2);
 const vec3 waterAbsorption = vec3(0.45, 0.09, 0.06) * 256.0;
 const vec3 skyColor = vec3(0.3, 0.7, 0.9);
+const vec3 sunDir = vec3(0.6, 0, 0.8);
 
 vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
@@ -36,7 +37,7 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 	vec3 bedNormal = normalize(vec3(-bedDx, -bedDy, 1));
 	// bedNormal = vec3(0.,0.,1.);
 	vec3 bedDiffuse =
-		0.5 * max(dot(bedNormal, vec3(0.6, 0, 0.8)), 0.0) * sunlight;
+		0.5 * max(dot(bedNormal, sunDir ), 0.0) * sunlight;
 
 	vec3 baseBed = (bedAmbient + bedDiffuse) * bedColor;
 
