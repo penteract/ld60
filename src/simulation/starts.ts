@@ -103,3 +103,73 @@ export function DamWet(dry: number, W: number, H: number): Map {
 
 	return { initState, worldSize };
 }
+
+export function Snooker(W: number, H: number): Map {
+	const DAM_HEIGHT = 100 ;
+	const DAM_WIDTH = 10;
+	const BREACH_WIDTH = W - 10 ;
+	const PILLAR_HEIGHT = 100;
+
+	const worldSize = 32; // meters
+	const initState = new SimState(W, H);
+	const sourceWater = (_: number) => ({
+		height: 15     / worldSize,
+		velocity: 0.8   / worldSize,
+	});
+
+	// a fairly straightforward map where there is a small flow from the
+	// south and a guy that needs protecting
+	for (let x = 0; x < W; x++)
+		for (let y = 0; y < H; y++) {
+			const inWall = y <= DAM_WIDTH;
+			const inBreach = Math.abs(x + 0.5 - W / 2) < BREACH_WIDTH / 2;
+			if (inWall && !inBreach) {
+				initState.setTerrain(x, y, DAM_HEIGHT / worldSize);
+			}
+		}
+
+	const pillarRadius = 0.045;
+	const pillarRowHeight = 0.15 ;
+
+	const pillars: number[][] = [
+		[0.1, pillarRowHeight, pillarRadius],
+		[0.3, pillarRowHeight, pillarRadius],
+		[0.5, pillarRowHeight, pillarRadius],
+		[0.7, pillarRowHeight, pillarRadius],
+		[0.9 ,pillarRowHeight, pillarRadius],
+		[0.2, pillarRowHeight * 2, pillarRadius],
+		[0.4, pillarRowHeight * 2, pillarRadius],
+		[0.6, pillarRowHeight * 2, pillarRadius],
+		[0.8, pillarRowHeight * 2, pillarRadius],
+		[0.3, pillarRowHeight * 3, pillarRadius],
+		[0.5, pillarRowHeight * 3, pillarRadius],
+		[0.7, pillarRowHeight * 3, pillarRadius],
+		[0.4, pillarRowHeight * 4, pillarRadius],
+		[0.6 , pillarRowHeight * 4, pillarRadius],
+	];
+
+	for (let x = 0; x < W; x++)
+		for (let y = 0; y < H; y++) {
+			for (const pillar of pillars) {
+				const [pillarX, pillarY, pillarR] = pillar;
+
+				const distance2 = (x/W - pillarX) ** 2 + (y / H - pillarY) ** 2;
+
+				if (distance2 <= pillarR ** 2) {
+					initState.setTerrain(x, y, PILLAR_HEIGHT  / worldSize);
+				}
+			}
+		}
+
+
+
+
+
+	return {
+		initState,
+		worldSize,
+		person:[0.5, 0.75 ],
+		sourceWater,
+		dt: 1/480,
+	};
+}
