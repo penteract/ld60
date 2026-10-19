@@ -30,8 +30,8 @@ vec4 simulationStep() {
 
 	float n = manningCoefficient;
 	n *= texture2D(frictionMap, pos).x;
-	vec2 Vx = V(simData(pos + vec2(0.0, -0.5)));
-	vec2 Vy = V(simData(pos + vec2(-0.5, 0.0)));
+	vec2 Vx = V(simData(pos + vec2(-0.5, 0.0) * unit));
+	vec2 Vy = V(simData(pos + vec2(0.0, -0.5) * unit));
 	vec2 p = vec2(
 		length(Vx) / pow(max((Hends.x + Hstarts.x) / 2.0, 0.00001), 4.0 / 3.0),
 		length(Vy) / pow(max((Hends.y + Hstarts.y) / 2.0, 0.00001), 4.0 / 3.0)
