@@ -37,5 +37,12 @@ export function London(dry: number, W: number, H: number): Map {
 		}
 	initState.setBaseTerrain();
 
-	return { initState, worldSize: WORLD_SIZE, speed: 200, dt: 1, sourceHeight: tsunamiHeight, sourceVelocity: (_) => 9 / WORLD_SIZE };
+	return { initState,
+		worldSize: WORLD_SIZE,
+		speed: 200,
+		dt: 1,
+		sourceHeight: tsunamiHeight,
+		sourceVelocity: (_) => 9 / WORLD_SIZE,
+		
+	};
 }

@@ -8,6 +8,7 @@ import { step, init, worldSize,engine } from "./simulation/sim";
 import { setup } from "./webgl/gl-setup.ts";
 import { drawScene } from "./webgl/draw-scene";
 import { createHandlers, stepInput } from "./input.ts";
+import {win,lose} from "./winlose.ts";
 
 declare global {
 	interface Window {
@@ -45,14 +46,15 @@ const params = new URLSearchParams(window.location.search);
 const mapName = params.get("map");
 
 var sim = init(mapName);
-console.log(sim)
+console.log(engine)
 let map = engine.map
+console.log(engine.map)
 
 if(map.person){
 	var target = document.getElementById("Target") as HTMLDivElement
 	target.classList.remove("hidden")
 	target.style.left=map.person[0]*100+"%"
-	target.style.top=map.person[1]*100+"%"
+	target.style.bottom=map.person[1]*100+"%"
 }
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
@@ -80,6 +82,22 @@ function LoopSim() {
 		let t = performance.now();
 		for (let i = 0; i < 1; i++) step(sim);
 		window.perf = performance.now() - t;
+	if(map.person && !target.classList.contains("sad")){
+		let sz = Math.floor(sim.width/20)
+		map.person[0]
+		for(let x=-sz;x<sz;x++)
+			for(let y=-sz;y<sz;y++){
+				if(x*x+y*y<sz*sz){
+					x = Math.ceil(map.person[0]*sim.width+x)
+					y = Math.ceil(map.person[1]*sim.height+y)
+					//console.log(sim.getWater(x,y)*worldSize())
+					if(sim.getWater(x,y)*worldSize()>0.00){
+						target.classList.add("sad")
+					}
+					sim.setWater(x,y,100)
+				}
+			}
+	}
 	}
 	//console.log(checkState(sim)+"")
 	//console.log(performance.now()-t)

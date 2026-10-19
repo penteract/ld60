@@ -35,7 +35,7 @@ export function Guy(W: number, H: number): Map {
 		worldSize,
 		sourceVelocity: (_) => sourceVelocity,
 		sourceHeight: (_) => sourceHeight,
-		person:[6/7,1/7]
+		person:[6/7,6/7]
 	};
 }
 

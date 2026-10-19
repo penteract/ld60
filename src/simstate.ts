@@ -32,9 +32,9 @@ export class SimState extends Float32Array {
 	}
 
 	idx(x: number, y: number): number {
-		if (x >= this.width) x = this.width;
+		if (x >= this.width) x = this.width-1;
 		if (x < 0) x = 0;
-		if (y >= this.height) y = this.height;
+		if (y >= this.height) y = this.height-1;
 		if (y < 0) y = 0;
 		return (y * this.width + x) * NUM_CHANNELS;
 	}
