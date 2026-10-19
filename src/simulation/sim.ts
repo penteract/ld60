@@ -36,11 +36,10 @@ class FloodEngine {
 		target: FlipFlopFBO;
 		inputs: Record<string, FlipFlopFBO>;
 	}[];
-  map: Map;
-  private dt;
+	map: Map;
+	private dt;
 	private steps_per_frame;
-	private sourceHeight;
-	private sourceVelocity;
+	private sourceWater;
 	private stateTexture: FlipFlopFBO;
 	// per-cell outflow limiter, written by the outflow-scale step and read by
 	// update-height
@@ -51,16 +50,17 @@ class FloodEngine {
 	private elapsed: number;
 
 	constructor(map: Map) {
-    this.map = map;
-    this.dt = map.dt ?? 1 / 120;
-		this.steps_per_frame = (map.speed ?? 1) * (1 / (60*this.dt));
-		this.sourceHeight =
-			this.map.sourceHeight ??
-			((_) => (9.5 + Math.random()) / this.map.worldSize);
-		this.sourceVelocity =
-			this.map.sourceVelocity ??
-			this.map.sourceVelocity ??
-			((_) => 0.1 / this.map.worldSize);
+		this.map = map;
+		this.dt = map.dt ?? 1 / 120;
+		this.steps_per_frame = (map.speed ?? 1) * (1 / (60 * this.dt));
+		this.sourceWater =
+			map.sourceWater ??
+			((_) => {
+				return {
+					height: (9.5 + Math.random()) / this.map.worldSize,
+					velocity: 0.1 / this.map.worldSize,
+				};
+			});
 		this.elapsed = 0;
 		let gl = document.createElement("canvas").getContext("webgl2");
 		if (gl == null) {
@@ -176,13 +176,10 @@ class FloodEngine {
 				for (const [name, input] of Object.entries(inputs))
 					shader.uniforms[name].data = input.texture;
 
+				let { height, velocity } = this.sourceWater(this.elapsed);
 				// source water height and velocity
-				shader.uniforms["sourceWaterHeight"].data = new GLOW.Float(
-					this.sourceHeight(this.elapsed),
-				);
-				shader.uniforms["sourceWaterVelocity"].data = new GLOW.Float(
-					this.sourceVelocity(this.elapsed),
-				);
+				shader.uniforms["sourceWaterHeight"].data = new GLOW.Float(height);
+				shader.uniforms["sourceWaterVelocity"].data = new GLOW.Float(velocity);
 
 				target.target.bind();
 				shader.draw();
