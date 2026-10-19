@@ -41,7 +41,10 @@ var params = {
 
 let canvas_state = setup(canvas);
 
-var sim = init();
+const params = new URLSearchParams(window.location.search);
+const mapName = params.get("map");
+
+var sim = init(mapName);
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 LoopSim();
@@ -91,6 +94,18 @@ function checkState(sim: any) {
 			}
 		}
 	return [wrongcount, max_xyht];
+}
+
+let menuButton = document.getElementById("menubutton");
+menuButton.addEventListener("click", toggleMenu);
+
+let menuCloseButton = document.getElementById("menuclose");
+menuCloseButton.addEventListener("click", toggleMenu);
+
+function toggleMenu(event: Event) {
+	event.preventDefault();
+	let el = document.getElementById("menu");
+	el.hidden = !el.hidden;
 }
 
 /*
