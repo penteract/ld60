@@ -2,6 +2,8 @@ import type { SimState } from "./simstate";
 import { W, H, worldSize } from "./simulation/sim";
 import { audio } from "./audio";
 
+export let score = 0;
+
 var mouseState = {
 	size: 0.25, //size used for wave interaction
 	clicking: false,
