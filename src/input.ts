@@ -92,10 +92,11 @@ export function stepInput(sim: SimState) {
 		for (let [[dx, dy], height] of pileShape) {
 			if (x + dx > 0 && y + dy > 0 && x + dx < W - 1 && y + dy < H - 1) {
 				let prevTerrain = sim.getTerrain(x + dx, y + dy);
+				let baseTerrain = sim.getBaseTerrain(x + dx, y + dy);
 				sim.setTerrain(
 					x + dx,
 					y + dy,
-					Math.max(prevTerrain, height * heightLimit),
+					Math.max(prevTerrain, baseTerrain + height * heightLimit),
 				);
 			}
 		}

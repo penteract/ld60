@@ -50,6 +50,7 @@ export function London(
 				sim.setWater(x, y, RESERVOIR_DEPTH / WORLD_SIZE);
 			else sim.setWater(x, y, dry);*/
 		}
+	sim.setBaseTerrain()
 
 	return sim;
 }
