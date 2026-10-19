@@ -38,7 +38,7 @@ class FloodEngine {
 	}[];
 	map: Map;
 	private dt;
-	private steps_per_frame;
+	private speed;
 	private sourceWater;
 	private stateTexture: FlipFlopFBO;
 	// per-cell outflow limiter, written by the outflow-scale step and read by
@@ -52,7 +52,7 @@ class FloodEngine {
 	constructor(map: Map) {
 		this.map = map;
 		this.dt = map.dt ?? 1 / 120;
-		this.steps_per_frame = (map.speed ?? 1) * (1 / (60 * this.dt));
+		this.speed = map.speed ?? 1;
 		this.sourceWater =
 			map.sourceWater ??
 			((_) => {
@@ -169,9 +169,10 @@ class FloodEngine {
 		context.cache.active = false;
 	}
 
-	step(sim: SimState) {
+	step(sim: SimState, rdt: number) {
+		let n_steps = Math.round(this.speed * (rdt / (this.dt * 1000)));
 		this.setState(sim);
-		for (let substep = 0; substep < this.steps_per_frame; substep++) {
+		for (let substep = 0; substep < n_steps; substep++) {
 			for (const { shader, target, inputs } of this.steps) {
 				for (const [name, input] of Object.entries(inputs))
 					shader.uniforms[name].data = input.texture;
@@ -246,8 +247,12 @@ export function worldSize(): number {
 	return engine.map.worldSize;
 }
 
-export function step(sim: SimState) {
-	engine.step(sim);
+export function step(sim: SimState, rdt: number) {
+	engine.step(sim, rdt);
+}
+
+export function reset(mapName: string): SimState {
+	return engine.reset(mapName);
 }
 
 // get metrics, in SI units
