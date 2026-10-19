@@ -47,7 +47,7 @@ div {
 	z-index: 2;
 }
 
-#menu:not([hidden]) {
+.modal:not([hidden]) {
 	display: flex;
 	width: 100%;
 	min-height: 100%;
@@ -56,13 +56,13 @@ div {
 	justify-content: center;
 }
 
-#menu * {
+.modal * {
 	position: relative;
 	display: block;
 	opacity: 1;
 }
 
-#menu > div {
+.modal > div {
 	background: black;
 	padding: 1em;
 	width: auto;
@@ -75,14 +75,6 @@ div {
 	background: var(--bg-color);
 	text-decoration: none;
 	color: black;
-}
-
-#menu button > a {
-	text-decoration: none;
-	color: black;
-	width: 100%;
-	height: 100%;
-	display: block;
 }
 
 .header {
@@ -120,24 +112,23 @@ div#Target{
 #Target>img{
   width:100%;
   height:100%;
-	postion:relative;
+	position:relative;
 }
-#Target.hidden{
-	display:none;
+#Target.hidden {
+	display: none;
 }
-#Target>img:last-child{
-  display:none;
+#Target > img:last-child {
+	display: none;
 }
-#Target>img:first-child{
-  display:initial;
+#Target > img:first-child {
+	display: initial;
 }
-#Target.sad>img:last-child{
-  display:initial;
+#Target.sad > img:last-child {
+	display: initial;
 }
-#Target.sad>img:first-child{
-  display:none;
+#Target.sad > img:first-child {
+	display: none;
 }
-
 
 form {
 	z-index: 2;

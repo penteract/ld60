@@ -21,8 +21,8 @@ export function Guy(W: number, H: number): Map {
 	const worldSize = 32; // meters
 	const initState = new SimState(W, H);
 	const sourceWater = (_: number) => ({
-		height: 10 / worldSize,
-		velocity: 0.5 / worldSize,
+		height: 0.5 / worldSize,
+		velocity: 10 / worldSize,
 	});
 
 	// a fairly straightforward map where there is a small flow from the
@@ -41,6 +41,7 @@ export function Guy(W: number, H: number): Map {
 		worldSize,
 		person:[6/7,6/7],
 		sourceWater,
+		dt: 1/480,
 	};
 }
 

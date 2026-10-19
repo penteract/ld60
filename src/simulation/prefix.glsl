@@ -73,13 +73,10 @@ vec4 simData(vec2 pos) {
 		data.w = borderData.w;
 	} else if (pos.y < unit) {
 		// flow in with sourceWaterVelocity
-		if (sourceWaterVelocity <= 0.0) {
-			vec4 borderData = texture2D(
-				texture,
-				vec2(clamp(pos.x, minExtent, maxExtent), minExtent)
-			);
-			data.y = min(borderData.y, 0.0);
-		} else data.y = sourceWaterHeight > data.w ? sourceWaterVelocity : 0.0;
+		if (sourceWaterVelocity > 0.0)
+			data.y = sourceWaterHeight > data.w ? sourceWaterVelocity : 0.0;
+		// if source velocity is <= 0, we don't set it to allow it to be set by
+		// advection and the slope
 	}
 
 	return data;

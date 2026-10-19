@@ -2,12 +2,13 @@ import type { Map, WaterSource } from "./starts";
 import { SimState } from "../simstate";
 //import heightmap from "../assets/heightmap_20261018231006_O0UX.png?raw";
 // width of the map in m: ~30 mi across
-const WORLD_SIZE = 30 * 1609.344;
-const SEA_LEVEL = 2 / WORLD_SIZE;
+const WORLD_SIZE = 60 * 1609.344;
+const SEA_LEVEL = 3 / WORLD_SIZE;
 
 function tsunamiSource(elapsed: number): WaterSource {
 	const PERIOD = 1200;
-	const TSUNAMI_DEPTH = 2.5;
+	const TSUNAMI_DEPTH = 6;
+	const FUDGE_FACTOR = 6;
 
 	let height = SEA_LEVEL,
 		velocity = -1;
@@ -16,8 +17,7 @@ function tsunamiSource(elapsed: number): WaterSource {
 		let anomaly =
 			(Math.sin((elapsed * Math.PI) / PERIOD) * TSUNAMI_DEPTH) / WORLD_SIZE;
 		height = anomaly + SEA_LEVEL;
-		velocity = (anomaly * Math.sqrt(9.81 / height) * 1024) / WORLD_SIZE;
-		console.log(velocity);
+		velocity = (anomaly * Math.sqrt((9.81 / height) * WORLD_SIZE)) * FUDGE_FACTOR / WORLD_SIZE;
 	}
 
 	return { height, velocity };
