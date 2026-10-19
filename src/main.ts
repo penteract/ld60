@@ -108,7 +108,7 @@ function LoopSim() {
 					win(score.toPrecision(3));
 			}
 
-		} else
+		} else if(!map.person)
 			if (map.timeLimit && map.timeLimit < engine.elapsed) {
 				sim.paused = true;
 				let metrics = engine.getMetrics();
