@@ -54,6 +54,8 @@ export const audio = {
             sampleSrc.connect(waveGain);
             waveGain.connect(this.audioContext.destination);
             sampleSrc.loop = true;
+            sampleSrc.loopStart = 0.5;
+            sampleSrc.loopEnd = sample.length - 0.5; // trim the empty space before and after
             sampleSrc.start();
 
             this.gainNodes.push(waveGain);
