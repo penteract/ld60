@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      GLOW:
-        specifier: github:empaempa/GLOW#802719cc772a517ecc82439db93d5d4c5113b306
-        version: https://codeload.github.com/empaempa/GLOW/tar.gz/802719cc772a517ecc82439db93d5d4c5113b306
     devDependencies:
       '@vitest/browser-playwright':
         specifier: ^5.0.5
@@ -29,7 +25,7 @@ importers:
         version: 8.3.4
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4)
+        version: 5.0.5(@vitest/browser-playwright@5.0.5)(@vitest/ui@5.0.5)(vite@8.3.4)
 
 packages:
 
@@ -215,10 +211,6 @@ packages:
 
   '@vitest/utils@5.0.5':
     resolution: {integrity: sha512-/rBu7gzLDQI/SC79Tn98b5DwOgaHU/Gt4I9OVeP3YofzNaYtbImRCOJQmT1S6vOJg9gEIlWC+r3QxKkjuSa1nQ==}
-
-  GLOW@https://codeload.github.com/empaempa/GLOW/tar.gz/802719cc772a517ecc82439db93d5d4c5113b306:
-    resolution: {gitHosted: true, integrity: sha512-lmHQ8B0WvGbXkS0R7fsVBNk4TwsnavE54ueh1VjWJ2wujxetLnuWEtQpGF0JruGN+Rwlr+TkcrZOrRhFvSMwhw==, tarball: https://codeload.github.com/empaempa/GLOW/tar.gz/802719cc772a517ecc82439db93d5d4c5113b306}
-    version: 0.0.0
 
   assert-plus@1.0.0:
     resolution: {integrity: sha512-NfJ4UzBCcQGLDlQq7nHxH+tv3kyZ0hHQqF5BO6J7tNJeP5do1llPr8dZ8zHonfhAu0PHAdMkSo+8o0wxg9lZWw==}
@@ -647,21 +639,21 @@ snapshots:
 
   '@vitest/browser-playwright@5.0.5(playwright@1.64.1)(vitest@5.0.5)':
     dependencies:
-      '@vitest/browser': 5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4))
+      '@vitest/browser': 5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(@vitest/ui@5.0.5)(vite@8.3.4))
       '@vitest/mocker': 5.0.5(vite@8.3.4)
       playwright: 1.64.1
       tinyrainbow: 3.2.0
-      vitest: 5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4)
+      vitest: 5.0.5(@vitest/browser-playwright@5.0.5)(@vitest/ui@5.0.5)(vite@8.3.4)
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
 
-  '@vitest/browser@5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4))':
+  '@vitest/browser@5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(@vitest/ui@5.0.5)(vite@8.3.4))':
     dependencies:
       '@blazediff/core': 1.10.0
       '@vitest/mocker': 5.0.5(vite@8.3.4)
-      '@vitest/ui': 5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4))
+      '@vitest/ui': 5.0.5(vitest@5.0.5)
       '@vitest/utils': 5.0.5
       magic-string: 1.4.3
       pngjs: 7.0.0
@@ -688,7 +680,7 @@ snapshots:
 
   '@vitest/spy@5.0.5': {}
 
-  '@vitest/ui@5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4))':
+  '@vitest/ui@5.0.5(vitest@5.0.5)':
     dependencies:
       '@vitest/utils': 5.0.5
       fflate: 0.8.3
@@ -703,8 +695,6 @@ snapshots:
       '@vitest/pretty-format': 5.0.5
       convert-source-map: 2.0.0
       tinyrainbow: 3.2.0
-
-  GLOW@https://codeload.github.com/empaempa/GLOW/tar.gz/802719cc772a517ecc82439db93d5d4c5113b306: {}
 
   assert-plus@1.0.0: {}
 
@@ -895,27 +885,7 @@ snapshots:
       '@types/chai': 5.2.3
       '@vitest/browser-playwright': 5.0.5(playwright@1.64.1)(vitest@5.0.5)
       '@vitest/mocker': 5.0.5(vite@8.3.4)
-      '@vitest/ui': 5.0.5(vitest@5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4))
-      chai: 6.3.0
-      es-module-lexer: 2.3.2
-      expect-type: 1.4.0
-      magic-string: 1.4.3
-      obug: 3.0.0
-      picomatch: 4.0.7
-      std-env: 4.3.0
-      tinybench: 6.2.2
-      tinyexec: 1.3.1
-      tinyglobby: 0.2.17
-      vite: 8.3.4
-      why-is-node-running: 3.2.1
-    transitivePeerDependencies:
-      - msw
-
-  vitest@5.0.5(@vitest/browser-playwright@5.0.5)(vite@8.3.4):
-    dependencies:
-      '@types/chai': 5.2.3
-      '@vitest/browser-playwright': 5.0.5(playwright@1.64.1)(vitest@5.0.5)
-      '@vitest/mocker': 5.0.5(vite@8.3.4)
+      '@vitest/ui': 5.0.5(vitest@5.0.5)
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
