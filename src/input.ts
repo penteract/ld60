@@ -106,7 +106,7 @@ export function stepInput(sim: SimState) {
 		audio.playing = false;
 	}
 }
-/*
+
 //map touch events to mouse events for touch compatibility:
 function touchHandler(event: TouchEvent)
 {
@@ -137,4 +137,4 @@ function touchHandler(event: TouchEvent)
 document.addEventListener("touchstart", touchHandler, true);
 document.addEventListener("touchmove", touchHandler, true);
 document.addEventListener("touchend", touchHandler, true);
-document.addEventListener("touchcancel", touchHandler, true);*/
+document.addEventListener("touchcancel", touchHandler, true);
