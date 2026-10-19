@@ -235,7 +235,7 @@ export function init(mapName: string): SimState {
 			map = Snooker(W, H);
 			break;
 		default:
-			throw "you suck";
+		map = Guy(W, H);
 	}
 
 	engine = new FloodEngine(map);
