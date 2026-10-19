@@ -96,11 +96,13 @@ function checkState(sim: any) {
 	return [wrongcount, max_xyht];
 }
 
-let menuButton = document.getElementById("menubutton");
-menuButton.addEventListener("click", toggleMenu);
+function addListener(id: string, eventType: string, listener: EventListener) {
+  document.getElementById(id).addEventListener(eventType, listener)
+}
 
-let menuCloseButton = document.getElementById("menuclose");
-menuCloseButton.addEventListener("click", toggleMenu);
+addListener("menubutton", "click", toggleMenu);
+addListener("menuclose", "click", toggleMenu);
+addListener("mainmenu", "click", () => { window.location.href = "/"; })
 
 function toggleMenu(event: Event) {
 	event.preventDefault();
