@@ -60,8 +60,12 @@ if(map.person){
 createHandlers(sim); //(start, end) => sim.pumps.push([start, end]));
 
 let frame = 0;
+let time = performance.now()
 LoopSim();
 function LoopSim() {
+	let time2= performance.now()
+	console.log(time2-time )
+	time=time2
 	if (canvas_state === null) {
 		alert("failure to load canvas for game");
 		return;

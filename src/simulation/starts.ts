@@ -43,6 +43,7 @@ export function Guy(W: number, H: number): Map {
 		person:[6/7,6/7],
 		sourceWater,
 		dt: 1/480,
+		timeLimit:20,
 	};
 }
 
