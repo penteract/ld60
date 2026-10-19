@@ -65,7 +65,6 @@ LoopSim();
 function LoopSim() {
 	let time2= performance.now()
 	console.log(time2-time )
-	time=time2
 	if (canvas_state === null) {
 		alert("failure to load canvas for game");
 		return;
@@ -85,7 +84,7 @@ function LoopSim() {
 	//sim.Step(mouseState,canvas);
 	if (!sim.paused) {
 		let t = performance.now();
-		for (let i = 0; i < 1; i++) step(sim);
+		step(sim,time2-time);
 		window.perf = performance.now() - t;
 		if(map.person && !target.classList.contains("sad")){
 			let sz = Math.floor(sim.width/20)
@@ -115,6 +114,7 @@ function LoopSim() {
 	//console.log(sim.water[3][3])
 	stepInput(sim);
 	drawScene(canvas_state, sim, worldSize());
+	time=time2
 	requestAnimationFrame(LoopSim);
 	frame++;
 	audio.update(sim, frame);
