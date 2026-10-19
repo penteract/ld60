@@ -1,8 +1,10 @@
+import type { SimState } from "./simstate";
+
 export const audio = {
 	audioContext: new AudioContext(),
     initialised: false,
     gainNodes: [] as GainNode[],
-    noiseBuffer: [] as AudioBufferSourceNode[],
+    audioBuffer: [] as AudioBufferSourceNode[],
     noiseFilter: [] as BiquadFilterNode[],
     initialise() {
         if(this.initialised) return;
@@ -35,23 +37,50 @@ export const audio = {
         noise.start();
         
         this.gainNodes.push(gainNode);
-        this.noiseBuffer.push(noise);
+        this.audioBuffer.push(noise);
         this.noiseFilter.push(filter);
 
+        // get sample for water waves audio that i recorded from the beach
+        this.setupSample().then((sample) =>{
+            const sampleSrc = new AudioBufferSourceNode(this.audioContext, {
+                buffer: sample
+            });
+
+            // make a Second gain node for this loop; make it silent initially
+            // (its volume will scale with water speed)
+            const waveGain = this.audioContext.createGain();
+            waveGain.gain.value = 0.0;
+
+            sampleSrc.connect(waveGain);
+            waveGain.connect(this.audioContext.destination);
+            sampleSrc.loop = true;
+            sampleSrc.start();
+
+            this.gainNodes.push(waveGain);
+            this.audioBuffer.push(sampleSrc);
+        });
+
         this.initialised = true;
+    },
+
+    update(sim: SimState, frame: number) { // generic in case we want to add any more to it
+        if (frame%10 === 0){ // cut some processor load
+            this.updateWaveGain(sim);
+        }
     },
 
     // takes the height of the water and compares it to the height being placed at
 	playNote(waterHeight: number) {
         // sanity
         if (!this.initialised ||
-            this.gainNodes.length === 0 || this.noiseBuffer.length === 0 ){
+            this.gainNodes.length === 0 || this.audioBuffer.length === 0 ){
             this.initialise();
         }
 
         this.gainNodes[0].gain.value = 0.2;
 
         // placing on/above water: play a high pitch; placing below water: play a lower "submerged" pitch
+        // lerp between two submerged values to add a bit of naturality
         let base = (waterHeight < 0.01) ? 1000 :
         ((waterHeight > 0.02 || isNaN(waterHeight) ) ? 200 : 1800 - 80000 * waterHeight);
         this.noiseFilter[0].frequency.value = this.getNoiseNote(base);
@@ -68,11 +97,31 @@ export const audio = {
 			this.gainNodes[0].gain.value = 0.0;
 		}
 	},
+
+    updateWaveGain(sim: SimState) {
+        if (!this.initialised || this.gainNodes.length < 2) return;
+
+        let maxSqSpd = 0;
+        for(let i = 0; i < sim.width; ++i){
+            for (let j = 0; j < sim.height; ++j){
+                maxSqSpd = Math.max(maxSqSpd, sim.getVx(i, j)**2+sim.getVy(i, j)**2);
+            }
+        }
+
+        this.gainNodes[1].gain.value = maxSqSpd * 10;
+    },
+
+    async getFile(audioContext: AudioContext, filepath: string) {
+      const response = await fetch(filepath);
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      return audioBuffer;
+    },
+    
+    async setupSample() {
+      const filePath = "./src/assets/oceanwaves.m4a";
+      const sample = await this.getFile(this.audioContext, filePath);
+      return sample;
+    },
 };
 
-async function getFile(audioContext: AudioContext, filepath: string) {
-  const response = await fetch(filepath);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  return audioBuffer;
-}
