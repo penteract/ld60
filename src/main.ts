@@ -97,7 +97,7 @@ function LoopSim() {
 					let dy = py-map.person[1]*sim.height
 					if(dx*dx+dy*dy < (sz-2)*(sz-2)){
 						//console.log(sim.getWater(x,y)*worldSize())
-						if(sim.getWater(px,py)*worldSize()>0.001){
+						if (sim.getWater(px, py) * worldSize() > 0.001) {
 							target.classList.add("sad")
 							lose(":(")
 						}
@@ -105,21 +105,9 @@ function LoopSim() {
 					}
 			}
 			if(map.timeLimit && map.timeLimit<engine.elapsed && !target.classList.contains("sad")){
-					win(score.toPrecision(3));
+					win(score.toFixed(2));
 			}
 
-		} else if(!map.person)
-			if (map.timeLimit && map.timeLimit < engine.elapsed) {
-				sim.paused = true;
-				let metrics = engine.getMetrics();
-				let count = 0;
-				for (let x = 0; x < W; x++)
-					for (let y = 0; y < H; y++) {
-						if (metrics[x + y * W] * worldSize() > 0.001) {
-							count++;
-						}
-					}
-			win((count-46579)/(1+score).toPrecision());
 		}
 	}
 	//console.log(checkState(sim)+"")
