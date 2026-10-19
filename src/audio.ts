@@ -53,7 +53,7 @@ export const audio = {
 
         // placing on/above water: play a high pitch; placing below water: play a lower "submerged" pitch
         let base = (waterHeight < 0.01) ? 1000 :
-        (waterHeight > 0.02 ? 200 : 1800 - 80000 * waterHeight);
+        ((waterHeight > 0.02 || isNaN(waterHeight) ) ? 200 : 1800 - 80000 * waterHeight);
         this.noiseFilter[0].frequency.value = this.getNoiseNote(base);
 	},
 
