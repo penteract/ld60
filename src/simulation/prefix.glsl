@@ -28,15 +28,15 @@ varying vec2 pos, posLeft, posRight, posTop, posBottom;
 // query (and interpolate) simulation data from texture
 vec4 simData(vec2 pos) {
 	vec4 data = texture2D(texture, pos);
-	float minExtent = unit;
-	float maxExtent = 1.0 - unit;
+	float minExtent = 0.5*unit;
+	float maxExtent = 1.0 - 0.5*unit;
 
-	if (pos.x < minExtent) {
+	// x heights
+	if (pos.x < 0.0) {
 		vec4 borderData = texture2D(
 			texture,
 			vec2(minExtent, clamp(pos.y, minExtent, maxExtent))
 		);
-		data.x = min(borderData.x, 0.0);
 		data.z = borderData.z;
 		data.w = borderData.w;
 	} else if (pos.x > maxExtent) {
@@ -47,15 +47,20 @@ vec4 simData(vec2 pos) {
 		data.x = max(borderData.x, 0.0);
 		data.z = borderData.z;
 		data.w = borderData.w;
+	} else if (pos.x < unit) {
+		vec4 borderData = texture2D(
+			texture,
+			vec2(minExtent+unit, clamp(pos.y, minExtent, maxExtent))
+		);
+		data.x = min(borderData.x, 0.0);
 	}
 
-	if (pos.y < minExtent) {
+	if (pos.y < 0.0) {
 		// flow in with sourceWaterHeight and sourceWaterVelocity
 		vec4 borderData = texture2D(
 			texture,
 			vec2(clamp(pos.x, minExtent, maxExtent), minExtent)
 		);
-		data.y = sourceWaterHeight > borderData.w ? sourceWaterVelocity : 0.0;
 		data.z = sourceWaterHeight - borderData.w;
 		data.w = borderData.w;
 	} else if (pos.y > maxExtent) {
@@ -66,6 +71,9 @@ vec4 simData(vec2 pos) {
 		data.y = max(borderData.y, 0.0);
 		data.z = borderData.z;
 		data.w = borderData.w;
+	} else if (pos.y < unit) {
+		// flow in with sourceWaterVelocity
+		data.y = sourceWaterHeight > data.w ? sourceWaterVelocity : 0.0;
 	}
 
 	return data;
