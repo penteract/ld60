@@ -76,7 +76,7 @@ vec4 simData(vec2 pos) {
 		if (sourceWaterVelocity <= 0.0) {
 			vec4 borderData = texture2D(
 				texture,
-				vec2(clamp(pos.x, minExtent, maxExtent), minExtent)
+				vec2(clamp(pos.x, minExtent, maxExtent), minExtent + unit)
 			);
 			data.y = min(borderData.y, 0.0);
 		} else data.y = sourceWaterHeight > data.w ? sourceWaterVelocity : 0.0;
