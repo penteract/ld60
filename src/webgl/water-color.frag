@@ -18,9 +18,10 @@ vec3 groundColorCalc(float groundHeight) {
 	vec3 seabedColorRGB = vec3(0.3, 0.3, 0.3);
 	vec3 damRGB = vec3(0.1, 0.4, 0.1);
 
-	return mix(seabedColorRGB,damRGB, smoothstep(0.,1.,groundHeight*5.));
+	return mix(seabedColorRGB, damRGB, smoothstep(0.0, 1.0, groundHeight * 5.0));
 
 	//return groundHeight < 0.1 ? seabedColorRGB: damRGB;
+
 }
 
 vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
@@ -34,7 +35,8 @@ vec3 applyWater(vec3 bedColor, float waterHeight, float groundHeight) {
 
 	vec3 bedNormal = normalize(vec3(-bedDx, -bedDy, 1));
 	// bedNormal = vec3(0.,0.,1.);
-	vec3 bedDiffuse = 0.5 * max(dot(bedNormal, vec3(.6, 0, .8)), 0.0) * sunlight;
+	vec3 bedDiffuse =
+		0.5 * max(dot(bedNormal, vec3(0.6, 0, 0.8)), 0.0) * sunlight;
 
 	vec3 baseBed = (bedAmbient + bedDiffuse) * bedColor;
 

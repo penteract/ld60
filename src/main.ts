@@ -97,12 +97,14 @@ function checkState(sim: any) {
 }
 
 function addListener(id: string, eventType: string, listener: EventListener) {
-  document.getElementById(id).addEventListener(eventType, listener)
+	document.getElementById(id).addEventListener(eventType, listener);
 }
 
 addListener("menubutton", "click", toggleMenu);
 addListener("menuclose", "click", toggleMenu);
-addListener("mainmenu", "click", () => { window.location.href = "/"; })
+addListener("mainmenu", "click", () => {
+	window.location.href = "/";
+});
 
 function toggleMenu(event: Event) {
 	event.preventDefault();
