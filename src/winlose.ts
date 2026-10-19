@@ -9,7 +9,7 @@ function addListener(id: string, eventType: string, listener: EventListener) {
 }
 
 addListener("mainmenu1", "click", () => {
-	window.location.href = "/";
+	window.location.href = "./";
 });
 
 export function win(message: string) {

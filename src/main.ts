@@ -143,7 +143,7 @@ function addListener(id: string, eventType: string, listener: EventListener) {
 addListener("menubutton", "click", toggleMenu);
 addListener("menuclose", "click", toggleMenu);
 addListener("mainmenu", "click", () => {
-	window.location.href = "/";
+	window.location.href = "./";
 });
 addListener("reset", "click", () => {
 	window.location.reload();
